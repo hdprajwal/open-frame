@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-type AssetMock = { name: string; size: string; logo: string };
+type AssetMock = { name: string; size: string; logo: string; themed?: boolean };
 
 const assets: AssetMock[] = [
   { name: 'claude.svg', size: '3.4 KB', logo: 'claude' },
@@ -8,13 +8,13 @@ const assets: AssetMock[] = [
   { name: 'gemini.svg', size: '4.0 KB', logo: 'gemini' },
   { name: 'cursor-dark.svg', size: '5.2 KB', logo: 'cursor-dark' },
   { name: 'cloudflare.svg', size: '6.8 KB', logo: 'cloudflare' },
-  { name: 'zeabur-dark.svg', size: '4.7 KB', logo: 'zeabur-dark' },
+  { name: 'zeabur-dark.svg', size: '4.7 KB', logo: 'zeabur', themed: true },
 ];
 
-const svglResults: { name: string; logo: string }[] = [
-  { name: 'Vercel', logo: 'vercel-dark' },
+const svglResults: { name: string; logo: string; themed?: boolean }[] = [
+  { name: 'Vercel', logo: 'vercel', themed: true },
   { name: 'Cloudflare', logo: 'cloudflare' },
-  { name: 'Zeabur', logo: 'zeabur-dark' },
+  { name: 'Zeabur', logo: 'zeabur', themed: true },
 ];
 
 const callouts: { eyebrow: string; title: string; body: ReactNode }[] = [
@@ -166,11 +166,27 @@ function AssetManagerMock() {
                 } p-2 flex flex-col items-center gap-1.5`}
               >
                 <div className="h-8 flex items-center justify-center">
-                  <img
-                    src={`/assets/${r.logo}.svg`}
-                    alt={r.name}
-                    className="h-7 w-auto object-contain"
-                  />
+                  {r.themed ? (
+                    <>
+                      <img
+                        src={`/assets/${r.logo}-dark.svg`}
+                        alt={r.name}
+                        className="h-7 w-auto object-contain logo-dark"
+                      />
+                      <img
+                        src={`/assets/${r.logo}-light.svg`}
+                        alt=""
+                        aria-hidden
+                        className="h-7 w-auto object-contain logo-light"
+                      />
+                    </>
+                  ) : (
+                    <img
+                      src={`/assets/${r.logo}.svg`}
+                      alt={r.name}
+                      className="h-7 w-auto object-contain"
+                    />
+                  )}
                 </div>
                 <span className="font-[family-name:var(--font-mono)] text-[10px] text-[color:var(--color-text-soft)]">
                   {r.name}
@@ -194,18 +210,41 @@ function AssetCard({ asset }: { asset: AssetMock }) {
             'repeating-conic-gradient(color-mix(in srgb, var(--color-rule) 70%, transparent) 0 25%, transparent 0 50%) 0 0 / 16px 16px',
         }}
       >
-        <img
-          src={`/assets/${asset.logo}.svg`}
-          alt=""
-          className="h-12 w-auto object-contain agent-mono"
-        />
+        {asset.themed ? (
+          <>
+            <img
+              src={`/assets/${asset.logo}-dark.svg`}
+              alt=""
+              className="h-12 w-auto object-contain agent-mono logo-dark"
+            />
+            <img
+              src={`/assets/${asset.logo}-light.svg`}
+              alt=""
+              aria-hidden
+              className="h-12 w-auto object-contain agent-mono logo-light"
+            />
+          </>
+        ) : (
+          <img
+            src={`/assets/${asset.logo}.svg`}
+            alt=""
+            className="h-12 w-auto object-contain agent-mono"
+          />
+        )}
       </div>
       <div className="border-t border-[color:var(--color-rule)] px-3 py-2">
         <div
           className="font-[family-name:var(--font-sans)] text-[13px] text-[color:var(--color-text)] truncate"
           title={asset.name}
         >
-          {asset.name}
+          {asset.themed ? (
+            <>
+              <span className="logo-dark">{asset.name}</span>
+              <span className="logo-light">{asset.name.replace('-dark', '-light')}</span>
+            </>
+          ) : (
+            asset.name
+          )}
         </div>
         <div className="font-[family-name:var(--font-mono)] text-[10px] text-[color:var(--color-muted)] mt-0.5">
           {asset.size}
