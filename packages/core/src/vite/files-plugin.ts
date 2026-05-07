@@ -2,6 +2,7 @@ import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import type { ServerResponse } from 'node:http';
 import path from 'node:path';
+import { parse as babelParse } from '@babel/parser';
 import type { Connect, Plugin, ViteDevServer } from 'vite';
 
 const FOLDER_ID_RE = /^f-[a-f0-9]{8}$/;
@@ -245,6 +246,95 @@ export function updateMetaTitleInSource(source: string, title: string): string |
   return source.slice(0, exportDefaultIdx) + insertion + source.slice(exportDefaultIdx);
 }
 
+type ArrayElementRange = { start: number; end: number };
+
+function findDefaultExportArray(
+  source: string,
+): { elements: ArrayElementRange[]; arrayStart: number; arrayEnd: number } | null {
+  let ast: unknown;
+  try {
+    ast = babelParse(source, {
+      sourceType: 'module',
+      plugins: ['typescript', 'jsx'],
+      errorRecovery: true,
+    });
+  } catch {
+    return null;
+  }
+  const body = (ast as { program?: { body?: Array<Record<string, unknown>> } }).program?.body ?? [];
+  for (const node of body) {
+    if (node.type !== 'ExportDefaultDeclaration') continue;
+    let inner = node.declaration as Record<string, unknown> | undefined;
+    while (inner && (inner.type === 'TSAsExpression' || inner.type === 'TSSatisfiesExpression')) {
+      inner = inner.expression as Record<string, unknown> | undefined;
+    }
+    if (!inner || inner.type !== 'ArrayExpression') return null;
+    const arrayStart = inner.start as number;
+    const arrayEnd = inner.end as number;
+    const rawElements = (inner.elements as Array<Record<string, unknown> | null>) ?? [];
+    const elements: ArrayElementRange[] = [];
+    for (const el of rawElements) {
+      if (!el || typeof el.start !== 'number' || typeof el.end !== 'number') return null;
+      elements.push({ start: el.start as number, end: el.end as number });
+    }
+    return { elements, arrayStart, arrayEnd };
+  }
+  return null;
+}
+
+/**
+ * Rewrite `export default [...]` so its elements appear in the requested order.
+ *
+ * `order[i]` is the original index that should land at new position `i`. The
+ * function preserves each element's exact source slice (including any inline
+ * comments that hug an identifier) and keeps the inter-element separator slots
+ * in their original positions, so a 3-page array `[A, B, C]` reordered to
+ * `[2, 0, 1]` becomes `[C, A, B]` with the same indentation and trailing
+ * commas the author wrote.
+ *
+ * Returns `null` when the file's default export isn't an array literal, or the
+ * order is not a valid permutation of `[0, n-1]`.
+ */
+export function reorderDefaultExportPagesInSource(source: string, order: number[]): string | null {
+  const found = findDefaultExportArray(source);
+  if (!found) return null;
+  const { elements, arrayStart, arrayEnd } = found;
+  const n = elements.length;
+  if (order.length !== n) return null;
+  const seen = new Set<number>();
+  for (const idx of order) {
+    if (!Number.isInteger(idx) || idx < 0 || idx >= n) return null;
+    if (seen.has(idx)) return null;
+    seen.add(idx);
+  }
+  if (n === 0) return source;
+
+  let identity = true;
+  for (let i = 0; i < n; i++) {
+    if (order[i] !== i) {
+      identity = false;
+      break;
+    }
+  }
+  if (identity) return source;
+
+  const prefix = source.slice(arrayStart, elements[0].start);
+  const suffix = source.slice(elements[n - 1].end, arrayEnd);
+  const separators: string[] = [];
+  for (let i = 0; i < n - 1; i++) {
+    separators.push(source.slice(elements[i].end, elements[i + 1].start));
+  }
+  const elementText = elements.map((el) => source.slice(el.start, el.end));
+
+  let rebuilt = prefix + elementText[order[0]];
+  for (let i = 1; i < n; i++) {
+    rebuilt += separators[i - 1] + elementText[order[i]];
+  }
+  rebuilt += suffix;
+
+  return source.slice(0, arrayStart) + rebuilt + source.slice(arrayEnd);
+}
+
 export function validateIcon(v: unknown): FolderIcon | null {
   if (!v || typeof v !== 'object') return null;
   const icon = v as { type?: unknown; value?: unknown };
@@ -306,6 +396,42 @@ export function filesPlugin(opts: FilesPluginOptions): Plugin {
         const method = req.method ?? 'GET';
 
         try {
+          const reorderMatch = url.pathname.match(/^\/([^/]+)\/reorder$/);
+          if (reorderMatch && method === 'PUT') {
+            const slideId = reorderMatch[1];
+            if (!SLIDE_ID_RE.test(slideId)) return json(res, 400, { error: 'invalid slideId' });
+
+            const body = (await readBody(req)) as { order?: unknown };
+            if (!Array.isArray(body.order)) return json(res, 400, { error: 'invalid order' });
+            const order: number[] = [];
+            for (const v of body.order) {
+              if (!Number.isInteger(v)) return json(res, 400, { error: 'invalid order' });
+              order.push(v as number);
+            }
+
+            const entry = resolveSlideEntry(slidesRoot, slideId);
+            if (!entry) return json(res, 400, { error: 'invalid slideId' });
+
+            let source: string;
+            try {
+              source = await fs.readFile(entry, 'utf8');
+            } catch {
+              return json(res, 404, { error: 'slide not found' });
+            }
+
+            const updated = reorderDefaultExportPagesInSource(source, order);
+            if (updated === null) {
+              return json(res, 422, {
+                error:
+                  'could not reorder pages — order must be a permutation of the existing array',
+              });
+            }
+            if (updated !== source) {
+              await fs.writeFile(entry, updated, 'utf8');
+            }
+            return json(res, 200, { ok: true, slideId, order });
+          }
+
           const idMatch = url.pathname.match(/^\/([^/]+)$/);
           if (!idMatch) return next();
           const slideId = idMatch[1];

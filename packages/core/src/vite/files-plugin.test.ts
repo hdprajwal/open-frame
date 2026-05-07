@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   mimeForFilename,
+  reorderDefaultExportPagesInSource,
   updateMetaTitleInSource,
   validateAssetName,
   validateIcon,
@@ -116,6 +117,80 @@ describe('updateMetaTitleInSource', () => {
 
   it('returns null if there is no meta and no default export', () => {
     expect(updateMetaTitleInSource('// nothing here', 'x')).toBeNull();
+  });
+});
+
+describe('reorderDefaultExportPagesInSource', () => {
+  const withSatisfies = `import type { Page } from '@open-slide/core';
+const A = () => null;
+const B = () => null;
+const C = () => null;
+export const meta = { title: 't' };
+export default [
+  A,
+  B,
+  C,
+] satisfies Page[];
+`;
+
+  const withoutSatisfies = `const A = () => null;
+const B = () => null;
+const C = () => null;
+export default [A, B, C];
+`;
+
+  it('reorders a 3-element multi-line array', () => {
+    const out = reorderDefaultExportPagesInSource(withSatisfies, [2, 0, 1]);
+    expect(out).not.toBeNull();
+    expect(out).toContain('export default [\n  C,\n  A,\n  B,\n] satisfies Page[];');
+    // surrounding source untouched
+    expect(out).toContain("import type { Page } from '@open-slide/core';");
+    expect(out).toContain("export const meta = { title: 't' };");
+  });
+
+  it('reorders an inline array without satisfies', () => {
+    const out = reorderDefaultExportPagesInSource(withoutSatisfies, [1, 2, 0]);
+    expect(out).toContain('export default [B, C, A];');
+  });
+
+  it('is a no-op for the identity permutation (returns input unchanged)', () => {
+    expect(reorderDefaultExportPagesInSource(withSatisfies, [0, 1, 2])).toBe(withSatisfies);
+  });
+
+  it('returns null on length mismatch', () => {
+    expect(reorderDefaultExportPagesInSource(withSatisfies, [0, 1])).toBeNull();
+    expect(reorderDefaultExportPagesInSource(withSatisfies, [0, 1, 2, 3])).toBeNull();
+  });
+
+  it('returns null on duplicate indices', () => {
+    expect(reorderDefaultExportPagesInSource(withSatisfies, [0, 0, 2])).toBeNull();
+  });
+
+  it('returns null on out-of-range indices', () => {
+    expect(reorderDefaultExportPagesInSource(withSatisfies, [0, 1, 5])).toBeNull();
+    expect(reorderDefaultExportPagesInSource(withSatisfies, [-1, 1, 2])).toBeNull();
+  });
+
+  it('returns null when the default export is not an array', () => {
+    const source = `const A = () => null;\nexport default A;\n`;
+    expect(reorderDefaultExportPagesInSource(source, [0])).toBeNull();
+  });
+
+  it('returns null when there is no default export', () => {
+    expect(reorderDefaultExportPagesInSource('// nothing\n', [])).toBeNull();
+  });
+
+  it('returns the input unchanged for an empty array (zero-length identity)', () => {
+    const empty = `export default [];\n`;
+    expect(reorderDefaultExportPagesInSource(empty, [])).toBe(empty);
+  });
+
+  it('preserves the rest of the file (component bodies, imports, meta)', () => {
+    const out = reorderDefaultExportPagesInSource(withSatisfies, [2, 1, 0]);
+    expect(out).not.toBeNull();
+    expect(out).toContain('const A = () => null;');
+    expect(out).toContain('const B = () => null;');
+    expect(out).toContain('const C = () => null;');
   });
 });
 

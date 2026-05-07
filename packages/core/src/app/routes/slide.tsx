@@ -68,11 +68,62 @@ export function Slide() {
     };
   }, [slideId]);
 
-  const pages = useMemo(() => slide?.default ?? [], [slide]);
+  const modulePages = useMemo(() => slide?.default ?? [], [slide]);
+  const [pages, setPages] = useState<typeof modulePages>(modulePages);
+  useEffect(() => {
+    setPages(modulePages);
+  }, [modulePages]);
   const pageCount = pages.length;
   const rawIndex = Number(searchParams.get('p') ?? '1') - 1;
   const index = Number.isFinite(rawIndex) ? Math.max(0, Math.min(pageCount - 1, rawIndex)) : 0;
   const view = searchParams.get('view') === 'assets' ? 'assets' : 'slides';
+
+  const reorderPage = useCallback(
+    async (from: number, to: number) => {
+      if (from === to) return;
+      const before = pages;
+      const nextPages = [...before];
+      const [moved] = nextPages.splice(from, 1);
+      nextPages.splice(to, 0, moved);
+      setPages(nextPages);
+
+      const order = before.map((_, i) => i);
+      const [movedIdx] = order.splice(from, 1);
+      order.splice(to, 0, movedIdx);
+
+      // Keep the user looking at the same page they were on before the drag.
+      let nextIndex = index;
+      if (index === from) nextIndex = to;
+      else if (from < index && to >= index) nextIndex = index - 1;
+      else if (from > index && to <= index) nextIndex = index + 1;
+      if (nextIndex !== index) {
+        setSearchParams(
+          (prev) => {
+            const params = new URLSearchParams(prev);
+            params.set('p', String(nextIndex + 1));
+            return params;
+          },
+          { replace: true },
+        );
+      }
+
+      try {
+        const res = await fetch(`/__slides/${encodeURIComponent(slideId)}/reorder`, {
+          method: 'PUT',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ order }),
+        });
+        if (!res.ok) {
+          const detail = await res.json().catch(() => ({ error: res.statusText }));
+          throw new Error(detail.error ?? `HTTP ${res.status}`);
+        }
+      } catch (err) {
+        setPages(before);
+        toast.error(`Reorder failed: ${String((err as Error).message ?? err)}`);
+      }
+    },
+    [pages, index, slideId, setSearchParams],
+  );
 
   const goTo = useCallback(
     (i: number) => {
@@ -356,6 +407,7 @@ export function Slide() {
                     design={slide.design}
                     current={index}
                     onSelect={goTo}
+                    onReorder={import.meta.env.DEV ? reorderPage : undefined}
                   />
                 </div>
                 <main
