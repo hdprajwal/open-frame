@@ -96,9 +96,9 @@ export function PresentOverviewGrid({ pages, design, open, current, onClose, onS
       </div>
       <div ref={gridRef} className="min-h-0 flex-1 overflow-auto px-8 pb-8">
         <div
-          className="grid gap-5"
+          className="grid justify-center gap-5"
           style={{
-            gridTemplateColumns: `repeat(auto-fill, minmax(${THUMB_W}px, 1fr))`,
+            gridTemplateColumns: `repeat(auto-fill, ${THUMB_W}px)`,
           }}
         >
           {pages.map((PageComp, i) => {
