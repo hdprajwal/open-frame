@@ -13,7 +13,7 @@ When the user says "fix this page", "tweak this heading", or "the slide I'm look
 
 - you already read it earlier in this same conversation,
 - you just finished editing the slide it pointed to,
-- the user's new message sounds like a continuation ("now make it bigger", "也幫我改這個", "繼續").
+- the user's new message sounds like a continuation ("now make it bigger", "also fix this one", "keep going").
 
 A "continue editing" follow-up is exactly the case where the user has likely just navigated to a different slide or picked a different element. Trusting your last read here will silently edit the wrong file. Re-read, compare `slideId` / `pageIndex` / `selection` against what you used last time, and act on the new values.
 
