@@ -6,6 +6,8 @@ export type Page = ComponentType;
 export type SlideMeta = {
   title?: string;
   theme?: string;
+  /** ISO 8601 timestamp. Set once at scaffold time; used to sort the slide list. */
+  createdAt?: string;
 };
 
 export type SlideModule = {

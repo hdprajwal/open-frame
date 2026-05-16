@@ -49,6 +49,11 @@ export type Locale = {
     folderActions: string;
     searchPlaceholder: string;
     clearSearch: string;
+    sortLabel: string;
+    sortByCreatedDesc: string;
+    sortByCreatedAsc: string;
+    sortByTitleAsc: string;
+    sortByTitleDesc: string;
     noMatches: string;
     nothingMatchesPrefix: string;
     nothingMatchesSuffix: string;

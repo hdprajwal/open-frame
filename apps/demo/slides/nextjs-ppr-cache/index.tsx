@@ -1461,7 +1461,10 @@ const TLDR: Page = () => {
   );
 };
 
-export const meta: SlideMeta = { title: "Next.js: Partial Pre-Rendering & 'use cache'" };
+export const meta: SlideMeta = {
+  title: "Next.js: Partial Pre-Rendering & 'use cache'",
+  createdAt: '2026-04-25T23:04:12+08:00',
+};
 export default [
   Cover,
   TradeOff,

@@ -1018,7 +1018,7 @@ const Closing: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'Vercel AI SDK' };
+export const meta: SlideMeta = { title: 'Vercel AI SDK', createdAt: '2026-05-03T23:14:26+08:00' };
 export default [
   Cover,
   Problem,

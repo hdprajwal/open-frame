@@ -1,4 +1,5 @@
 import {
+  slideCreatedAt as createdAt,
   slideIds as ids,
   loadSlide as load,
   slideThemes as themes,
@@ -7,6 +8,7 @@ import type { SlideModule } from './sdk';
 
 export const slideIds: string[] = ids;
 export const slideThemes: Record<string, string> = themes;
+export const slideCreatedAt: Record<string, number> = createdAt;
 
 export function slidesByTheme(themeId: string): string[] {
   return slideIds.filter((id) => slideThemes[id] === themeId);

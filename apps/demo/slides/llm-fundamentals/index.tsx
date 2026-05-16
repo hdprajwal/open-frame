@@ -1547,7 +1547,7 @@ const Closing: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'How LLMs Work' };
+export const meta: SlideMeta = { title: 'How LLMs Work', createdAt: '2026-04-26T21:13:13+08:00' };
 export default [
   Cover,
   BigIdea,

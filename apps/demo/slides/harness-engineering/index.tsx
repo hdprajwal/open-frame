@@ -1182,7 +1182,10 @@ const Closing: Page = () => (
 
 /* ─────────────── Export ─────────────── */
 
-export const meta: SlideMeta = { title: 'Harness Engineering' };
+export const meta: SlideMeta = {
+  title: 'Harness Engineering',
+  createdAt: '2026-04-27T10:17:38+08:00',
+};
 
 export default [
   Cover,

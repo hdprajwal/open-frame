@@ -1095,5 +1095,8 @@ const Cli: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'open-slide — Launch Motion' };
+export const meta: SlideMeta = {
+  title: 'open-slide — Launch Motion',
+  createdAt: '2026-05-02T22:45:01+08:00',
+};
 export default [Cover, Skill, Inspect, Visual, DesignPanel, Assets, Cli] satisfies Page[];

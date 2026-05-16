@@ -2,6 +2,7 @@ import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
 
 export const meta: SlideMeta = {
   title: 'Vercel Labs · 2026',
+  createdAt: '2026-05-13T02:06:00+08:00',
 };
 
 export const design: DesignSystem = {

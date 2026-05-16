@@ -1591,7 +1591,7 @@ const Closing: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'How SSH Works' };
+export const meta: SlideMeta = { title: 'How SSH Works', createdAt: '2026-04-26T19:40:46+08:00' };
 export default [
   Cover,
   WhatIs,

@@ -63,14 +63,18 @@ function toId(absFile: string, slidesRoot: string): string {
 }
 
 const META_THEME_RE = /(?:^|[\s,{])theme\s*:\s*['"]([^'"]+)['"]/;
+const META_CREATED_AT_RE = /(?:^|[\s,{])createdAt\s*:\s*['"]([^'"]+)['"]/;
 
-function extractMetaTheme(src: string): string | null {
+type ExtractedMeta = { theme: string | null; createdAt: string | null };
+
+function extractMeta(src: string): ExtractedMeta {
+  const empty: ExtractedMeta = { theme: null, createdAt: null };
   const metaStart = src.search(/export\s+const\s+meta\b/);
-  if (metaStart === -1) return null;
+  if (metaStart === -1) return empty;
   const eqIdx = src.indexOf('=', metaStart);
-  if (eqIdx === -1) return null;
+  if (eqIdx === -1) return empty;
   const openBrace = src.indexOf('{', eqIdx);
-  if (openBrace === -1) return null;
+  if (openBrace === -1) return empty;
   let depth = 0;
   let closeBrace = -1;
   for (let i = openBrace; i < src.length; i++) {
@@ -84,19 +88,29 @@ function extractMetaTheme(src: string): string | null {
       }
     }
   }
-  if (closeBrace === -1) return null;
+  if (closeBrace === -1) return empty;
   const body = src.slice(openBrace + 1, closeBrace);
-  const m = body.match(META_THEME_RE);
-  return m ? m[1] : null;
+  const themeMatch = body.match(META_THEME_RE);
+  const createdAtMatch = body.match(META_CREATED_AT_RE);
+  return {
+    theme: themeMatch ? themeMatch[1] : null,
+    createdAt: createdAtMatch ? createdAtMatch[1] : null,
+  };
 }
 
-async function readSlideTheme(abs: string): Promise<string | null> {
+async function readSlideMeta(abs: string): Promise<ExtractedMeta> {
   try {
     const src = await fs.readFile(abs, 'utf8');
-    return extractMetaTheme(src);
+    return extractMeta(src);
   } catch {
-    return null;
+    return { theme: null, createdAt: null };
   }
+}
+
+function parseCreatedAtMs(iso: string | null): number | null {
+  if (!iso) return null;
+  const ms = Date.parse(iso);
+  return Number.isFinite(ms) ? ms : null;
 }
 
 async function generateSlidesModule(
@@ -108,17 +122,20 @@ async function generateSlidesModule(
     files.map(async (abs) => {
       const id = toId(abs, slidesRoot);
       const importPath = isDev ? `/@fs/${abs.replace(/^\/+/, '')}` : abs;
-      const theme = await readSlideTheme(abs);
-      return { id, importPath, theme };
+      const meta = await readSlideMeta(abs);
+      return { id, importPath, theme: meta.theme, createdAt: parseCreatedAtMs(meta.createdAt) };
     }),
   );
 
   const ids = JSON.stringify(entries.map((e) => e.id).sort());
   const themesMap: Record<string, string> = {};
+  const createdAtMap: Record<string, number> = {};
   for (const e of entries) {
     if (e.theme) themesMap[e.id] = e.theme;
+    if (e.createdAt !== null) createdAtMap[e.id] = e.createdAt;
   }
   const themesJson = JSON.stringify(themesMap);
+  const createdAtJson = JSON.stringify(createdAtMap);
   const importTokens = JSON.stringify(Object.fromEntries(entries.map((e) => [e.id, 0])));
   const devRuntime = isDev
     ? `
@@ -146,6 +163,7 @@ if (import.meta.hot) {
   return `// virtual:open-slide/slides — generated
 export const slideIds = ${ids};
 export const slideThemes = ${themesJson};
+export const slideCreatedAt = ${createdAtJson};
 ${devRuntime}
 
 export async function loadSlide(id) {

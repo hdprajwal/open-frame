@@ -1764,7 +1764,7 @@ const Closing: Page = () => {
   );
 };
 
-export const meta: SlideMeta = { title: 'Inside open-slide' };
+export const meta: SlideMeta = { title: 'Inside open-slide', createdAt: '2026-05-05T17:45:52Z' };
 
 export default [
   Cover,

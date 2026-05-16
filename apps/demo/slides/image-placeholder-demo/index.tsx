@@ -135,6 +135,9 @@ const InspectorTest: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'Image Placeholder Demo' };
+export const meta: SlideMeta = {
+  title: 'Image Placeholder Demo',
+  createdAt: '2026-05-10T18:27:38+08:00',
+};
 
 export default [Hero, Grid, InspectorTest] satisfies Page[];

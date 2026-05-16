@@ -31,13 +31,17 @@ import type { Page, SlideMeta } from '@open-slide/core';
 const Cover: Page = () => <div>…</div>;
 const Body: Page = () => <div>…</div>;
 
-export const meta: SlideMeta = { title: 'My slide' };
+export const meta: SlideMeta = {
+  title: 'My slide',
+  createdAt: '2026-05-16T12:00:00Z',
+};
 export default [Cover, Body] satisfies Page[];
 ```
 
 - `export default` is a **non-empty array of zero-prop React components**, one per page, in order.
 - `meta.title` (optional) shows in the slide header. Default is the folder name.
 - The slide id is the kebab-case folder name. Pick something short and descriptive (`q2-roadmap`, `team-offsite-2026`).
+- `meta.createdAt` is an **ISO 8601 string literal** (e.g. `'2026-05-16T12:00:00Z'`) set once when the slide is scaffolded. The home page uses it for the default "newest first" sort. Always include it on new slides — **immediately before writing the file, run `node -e "console.log(new Date().toISOString())"` via Bash and paste the exact output** as the value. Don't type a timestamp from memory — you will get the date or time wrong. Must be a plain string literal (no `new Date(...)` or imports in the slide itself) — the framework reads it via a regex at build time, not by evaluating the module.
 
 ## Canvas
 
@@ -225,7 +229,10 @@ const Content: Page = () => (
   </div>
 );
 
-export const meta: SlideMeta = { title: 'The Big Idea' };
+export const meta: SlideMeta = {
+  title: 'The Big Idea',
+  createdAt: '2026-05-16T12:00:00Z',
+};
 export default [Cover, Content] satisfies Page[];
 ```
 

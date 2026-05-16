@@ -1040,7 +1040,10 @@ const GetStarted: Page = () => (
 
 /* ─────────────── Export ─────────────── */
 
-export const meta: SlideMeta = { title: 'Claude Code · A Field Guide' };
+export const meta: SlideMeta = {
+  title: 'Claude Code · A Field Guide',
+  createdAt: '2026-04-26T21:13:13+08:00',
+};
 export default [
   Cover,
   WhatIs,
