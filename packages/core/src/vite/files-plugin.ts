@@ -4,6 +4,7 @@ import type { ServerResponse } from 'node:http';
 import path from 'node:path';
 import { parse as babelParse } from '@babel/parser';
 import type { Connect, Plugin, ViteDevServer } from 'vite';
+import { findAssetUsages } from './comments-plugin.ts';
 import { validateMutationRequest } from './request-guard.ts';
 
 const FOLDER_ID_RE = /^f-[a-f0-9]{8}$/;
@@ -781,6 +782,50 @@ export function filesPlugin(opts: FilesPluginOptions): Plugin {
         try {
           const listMatch = url.pathname.match(/^\/([^/]+)\/?$/);
           const fileMatch = url.pathname.match(/^\/([^/]+)\/([^/]+)$/);
+          const usagesMatch = url.pathname.match(/^\/([^/]+)\/([^/]+)\/usages$/);
+
+          if (usagesMatch && method === 'GET') {
+            const scope = usagesMatch[1];
+            const filename = decodeURIComponent(usagesMatch[2]);
+            if (!validateAssetName(filename)) return json(res, 400, { error: 'invalid path' });
+
+            const isGlobal = scope === GLOBAL_SCOPE;
+            const assetPath = isGlobal ? `@assets/${filename}` : `./assets/${filename}`;
+
+            let slideIds: string[];
+            if (isGlobal) {
+              try {
+                const entries = await fs.readdir(slidesRoot, { withFileTypes: true });
+                slideIds = entries
+                  .filter((e) => e.isDirectory() && SLIDE_ID_RE.test(e.name))
+                  .map((e) => e.name);
+              } catch {
+                slideIds = [];
+              }
+            } else {
+              if (!SLIDE_ID_RE.test(scope)) return json(res, 400, { error: 'invalid slideId' });
+              slideIds = [scope];
+            }
+
+            const usages: Array<{ slideId: string; count: number }> = [];
+            let totalCount = 0;
+            for (const sid of slideIds) {
+              const entry = resolveSlideEntry(slidesRoot, sid);
+              if (!entry) continue;
+              let source: string;
+              try {
+                source = await fs.readFile(entry, 'utf8');
+              } catch {
+                continue;
+              }
+              const count = findAssetUsages(source, assetPath);
+              if (count > 0) {
+                usages.push({ slideId: sid, count });
+                totalCount += count;
+              }
+            }
+            return json(res, 200, { usages, totalCount });
+          }
 
           if (listMatch && method === 'GET') {
             const slideId = listMatch[1];

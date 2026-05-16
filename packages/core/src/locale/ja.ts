@@ -292,6 +292,11 @@ export const ja: Locale = {
     deleteAssetTitle: 'アセットを削除',
     deleteAssetDescription:
       '{name} を削除しますか?スライド内でこのファイルを参照しているインポートは壊れます。',
+    deleteAssetInUseDescription: '{name} は {slides} 枚のスライドで {count} 箇所使用されています。',
+    deleteAssetInUseHint: '削除すると、これらの使用箇所は画像プレースホルダーに戻ります。',
+    deleteAndRevert: '削除して戻す',
+    toastRevertFailed: '{slideId} の使用箇所を戻せませんでした',
+    toastDeletedWithRevert: '{name} を削除し、{count} 箇所をプレースホルダーに戻しました',
     noPreview: 'プレビューはありません',
     importHintComment: 'import asset from ',
     importHintSemi: ';',
