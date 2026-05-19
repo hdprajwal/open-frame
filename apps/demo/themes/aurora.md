@@ -63,29 +63,34 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 ### Footer
 
 ```tsx
-const Footer = ({ pageNum, total, path = '/docs' }: { pageNum: number; total: number; path?: string }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 120,
-      right: 120,
-      bottom: 56,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontFamily: "'SF Mono', 'JetBrains Mono', 'Menlo', monospace",
-      fontSize: 22,
-      letterSpacing: '0.04em',
-      color: '#8B8B8B',
-    }}
-  >
-    <span>{path}</span>
-    <span>
-      {String(pageNum).padStart(2, '0')}{' '}
-      <span style={{ opacity: 0.4 }}>/ {String(total).padStart(2, '0')}</span>
-    </span>
-  </div>
-);
+import { useSlidePageNumber } from '@open-slide/core';
+
+const Footer = ({ path = '/docs' }: { path?: string }) => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 120,
+        right: 120,
+        bottom: 56,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: "'SF Mono', 'JetBrains Mono', 'Menlo', monospace",
+        fontSize: 22,
+        letterSpacing: '0.04em',
+        color: '#8B8B8B',
+      }}
+    >
+      <span>{path}</span>
+      <span>
+        {String(current).padStart(2, '0')}{' '}
+        <span style={{ opacity: 0.4 }}>/ {String(total).padStart(2, '0')}</span>
+      </span>
+    </div>
+  );
+};
 ```
 
 ### Eyebrow (pill with glowing dot)
@@ -169,7 +174,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 26, lineHeight: 1.5, color: '#8B8B8B', maxWidth: 1180, margin: 0 }}>
       Three changes that landed this quarter — none of them flashy, all of them load-bearing.
     </p>
-    <Footer pageNum={1} total={6} />
+    <Footer />
   </div>
 );
 ```

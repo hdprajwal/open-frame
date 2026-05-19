@@ -101,24 +101,31 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 
 ### Footer
 
+Pull the page number from `useSlidePageNumber()` — never hardcode `pageNum` / `total` props.
+
 ```tsx
-const Footer = ({ pageNum, total }: { pageNum: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 120,
-      right: 120,
-      bottom: 60,
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontSize: 24,
-      color: '#94a3b8',
-    }}
-  >
-    <span>EDITORIAL NOIR · 2026</span>
-    <span>{pageNum} / {total}</span>
-  </div>
-);
+import { useSlidePageNumber } from '@open-slide/core';
+
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 120,
+        right: 120,
+        bottom: 60,
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: 24,
+        color: '#94a3b8',
+      }}
+    >
+      <span>EDITORIAL NOIR · 2026</span>
+      <span>{current} / {total}</span>
+    </div>
+  );
+};
 ```
 
 ### Eyebrow / accents (optional)
@@ -157,7 +164,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 36, color: '#94a3b8', maxWidth: 1200, marginTop: 32 }}>
       A short subtitle that explains what this slide is about.
     </p>
-    <Footer pageNum={1} total={5} />
+    <Footer />
   </div>
 );
 ```

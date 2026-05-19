@@ -1,4 +1,4 @@
-import type { Page } from '@open-slide/core';
+import { type Page, useSlidePageNumber } from '@open-slide/core';
 import type { ReactNode } from 'react';
 
 const styles = `
@@ -25,37 +25,32 @@ const Title = ({ children }: { children: ReactNode }) => (
   </h1>
 );
 
-const Footer = ({
-  pageNum,
-  total,
-  path = '/docs',
-}: {
-  pageNum: number;
-  total: number;
-  path?: string;
-}) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 120,
-      right: 120,
-      bottom: 56,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontFamily: MONO,
-      fontSize: 22,
-      letterSpacing: '0.04em',
-      color: '#8B8B8B',
-    }}
-  >
-    <span>{path}</span>
-    <span>
-      {String(pageNum).padStart(2, '0')}{' '}
-      <span style={{ opacity: 0.4 }}>/ {String(total).padStart(2, '0')}</span>
-    </span>
-  </div>
-);
+const Footer = ({ path = '/docs' }: { path?: string }) => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 120,
+        right: 120,
+        bottom: 56,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: MONO,
+        fontSize: 22,
+        letterSpacing: '0.04em',
+        color: '#8B8B8B',
+      }}
+    >
+      <span>{path}</span>
+      <span>
+        {String(current).padStart(2, '0')}{' '}
+        <span style={{ opacity: 0.4 }}>/ {String(total).padStart(2, '0')}</span>
+      </span>
+    </div>
+  );
+};
 
 const Eyebrow = ({ children }: { children: ReactNode }) => (
   <div
@@ -122,8 +117,6 @@ const pageBase: React.CSSProperties = {
   overflow: 'hidden',
 };
 
-const TOTAL = 3;
-
 const Cover: Page = () => (
   <div style={{ ...pageBase, justifyContent: 'center', gap: 32 }}>
     <style>{styles}</style>
@@ -150,7 +143,7 @@ const Cover: Page = () => (
         Three changes that landed this quarter — none of them flashy, all of them load-bearing.
       </p>
     </div>
-    <Footer pageNum={1} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -252,7 +245,7 @@ const Content: Page = () => (
         </li>
       ))}
     </ul>
-    <Footer pageNum={2} total={TOTAL} path="/docs/changelog" />
+    <Footer path="/docs/changelog" />
   </div>
 );
 
@@ -282,7 +275,7 @@ const Closer: Page = () => (
         Upgrade is one bumped dependency. Everything else can wait until you have time.
       </p>
     </div>
-    <Footer pageNum={TOTAL} total={TOTAL} path="/docs/upgrade" />
+    <Footer path="/docs/upgrade" />
   </div>
 );
 

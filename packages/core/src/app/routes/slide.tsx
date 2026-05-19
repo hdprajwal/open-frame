@@ -52,6 +52,7 @@ import { type ThumbnailActions, ThumbnailRail } from '../components/thumbnail-ra
 import { exportSlideAsHtml } from '../lib/export-html';
 import { exportSlideAsPdf, isSafari } from '../lib/export-pdf';
 import { remapNotesSessionCacheAfterReorder } from '../lib/inspector/use-notes';
+import { SlidePageProvider } from '../lib/page-context';
 import type { SlideModule } from '../lib/sdk';
 import { useSlideModule } from '../lib/use-slide-module';
 
@@ -584,7 +585,9 @@ export function Slide() {
                       canNext={index < pageCount - 1}
                     />
                     <SlideCanvas design={slide.design}>
-                      <CurrentPage />
+                      <SlidePageProvider index={index} total={pageCount}>
+                        <CurrentPage />
+                      </SlidePageProvider>
                     </SlideCanvas>
                     <ClickNavZones
                       onPrev={() => goTo(index - 1)}

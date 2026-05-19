@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-slide/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#f7f5f0', text: '#1a1814', accent: '#6d4cff' },
@@ -103,7 +103,6 @@ const Style = () => <style>{keyframes}</style>;
 
 const PAD_X = 140;
 const PAD_Y = 110;
-const TOTAL = 12;
 
 const Eyebrow = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => (
   <div
@@ -122,22 +121,25 @@ const Eyebrow = ({ children, delay = 0 }: { children: React.ReactNode; delay?: n
   </div>
 );
 
-const PageNumber = ({ n, total }: { n: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: PAD_X,
-      bottom: 60,
-      fontFamily: 'var(--osd-font-body)',
-      fontSize: 18,
-      letterSpacing: '0.3em',
-      textTransform: 'uppercase',
-      color: palette.faint,
-    }}
-  >
-    LLM · {String(n).padStart(2, '0')} / {String(total).padStart(2, '0')}
-  </div>
-);
+const PageNumber = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: PAD_X,
+        bottom: 60,
+        fontFamily: 'var(--osd-font-body)',
+        fontSize: 18,
+        letterSpacing: '0.3em',
+        textTransform: 'uppercase',
+        color: palette.faint,
+      }}
+    >
+      LLM · {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
+    </div>
+  );
+};
 
 const SectionTitle = ({
   children,
@@ -290,7 +292,7 @@ const Cover: Page = () => (
         attention, and the art of guessing the next word.
       </p>
     </div>
-    <PageNumber n={1} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -328,7 +330,7 @@ const BigIdea: Page = () => (
       Everything else — context windows, attention, temperature, hallucinations — is a consequence
       of that one loop.
     </p>
-    <PageNumber n={2} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -423,7 +425,7 @@ const WhatIsToken: Page = () => (
         space — yes, it's part of the token.
       </div>
     </div>
-    <PageNumber n={3} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -540,7 +542,7 @@ const Tokenization: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={4} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -642,7 +644,7 @@ const VocabSize: Page = () => (
       For perspective: an unabridged English dictionary lists roughly 470,000 headwords. A model
       with 100k tokens can spell any of them.
     </p>
-    <PageNumber n={5} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -824,7 +826,7 @@ const ContextWindow: Page = () => {
           </div>
         ))}
       </div>
-      <PageNumber n={6} total={TOTAL} />
+      <PageNumber />
     </div>
   );
 };
@@ -949,7 +951,7 @@ const Attention: Page = () => {
           “mat” attends most strongly to “cat” and “sat” — the words that decide what follows.
         </div>
       </div>
-      <PageNumber n={7} total={TOTAL} />
+      <PageNumber />
     </div>
   );
 };
@@ -1058,7 +1060,7 @@ const Autoregressive: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={8} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1257,7 +1259,7 @@ const Sampling: Page = () => (
         ))}
       </div>
     </div>
-    <PageNumber n={9} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1361,7 +1363,7 @@ const Hallucinate: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={10} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1446,7 +1448,7 @@ const Practical: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={11} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1543,7 +1545,7 @@ const Closing: Page = () => (
         — thank you.
       </div>
     </div>
-    <PageNumber n={12} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 

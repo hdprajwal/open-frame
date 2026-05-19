@@ -9,6 +9,7 @@ import {
   usePresenterChannel,
 } from '../components/present/use-presenter-channel';
 import { SlideCanvas } from '../components/slide-canvas';
+import { SlidePageProvider } from '../lib/page-context';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../lib/sdk';
 import { useSlideModule } from '../lib/use-slide-module';
 
@@ -138,7 +139,9 @@ export function Presenter() {
           <SectionLabel>{t.presenter.nowShowing}</SectionLabel>
           <div className="relative min-h-0 flex-1 overflow-hidden rounded-[8px] bg-black ring-1 ring-border">
             <SlideCanvas flat design={slide.design}>
-              <CurrentPage />
+              <SlidePageProvider index={index} total={total}>
+                <CurrentPage />
+              </SlidePageProvider>
             </SlideCanvas>
             {blackout && (
               <div
@@ -164,7 +167,9 @@ export function Presenter() {
             >
               {NextPage ? (
                 <SlideCanvas flat freezeMotion design={slide.design}>
-                  <NextPage />
+                  <SlidePageProvider index={nextIndex} total={total}>
+                    <NextPage />
+                  </SlidePageProvider>
                 </SlideCanvas>
               ) : (
                 <div className="grid h-full place-items-center text-[11.5px] text-muted-foreground">

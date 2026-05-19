@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-slide/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#05070a', text: '#e6edf3', accent: '#39ff88' },
@@ -30,9 +30,6 @@ const tokens = {
   space: {
     padX: 100,
     padY: 80,
-  },
-  meta: {
-    totalPages: 8,
   },
 } as const;
 
@@ -121,31 +118,34 @@ const Cursor = ({ size = '0.55em', height = '0.92em' }: { size?: string; height?
   />
 );
 
-const Footer = ({ pageNum, section }: { pageNum: number; section?: string }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: tokens.space.padX,
-      right: tokens.space.padX,
-      bottom: 36,
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontFamily: 'var(--osd-font-body)',
-      fontSize: 20,
-      color: tokens.color.faint,
-      borderTop: `1px solid ${tokens.color.line}`,
-      paddingTop: 14,
-    }}
-  >
-    <span>
-      <span style={{ color: 'var(--osd-accent)' }}>●</span> {section ?? 'main'} ·{' '}
-      <span style={{ color: tokens.color.accent2 }}>~/deck/harness-engineering</span>
-    </span>
-    <span>
-      {String(pageNum).padStart(2, '0')}/{String(tokens.meta.totalPages).padStart(2, '0')}
-    </span>
-  </div>
-);
+const Footer = ({ section }: { section?: string }) => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: tokens.space.padX,
+        right: tokens.space.padX,
+        bottom: 36,
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontFamily: 'var(--osd-font-body)',
+        fontSize: 20,
+        color: tokens.color.faint,
+        borderTop: `1px solid ${tokens.color.line}`,
+        paddingTop: 14,
+      }}
+    >
+      <span>
+        <span style={{ color: 'var(--osd-accent)' }}>●</span> {section ?? 'main'} ·{' '}
+        <span style={{ color: tokens.color.accent2 }}>~/deck/harness-engineering</span>
+      </span>
+      <span>
+        {String(current).padStart(2, '0')}/{String(total).padStart(2, '0')}
+      </span>
+    </div>
+  );
+};
 
 const Scanlines = () => (
   <div
@@ -246,7 +246,7 @@ const Cover: Page = () => (
     >
       a brief tour · 8 pages · openai · anthropic · martinfowler.com · addyosmani · humanlayer
     </div>
-    <Footer pageNum={1} section="cover" />
+    <Footer section="cover" />
   </div>
 );
 
@@ -386,7 +386,7 @@ const Shift: Page = () => (
         — addy osmani · 19 apr 2026
       </div>
     </div>
-    <Footer pageNum={2} section="shift" />
+    <Footer section="shift" />
   </div>
 );
 
@@ -520,7 +520,7 @@ const Definition: Page = () => (
         </div>
       </div>
     </div>
-    <Footer pageNum={3} section="definition" />
+    <Footer section="definition" />
   </div>
 );
 
@@ -652,7 +652,7 @@ const Anatomy: Page = () => (
         </div>
       ))}
     </div>
-    <Footer pageNum={4} section="anatomy" />
+    <Footer section="anatomy" />
   </div>
 );
 
@@ -820,7 +820,7 @@ const ClaudeCodeExample: Page = () => (
         />
       </div>
     </div>
-    <Footer pageNum={5} section="example" />
+    <Footer section="example" />
   </div>
 );
 
@@ -929,7 +929,7 @@ const Principles: Page = () => (
         </div>
       ))}
     </div>
-    <Footer pageNum={6} section="principles" />
+    <Footer section="principles" />
   </div>
 );
 
@@ -1062,7 +1062,7 @@ const Layers: Page = () => (
         );
       })}
     </div>
-    <Footer pageNum={7} section="layers" />
+    <Footer section="layers" />
   </div>
 );
 
@@ -1176,7 +1176,7 @@ const Closing: Page = () => (
         </div>
       ))}
     </div>
-    <Footer pageNum={8} section="fin" />
+    <Footer section="fin" />
   </div>
 );
 

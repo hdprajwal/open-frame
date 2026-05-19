@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../../lib/design';
+import { SlidePageProvider } from '../../lib/page-context';
 import type { Page } from '../../lib/sdk';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../../lib/sdk';
 import { SlideCanvas } from '../slide-canvas';
@@ -136,7 +137,9 @@ export function PresentOverviewGrid({ pages, design, open, current, onClose, onS
                     freezeMotion
                     design={design}
                   >
-                    <PageComp />
+                    <SlidePageProvider index={i} total={pages.length}>
+                      <PageComp />
+                    </SlidePageProvider>
                   </SlideCanvas>
                   {isCurrent && (
                     <span

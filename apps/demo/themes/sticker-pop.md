@@ -59,41 +59,46 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 ### Footer
 
 ```tsx
-const Footer = ({ pageNum, total }: { pageNum: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 110,
-      right: 110,
-      bottom: 60,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontFamily: "'Inter', system-ui, sans-serif",
-      fontSize: 18,
-      fontWeight: 600,
-      color: '#9a8aa8',
-    }}
-  >
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-      <span aria-hidden style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff4d8d' }} />
-      <span aria-hidden style={{ width: 12, height: 12, borderRadius: '50%', background: '#6d4cff' }} />
-      <span aria-hidden style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffd24c' }} />
-      <span style={{ marginLeft: 8 }}>Sticker Pop</span>
-    </span>
-    <span
+import { useSlidePageNumber } from '@open-slide/core';
+
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
       style={{
-        background: '#2d1b4e',
-        color: '#fff2e8',
-        padding: '6px 14px',
-        borderRadius: 999,
-        fontVariantNumeric: 'tabular-nums',
+        position: 'absolute',
+        left: 110,
+        right: 110,
+        bottom: 60,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: 18,
+        fontWeight: 600,
+        color: '#9a8aa8',
       }}
     >
-      {pageNum} / {total}
-    </span>
-  </div>
-);
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+        <span aria-hidden style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff4d8d' }} />
+        <span aria-hidden style={{ width: 12, height: 12, borderRadius: '50%', background: '#6d4cff' }} />
+        <span aria-hidden style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffd24c' }} />
+        <span style={{ marginLeft: 8 }}>Sticker Pop</span>
+      </span>
+      <span
+        style={{
+          background: '#2d1b4e',
+          color: '#fff2e8',
+          padding: '6px 14px',
+          borderRadius: 999,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {current} / {total}
+      </span>
+    </div>
+  );
+};
 ```
 
 ### Eyebrow / sticker pill
@@ -176,7 +181,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 34, lineHeight: 1.45, color: '#2d1b4e', maxWidth: 1200, margin: 0 }}>
       A short, cheerful tour of the small ideas we have been having lately.
     </p>
-    <Footer pageNum={1} total={6} />
+    <Footer />
   </div>
 );
 ```

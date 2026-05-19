@@ -28,6 +28,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
+import { SlidePageProvider } from '../lib/page-context';
 import type { Page } from '../lib/sdk';
 import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../lib/sdk';
 import { SlideCanvas } from './slide-canvas';
@@ -118,7 +119,9 @@ export function ThumbnailRail({
                     style={{ width, height: HORIZONTAL_THUMB_HEIGHT }}
                   >
                     <SlideCanvas scale={scale} center={false} flat freezeMotion design={design}>
-                      <PageComp />
+                      <SlidePageProvider index={i} total={pages.length}>
+                        <PageComp />
+                      </SlidePageProvider>
                     </SlideCanvas>
                   </div>
                 </button>
@@ -155,6 +158,7 @@ export function ThumbnailRail({
     const inner = (
       <ThumbContents
         index={i}
+        total={pages.length}
         active={active}
         page={PageComp}
         design={design}
@@ -236,6 +240,7 @@ function thumbButtonClass(active: boolean): string {
 
 function ThumbContents({
   index,
+  total,
   active,
   page: PageComp,
   design,
@@ -244,6 +249,7 @@ function ThumbContents({
   height,
 }: {
   index: number;
+  total: number;
   active: boolean;
   page: Page;
   design?: DesignSystem;
@@ -271,7 +277,9 @@ function ThumbContents({
         style={{ width: thumbWidth, height }}
       >
         <SlideCanvas scale={scale} center={false} flat freezeMotion design={design}>
-          <PageComp />
+          <SlidePageProvider index={index} total={total}>
+            <PageComp />
+          </SlidePageProvider>
         </SlideCanvas>
         {active && (
           <span

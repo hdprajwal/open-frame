@@ -7,6 +7,7 @@ export type {
   DesignTypeScale,
 } from './app/lib/design.ts';
 export { cssVarsToString, defaultDesign, designToCssVars } from './app/lib/design.ts';
+export { useSlidePageNumber } from './app/lib/page-context.tsx';
 export type { Page, SlideMeta, SlideModule } from './app/lib/sdk.ts';
 export { CANVAS_HEIGHT, CANVAS_WIDTH } from './app/lib/sdk.ts';
 export type { OpenSlideConfig } from './config.ts';

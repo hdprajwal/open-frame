@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-slide/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#fafaf9', text: '#1c1917', accent: '#2563eb' },
@@ -145,24 +145,25 @@ const Eyebrow = ({ children, delay = 0 }: { children: React.ReactNode; delay?: n
   </div>
 );
 
-const PageNumber = ({ n, total }: { n: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: PAD_X,
-      bottom: 60,
-      fontFamily: 'var(--osd-font-body)',
-      fontSize: 18,
-      letterSpacing: '0.3em',
-      textTransform: 'uppercase',
-      color: palette.faint,
-    }}
-  >
-    SSH · {String(n).padStart(2, '0')} / {String(total).padStart(2, '0')}
-  </div>
-);
-
-const TOTAL = 10;
+const PageNumber = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: PAD_X,
+        bottom: 60,
+        fontFamily: 'var(--osd-font-body)',
+        fontSize: 18,
+        letterSpacing: '0.3em',
+        textTransform: 'uppercase',
+        color: palette.faint,
+      }}
+    >
+      SSH · {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
+    </div>
+  );
+};
 
 /* ─────────────── 1. Cover ─────────────── */
 const Cover: Page = () => (
@@ -235,7 +236,7 @@ const Cover: Page = () => (
         to a fully encrypted shell — in nine quiet steps.
       </p>
     </div>
-    <PageNumber n={1} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -297,7 +298,7 @@ const WhatIs: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={2} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -459,7 +460,7 @@ const Problem: Page = () => (
       that nobody else on the wire ever sees.
     </p>
 
-    <PageNumber n={3} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -552,7 +553,7 @@ const Overview: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={4} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -800,7 +801,7 @@ const TCPHandshake: Page = () => (
         { dir: 'right', label: 'ACK', sub: '"connection established."', delay: 2200 },
       ]}
     />
-    <PageNumber n={5} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1003,7 +1004,7 @@ const KeyExchange: Page = () => (
         </div>
       </div>
     </div>
-    <PageNumber n={6} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1177,7 +1178,7 @@ const ServerAuth: Page = () => (
         </div>
       </div>
     </div>
-    <PageNumber n={7} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1286,7 +1287,7 @@ const UserAuth: Page = () => (
         </div>
       ))}
     </div>
-    <PageNumber n={8} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1498,7 +1499,7 @@ const EncryptedSession: Page = () => (
         <div style={{ fontFamily: fonts.mono, fontSize: 22, color: palette.muted }}>server</div>
       </div>
     </div>
-    <PageNumber n={9} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 
@@ -1587,7 +1588,7 @@ const Closing: Page = () => (
         — thank you.
       </div>
     </div>
-    <PageNumber n={10} total={TOTAL} />
+    <PageNumber />
   </div>
 );
 

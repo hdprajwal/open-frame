@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-slide/core';
 import raycastIcon from './assets/raycast.svg';
 
 export const design: DesignSystem = {
@@ -120,31 +120,32 @@ const Eyebrow = ({ children, delay = 0 }: { children: React.ReactNode; delay?: n
   </div>
 );
 
-const Footer = ({ index, total }: { index: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      bottom: 56,
-      left: 120,
-      right: 120,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontSize: 22,
-      color: palette.muted,
-      fontFamily: fonts.mono,
-      letterSpacing: '0.04em',
-    }}
-  >
-    <span>raycast.com / developers</span>
-    <span>
-      {String(index).padStart(2, '0')}{' '}
-      <span style={{ opacity: 0.4 }}>/ {String(total).padStart(2, '0')}</span>
-    </span>
-  </div>
-);
-
-const TOTAL = 9;
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: 56,
+        left: 120,
+        right: 120,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontSize: 22,
+        color: palette.muted,
+        fontFamily: fonts.mono,
+        letterSpacing: '0.04em',
+      }}
+    >
+      <span>raycast.com / developers</span>
+      <span>
+        {String(current).padStart(2, '0')}{' '}
+        <span style={{ opacity: 0.4 }}>/ {String(total).padStart(2, '0')}</span>
+      </span>
+    </div>
+  );
+};
 
 const CommandBar = ({
   query,
@@ -372,7 +373,7 @@ const Cover: Page = () => (
         />
       </div>
     </div>
-    <Footer index={1} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -431,7 +432,7 @@ const Pitch: Page = () => (
         ))}
       </div>
     </div>
-    <Footer index={2} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -504,7 +505,7 @@ const Stack: Page = () => (
         ))}
       </div>
     </div>
-    <Footer index={3} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -569,7 +570,7 @@ const UIPrimitives: Page = () => {
           ))}
         </div>
       </div>
-      <Footer index={4} total={TOTAL} />
+      <Footer />
     </div>
   );
 };
@@ -708,7 +709,7 @@ const ActionPanel: Page = () => (
         </div>
       </div>
     </div>
-    <Footer index={5} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -794,7 +795,7 @@ const AIApi: Page = () => (
         </div>
       </div>
     </div>
-    <Footer index={6} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -865,7 +866,7 @@ const Platform: Page = () => {
           ))}
         </div>
       </div>
-      <Footer index={7} total={TOTAL} />
+      <Footer />
     </div>
   );
 };
@@ -933,7 +934,7 @@ const DX: Page = () => (
         ))}
       </div>
     </div>
-    <Footer index={8} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -997,7 +998,7 @@ const Closing: Page = () => (
         Docs at <span style={{ color: 'var(--osd-text)' }}>developers.raycast.com</span>
       </p>
     </div>
-    <Footer index={9} total={TOTAL} />
+    <Footer />
   </div>
 );
 

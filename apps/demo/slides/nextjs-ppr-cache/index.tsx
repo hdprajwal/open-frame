@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-slide/core';
 import type { ReactNode } from 'react';
 import nextMark from './assets/next-js.svg';
 import vercelMark from './assets/vercel.svg';
@@ -98,32 +98,35 @@ const Logo = ({ size = 24 }: { size?: number }) => (
   </div>
 );
 
-const Footer = ({ page, total }: { page: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      bottom: 56,
-      left: 120,
-      right: 120,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontSize: 20,
-      fontFamily: fontMono,
-      color: palette.subtle,
-      borderTop: `1px solid ${palette.border}`,
-      paddingTop: 22,
-    }}
-  >
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-      <img src={nextMark} alt="Next.js" style={{ height: 22, width: 22, display: 'block' }} />
-      <span>Next.js · partial pre-rendering &amp; 'use cache'</span>
-    </span>
-    <span>
-      {String(page).padStart(2, '0')} / {String(total).padStart(2, '0')}
-    </span>
-  </div>
-);
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        bottom: 56,
+        left: 120,
+        right: 120,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontSize: 20,
+        fontFamily: fontMono,
+        color: palette.subtle,
+        borderTop: `1px solid ${palette.border}`,
+        paddingTop: 22,
+      }}
+    >
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+        <img src={nextMark} alt="Next.js" style={{ height: 22, width: 22, display: 'block' }} />
+        <span>Next.js · partial pre-rendering &amp; 'use cache'</span>
+      </span>
+      <span>
+        {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
+      </span>
+    </div>
+  );
+};
 
 const Eyebrow = ({ index, label }: { index: string; label: string }) => (
   <div
@@ -150,8 +153,6 @@ const Eyebrow = ({ index, label }: { index: string; label: string }) => (
     <span>{label}</span>
   </div>
 );
-
-const TOTAL = 8;
 
 const Code = ({ children, fontSize = 20 }: { children: ReactNode; fontSize?: number }) => (
   <pre
@@ -182,125 +183,131 @@ const tag = (s: string) => <span style={{ color: palette.accent }}>{s}</span>;
 // ─────────────────────────────────────────────────────────────────────────────
 // 01 — Cover
 // ─────────────────────────────────────────────────────────────────────────────
-const Cover: Page = () => (
-  <div
-    style={{
-      ...fill,
-      padding: '0 120px',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-    }}
-  >
-    <Style />
-
-    <div style={{ position: 'absolute', top: 72, left: 120 }}>
-      <Logo size={28} />
-    </div>
+const Cover: Page = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
     <div
       style={{
-        position: 'absolute',
-        top: 78,
-        right: 120,
-        fontSize: 22,
-        fontFamily: fontMono,
-        color: palette.muted,
+        ...fill,
+        padding: '0 120px',
         display: 'flex',
-        alignItems: 'center',
-        gap: 10,
+        flexDirection: 'column',
+        justifyContent: 'center',
       }}
     >
-      <img src={nextMark} alt="Next.js" style={{ height: 26, width: 26, display: 'block' }} />
-      <span>Next.js · 2026</span>
-    </div>
+      <Style />
 
-    <div style={{ animation: 'ppr-fade-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both' }}>
+      <div style={{ position: 'absolute', top: 72, left: 120 }}>
+        <Logo size={28} />
+      </div>
       <div
         style={{
-          fontSize: 28,
+          position: 'absolute',
+          top: 78,
+          right: 120,
+          fontSize: 22,
           fontFamily: fontMono,
           color: palette.muted,
-          marginBottom: 32,
-          letterSpacing: '0.02em',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 10,
         }}
       >
-        rendering, reimagined.
+        <img src={nextMark} alt="Next.js" style={{ height: 26, width: 26, display: 'block' }} />
+        <span>Next.js · 2026</span>
       </div>
-      <h1
-        style={{
-          fontSize: 'var(--osd-size-hero)',
-          fontWeight: 700,
-          margin: 0,
-          lineHeight: 0.92,
-          letterSpacing: '-0.045em',
-        }}
-      >
-        Partial
-        <br />
-        Pre-Rendering
-      </h1>
-      <div
-        style={{
-          marginTop: 48,
-          fontSize: 38,
-          color: palette.muted,
-          fontWeight: 400,
-          maxWidth: 1400,
-          lineHeight: 1.4,
-        }}
-      >
-        Plus{' '}
-        <code
+
+      <div style={{ animation: 'ppr-fade-up 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both' }}>
+        <div
           style={{
+            fontSize: 28,
             fontFamily: fontMono,
-            color: palette.text,
-            background: palette.surface,
-            border: `1px solid ${palette.border}`,
-            padding: '4px 14px',
-            borderRadius: 10,
-            fontSize: 32,
+            color: palette.muted,
+            marginBottom: 32,
+            letterSpacing: '0.02em',
           }}
         >
-          'use cache'
-        </code>
-        — the speed of static, the freshness of dynamic, in one request.
+          rendering, reimagined.
+        </div>
+        <h1
+          style={{
+            fontSize: 'var(--osd-size-hero)',
+            fontWeight: 700,
+            margin: 0,
+            lineHeight: 0.92,
+            letterSpacing: '-0.045em',
+          }}
+        >
+          Partial
+          <br />
+          Pre-Rendering
+        </h1>
+        <div
+          style={{
+            marginTop: 48,
+            fontSize: 38,
+            color: palette.muted,
+            fontWeight: 400,
+            maxWidth: 1400,
+            lineHeight: 1.4,
+          }}
+        >
+          Plus{' '}
+          <code
+            style={{
+              fontFamily: fontMono,
+              color: palette.text,
+              background: palette.surface,
+              border: `1px solid ${palette.border}`,
+              padding: '4px 14px',
+              borderRadius: 10,
+              fontSize: 32,
+            }}
+          >
+            'use cache'
+          </code>
+          — the speed of static, the freshness of dynamic, in one request.
+        </div>
+      </div>
+
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: 6,
+          background: `linear-gradient(90deg, ${palette.pink}, ${palette.purple}, ${palette.accent}, ${palette.purple}, ${palette.pink})`,
+          backgroundSize: '300% 100%',
+          animation: 'ppr-gradient-shift 7s ease-in-out infinite',
+        }}
+      />
+
+      <div
+        style={{
+          position: 'absolute',
+          bottom: 56,
+          left: 120,
+          right: 120,
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'flex-end',
+          fontSize: 20,
+          fontFamily: fontMono,
+          color: palette.subtle,
+        }}
+      >
+        <span style={{ color: palette.text, fontWeight: 600 }}>
+          <span style={{ animation: 'ppr-blink 1.2s steps(1) infinite' }}>▍</span> ready when you
+          are
+        </span>
+        <span>
+          {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
+        </span>
       </div>
     </div>
-
-    <div
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        height: 6,
-        background: `linear-gradient(90deg, ${palette.pink}, ${palette.purple}, ${palette.accent}, ${palette.purple}, ${palette.pink})`,
-        backgroundSize: '300% 100%',
-        animation: 'ppr-gradient-shift 7s ease-in-out infinite',
-      }}
-    />
-
-    <div
-      style={{
-        position: 'absolute',
-        bottom: 56,
-        left: 120,
-        right: 120,
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'flex-end',
-        fontSize: 20,
-        fontFamily: fontMono,
-        color: palette.subtle,
-      }}
-    >
-      <span style={{ color: palette.text, fontWeight: 600 }}>
-        <span style={{ animation: 'ppr-blink 1.2s steps(1) infinite' }}>▍</span> ready when you are
-      </span>
-      <span>01 / {String(TOTAL).padStart(2, '0')}</span>
-    </div>
-  </div>
-);
+  );
+};
 
 // ─────────────────────────────────────────────────────────────────────────────
 // 02 — The old trade-off
@@ -428,7 +435,7 @@ const TradeOff: Page = () => {
         />
       </div>
 
-      <Footer page={2} total={TOTAL} />
+      <Footer />
     </div>
   );
 };
@@ -662,7 +669,7 @@ const PPRConcept: Page = () => {
         </div>
       </div>
 
-      <Footer page={3} total={TOTAL} />
+      <Footer />
     </div>
   );
 };
@@ -813,7 +820,7 @@ const PPRCode: Page = () => (
       </div>
     </div>
 
-    <Footer page={4} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -937,7 +944,7 @@ const UseCache: Page = () => (
       </span>
     </div>
 
-    <Footer page={5} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -1102,7 +1109,7 @@ const CacheScopes: Page = () => {
         <span>tag-based revalidation</span>
       </div>
 
-      <Footer page={6} total={TOTAL} />
+      <Footer />
     </div>
   );
 };
@@ -1341,7 +1348,7 @@ const Lifecycle: Page = () => {
         </div>
       </div>
 
-      <Footer page={7} total={TOTAL} />
+      <Footer />
     </div>
   );
 };
@@ -1456,7 +1463,7 @@ const TLDR: Page = () => {
         </div>
       </div>
 
-      <Footer page={8} total={TOTAL} />
+      <Footer />
     </div>
   );
 };

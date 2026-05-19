@@ -1,4 +1,4 @@
-import type { Page } from '@open-slide/core';
+import { type Page, useSlidePageNumber } from '@open-slide/core';
 import type { ReactNode } from 'react';
 
 const styles = `
@@ -22,42 +22,41 @@ const Title = ({ children }: { children: ReactNode }) => (
 );
 
 const Footer = ({
-  pageNum,
-  total,
   dotColor = '#1a73e8',
   label = 'Spring product update',
 }: {
-  pageNum: number;
-  total: number;
   dotColor?: string;
   label?: string;
-}) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 120,
-      right: 120,
-      bottom: 60,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontFamily: "'Inter', system-ui, sans-serif",
-      fontSize: 18,
-      color: '#5f6368',
-    }}
-  >
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
-      <span
-        aria-hidden
-        style={{ width: 10, height: 10, borderRadius: '50%', background: dotColor }}
-      />
-      {label}
-    </span>
-    <span>
-      {pageNum} / {total}
-    </span>
-  </div>
-);
+}) => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 120,
+        right: 120,
+        bottom: 60,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: 18,
+        color: '#5f6368',
+      }}
+    >
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+        <span
+          aria-hidden
+          style={{ width: 10, height: 10, borderRadius: '50%', background: dotColor }}
+        />
+        {label}
+      </span>
+      <span>
+        {current} / {total}
+      </span>
+    </div>
+  );
+};
 
 const Eyebrow = ({
   children,
@@ -108,8 +107,6 @@ const pageBase: React.CSSProperties = {
   fontFamily: "'Inter', -apple-system, system-ui, sans-serif",
 };
 
-const TOTAL = 3;
-
 const Cover: Page = () => (
   <div
     style={{
@@ -125,7 +122,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 32, lineHeight: 1.5, color: '#5f6368', maxWidth: 1180, margin: 0 }}>
       Four small features that make the next eight months of work feel a little easier.
     </p>
-    <Footer pageNum={1} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -241,7 +238,7 @@ const Content: Page = () => (
         </li>
       ))}
     </ul>
-    <Footer pageNum={2} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -260,7 +257,7 @@ const Closer: Page = () => (
     <p style={{ fontSize: 28, lineHeight: 1.5, color: '#5f6368', maxWidth: 1180, margin: 0 }}>
       Everything in this deck is opt-in. Turn it on for one team, then the next, then the rest.
     </p>
-    <Footer pageNum={TOTAL} total={TOTAL} dotColor="#34a853" label="Available today" />
+    <Footer dotColor="#34a853" label="Available today" />
   </div>
 );
 

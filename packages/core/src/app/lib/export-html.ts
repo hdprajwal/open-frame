@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { designToCssVars } from './design';
+import { SlidePageProvider } from './page-context';
 import type { SlideModule } from './sdk';
 
 type AssetEntry = { name: string; bytes: Uint8Array };
@@ -82,13 +83,17 @@ async function renderPagesToHtml(pages: NonNullable<SlideModule['default']>): Pr
 
   const result: string[] = [];
   try {
-    for (const Page of pages) {
+    for (let i = 0; i < pages.length; i++) {
+      const Page = pages[i];
+      if (!Page) continue;
       const host = document.createElement('div');
       host.style.width = '1920px';
       host.style.height = '1080px';
       container.appendChild(host);
       const root = createRoot(host);
-      root.render(createElement(Page));
+      root.render(
+        createElement(SlidePageProvider, { index: i, total: pages.length }, createElement(Page)),
+      );
       await nextPaint();
       await nextPaint();
       result.push(host.innerHTML);

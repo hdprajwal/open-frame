@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-slide/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-slide/core';
 import type { ReactNode } from 'react';
 
 export const design: DesignSystem = {
@@ -19,8 +19,6 @@ const mint = '#84ffae';
 const warm = '#ffa860';
 const violet = '#c598ff';
 const danger = '#ff7a85';
-
-const TOTAL = 16;
 
 const keyframes = `
 @keyframes osa-fadeUp { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: translateY(0); } }
@@ -95,35 +93,38 @@ const Heading = ({
   </h2>
 );
 
-const Footer = ({ section, n }: { section: string; n: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 100,
-      right: 100,
-      bottom: 48,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'baseline',
-      fontFamily: 'var(--osd-font-display)',
-      fontSize: 22,
-      color: muted,
-      borderTop: `1px solid ${rule}`,
-      paddingTop: 18,
-      letterSpacing: '0.06em',
-    }}
-  >
-    <span>
-      <span style={{ color: 'var(--osd-accent)', marginRight: 12 }}>●</span>
-      {section}
-      <span style={{ color: rule, margin: '0 18px' }}>·</span>
-      <span style={{ color: text2 }}>open-slide</span>
-    </span>
-    <span style={{ fontVariantNumeric: 'tabular-nums' }}>
-      {String(n).padStart(2, '0')} / {String(TOTAL).padStart(2, '0')}
-    </span>
-  </div>
-);
+const Footer = ({ section }: { section: string }) => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 100,
+        right: 100,
+        bottom: 48,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'baseline',
+        fontFamily: 'var(--osd-font-display)',
+        fontSize: 22,
+        color: muted,
+        borderTop: `1px solid ${rule}`,
+        paddingTop: 18,
+        letterSpacing: '0.06em',
+      }}
+    >
+      <span>
+        <span style={{ color: 'var(--osd-accent)', marginRight: 12 }}>●</span>
+        {section}
+        <span style={{ color: rule, margin: '0 18px' }}>·</span>
+        <span style={{ color: text2 }}>open-slide</span>
+      </span>
+      <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+        {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
+      </span>
+    </div>
+  );
+};
 
 const Cover: Page = () => (
   <div style={{ ...fill, padding: '120px 100px' }}>
@@ -238,7 +239,7 @@ const Cover: Page = () => (
         </span>
       </div>
     </div>
-    <Footer section="cover" n={1} />
+    <Footer section="cover" />
   </div>
 );
 
@@ -291,7 +292,7 @@ const Agenda: Page = () => {
           </li>
         ))}
       </ol>
-      <Footer section="agenda" n={2} />
+      <Footer section="agenda" />
     </div>
   );
 };
@@ -395,7 +396,7 @@ const MentalModel: Page = () => {
           ))}
         </div>
       </div>
-      <Footer section="foundation" n={3} />
+      <Footer section="foundation" />
     </div>
   );
 };
@@ -528,7 +529,7 @@ const FileContract: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="foundation" n={4} />
+      <Footer section="foundation" />
     </div>
   );
 };
@@ -665,7 +666,7 @@ const Discovery: Page = () => {
           </div>
         </div>
       </div>
-      <Footer section="discovery" n={5} />
+      <Footer section="discovery" />
     </div>
   );
 };
@@ -791,7 +792,7 @@ const VirtualModules: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="discovery" n={6} />
+      <Footer section="discovery" />
     </div>
   );
 };
@@ -871,7 +872,7 @@ const VitePluginHooks: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="plugin" n={7} />
+      <Footer section="plugin" />
     </div>
   );
 };
@@ -959,7 +960,7 @@ const RenderPipeline: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="render" n={8} />
+      <Footer section="render" />
     </div>
   );
 };
@@ -1124,7 +1125,7 @@ const CanvasScaling: Page = () => {
           </div>
         </div>
       </div>
-      <Footer section="render" n={9} />
+      <Footer section="render" />
     </div>
   );
 };
@@ -1209,7 +1210,7 @@ const HotReload: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="runtime" n={10} />
+      <Footer section="runtime" />
     </div>
   );
 };
@@ -1279,7 +1280,7 @@ const DesignSystemPage: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="design" n={11} />
+      <Footer section="design" />
     </div>
   );
 };
@@ -1372,7 +1373,7 @@ const DesignPanelWrite: Page = () => {
         <span style={{ color: mint }}>↻</span>
         round-trip: live preview never lies, but the file always wins.
       </div>
-      <Footer section="design" n={12} />
+      <Footer section="design" />
     </div>
   );
 };
@@ -1519,7 +1520,7 @@ const Inspector: Page = () => {
           ))}
         </div>
       </div>
-      <Footer section="tools" n={13} />
+      <Footer section="tools" />
     </div>
   );
 };
@@ -1592,7 +1593,7 @@ const PresentMode: Page = () => {
           </div>
         ))}
       </div>
-      <Footer section="tools" n={14} />
+      <Footer section="tools" />
     </div>
   );
 };
@@ -1671,7 +1672,7 @@ const Cli: Page = () => {
         <span style={{ color: 'var(--osd-accent)' }}>›</span> per-slide chunks come for free from{' '}
         <span style={{ color: mint }}>import()</span> — Vite handles splitting.
       </div>
-      <Footer section="tools" n={15} />
+      <Footer section="tools" />
     </div>
   );
 };
@@ -1759,7 +1760,7 @@ const Closing: Page = () => {
           ))}
         </div>
       </div>
-      <Footer section="closing" n={16} />
+      <Footer section="closing" />
     </div>
   );
 };

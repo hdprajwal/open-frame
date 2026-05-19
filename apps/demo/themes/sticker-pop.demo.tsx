@@ -1,4 +1,4 @@
-import type { Page } from '@open-slide/core';
+import { type Page, useSlidePageNumber } from '@open-slide/core';
 import type { ReactNode } from 'react';
 
 const styles = `
@@ -33,50 +33,53 @@ const Title = ({ children }: { children: ReactNode }) => (
   </h1>
 );
 
-const Footer = ({ pageNum, total }: { pageNum: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 110,
-      right: 110,
-      bottom: 60,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontFamily: "'Inter', system-ui, sans-serif",
-      fontSize: 18,
-      fontWeight: 600,
-      color: '#9a8aa8',
-    }}
-  >
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
-      <span
-        aria-hidden
-        style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff4d8d' }}
-      />
-      <span
-        aria-hidden
-        style={{ width: 12, height: 12, borderRadius: '50%', background: '#6d4cff' }}
-      />
-      <span
-        aria-hidden
-        style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffd24c' }}
-      />
-      <span style={{ marginLeft: 8 }}>Sticker Pop</span>
-    </span>
-    <span
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
       style={{
-        background: '#2d1b4e',
-        color: '#fff2e8',
-        padding: '6px 14px',
-        borderRadius: 999,
-        fontVariantNumeric: 'tabular-nums',
+        position: 'absolute',
+        left: 110,
+        right: 110,
+        bottom: 60,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: 18,
+        fontWeight: 600,
+        color: '#9a8aa8',
       }}
     >
-      {pageNum} / {total}
-    </span>
-  </div>
-);
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
+        <span
+          aria-hidden
+          style={{ width: 12, height: 12, borderRadius: '50%', background: '#ff4d8d' }}
+        />
+        <span
+          aria-hidden
+          style={{ width: 12, height: 12, borderRadius: '50%', background: '#6d4cff' }}
+        />
+        <span
+          aria-hidden
+          style={{ width: 12, height: 12, borderRadius: '50%', background: '#ffd24c' }}
+        />
+        <span style={{ marginLeft: 8 }}>Sticker Pop</span>
+      </span>
+      <span
+        style={{
+          background: '#2d1b4e',
+          color: '#fff2e8',
+          padding: '6px 14px',
+          borderRadius: 999,
+          fontVariantNumeric: 'tabular-nums',
+        }}
+      >
+        {current} / {total}
+      </span>
+    </div>
+  );
+};
 
 const Sticker = ({
   children,
@@ -164,8 +167,6 @@ const Dot = ({
   />
 );
 
-const TOTAL = 3;
-
 const Cover: Page = () => (
   <div style={{ ...pageBase, justifyContent: 'center', gap: 40 }}>
     <style>{styles}</style>
@@ -179,7 +180,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 34, lineHeight: 1.45, color: '#2d1b4e', maxWidth: 1200, margin: 0 }}>
       A short, cheerful tour of the small ideas we have been having lately.
     </p>
-    <Footer pageNum={1} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -257,7 +258,7 @@ const Content: Page = () => (
         </li>
       ))}
     </ul>
-    <Footer pageNum={2} total={TOTAL} />
+    <Footer />
   </div>
 );
 
@@ -275,7 +276,7 @@ const Closer: Page = () => (
     <p style={{ fontSize: 28, lineHeight: 1.45, color: '#2d1b4e', maxWidth: 1100, margin: 0 }}>
       Borrow whatever you like. The dot pattern is on the house.
     </p>
-    <Footer pageNum={TOTAL} total={TOTAL} />
+    <Footer />
   </div>
 );
 

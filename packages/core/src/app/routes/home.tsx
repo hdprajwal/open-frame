@@ -33,6 +33,7 @@ import { cn } from '@/lib/utils';
 import { FolderIconChip, SLIDE_DND_MIME } from '../components/sidebar/folder-item';
 import { DRAFT_ID } from '../components/sidebar/sidebar';
 import { SlideCanvas } from '../components/slide-canvas';
+import { SlidePageProvider } from '../lib/page-context';
 import type { Folder, FolderIcon, SlideModule } from '../lib/sdk';
 import { loadSlide, slideCreatedAt } from '../lib/slides';
 import type { HomeOutletContext } from './home-shell';
@@ -441,7 +442,9 @@ function SlideCard({
             {FirstPage ? (
               <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
                 <SlideCanvas flat freezeMotion design={slide?.design}>
-                  <FirstPage />
+                  <SlidePageProvider index={0} total={slide?.default.length ?? 1}>
+                    <FirstPage />
+                  </SlidePageProvider>
                 </SlideCanvas>
               </div>
             ) : (

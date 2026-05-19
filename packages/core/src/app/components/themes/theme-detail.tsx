@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
+import { SlidePageProvider } from '../../lib/page-context';
 import type { SlideModule } from '../../lib/sdk';
 import { loadSlide, slidesByTheme } from '../../lib/slides';
 import { loadThemeDemo, type ThemeDemoModule, themes } from '../../lib/themes';
@@ -106,7 +107,9 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
                 </div>
               ) : Current ? (
                 <SlideCanvas flat freezeMotion design={demo.design}>
-                  <Current />
+                  <SlidePageProvider index={pageIndex} total={totalPages}>
+                    <Current />
+                  </SlidePageProvider>
                 </SlideCanvas>
               ) : null}
             </div>
@@ -227,7 +230,9 @@ function ThemeSlideCard({ id }: { id: string }) {
         {FirstPage ? (
           <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
             <SlideCanvas flat freezeMotion design={slide?.design}>
-              <FirstPage />
+              <SlidePageProvider index={0} total={slide?.default.length ?? 1}>
+                <FirstPage />
+              </SlidePageProvider>
             </SlideCanvas>
           </div>
         ) : (

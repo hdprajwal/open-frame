@@ -105,24 +105,31 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 
 ### Footer
 
+Pull the page number from `useSlidePageNumber()` — never hardcode `pageNum` / `total` props.
+
 ```tsx
-const Footer = ({ pageNum, total }: { pageNum: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 120,
-      right: 120,
-      bottom: 60,
-      display: 'flex',
-      justifyContent: 'space-between',
-      fontSize: 24,
-      color: '#94a3b8',
-    }}
-  >
-    <span>EDITORIAL NOIR · 2026</span>
-    <span>{pageNum} / {total}</span>
-  </div>
-);
+import { useSlidePageNumber } from '@open-slide/core';
+
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 120,
+        right: 120,
+        bottom: 60,
+        display: 'flex',
+        justifyContent: 'space-between',
+        fontSize: 24,
+        color: '#94a3b8',
+      }}
+    >
+      <span>EDITORIAL NOIR · 2026</span>
+      <span>{current} / {total}</span>
+    </div>
+  );
+};
 ```
 
 ### Eyebrow / accents (optional)
@@ -161,7 +168,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 36, color: '#94a3b8', maxWidth: 1200, marginTop: 32 }}>
       A short subtitle that explains what this slide is about.
     </p>
-    <Footer pageNum={1} total={5} />
+    <Footer />
   </div>
 );
 ```
@@ -173,7 +180,7 @@ The demo is a normal slide module — same shape as `slides/<id>/index.tsx`, jus
 
 Contract:
 
-- `import type { Page } from '@open-slide/core';`
+- `import { type Page, useSlidePageNumber } from '@open-slide/core';`
 - Inline the **same** `Title`, `Footer`, `Eyebrow` components defined in the theme markdown — verbatim, no abstractions, no imports from elsewhere. The demo and the markdown must stay in lockstep so what the user sees in the panel matches what `create-slide` will paste into a real slide.
 - Export 2–3 `Page` components and a default array. Aim for: a Cover (Eyebrow + Title + subtitle), one Content page exercising body type + accent, and a Closer or "End" card. The "Example usage" block at the bottom of the markdown is a good starting point — extend it.
 - If the theme has runtime-tweakable tokens worth surfacing in the Design panel later, also `export const design: DesignSystem = {...}`.
@@ -182,14 +189,15 @@ Contract:
 Skeleton:
 
 ```tsx
-import type { Page } from '@open-slide/core';
+import { type Page, useSlidePageNumber } from '@open-slide/core';
 
 const Title = ({ children }: { children: React.ReactNode }) => (
   // …same JSX as in themes/<id>.md
 );
-const Footer = ({ pageNum, total }: { pageNum: number; total: number }) => (
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
   // …
-);
+};
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   // …
 );

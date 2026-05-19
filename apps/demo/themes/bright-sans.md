@@ -62,33 +62,38 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 ### Footer
 
 ```tsx
-const Footer = ({ pageNum, total }: { pageNum: number; total: number }) => (
-  <div
-    style={{
-      position: 'absolute',
-      left: 120,
-      right: 120,
-      bottom: 60,
-      display: 'flex',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      fontFamily: "'Inter', system-ui, sans-serif",
-      fontSize: 18,
-      color: '#5f6368',
-    }}
-  >
-    <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
-      <span
-        aria-hidden
-        style={{ width: 10, height: 10, borderRadius: '50%', background: '#1a73e8' }}
-      />
-      Spring product update
-    </span>
-    <span>
-      {pageNum} / {total}
-    </span>
-  </div>
-);
+import { useSlidePageNumber } from '@open-slide/core';
+
+const Footer = () => {
+  const { current, total } = useSlidePageNumber();
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        left: 120,
+        right: 120,
+        bottom: 60,
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        fontFamily: "'Inter', system-ui, sans-serif",
+        fontSize: 18,
+        color: '#5f6368',
+      }}
+    >
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 12 }}>
+        <span
+          aria-hidden
+          style={{ width: 10, height: 10, borderRadius: '50%', background: '#1a73e8' }}
+        />
+        Spring product update
+      </span>
+      <span>
+        {current} / {total}
+      </span>
+    </div>
+  );
+};
 ```
 
 ### Eyebrow
@@ -161,7 +166,7 @@ const Cover: Page = () => (
     <p style={{ fontSize: 32, lineHeight: 1.5, color: '#5f6368', maxWidth: 1180, margin: 0 }}>
       Four small features that make the next eight months of work feel a little easier.
     </p>
-    <Footer pageNum={1} total={6} />
+    <Footer />
   </div>
 );
 ```

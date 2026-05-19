@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { designToCssVars } from './design';
+import { SlidePageProvider } from './page-context';
 import { isFrameAnimationSettled, waitForDataWaitfor, waitForFonts } from './print-ready';
 import type { SlideModule } from './sdk';
 
@@ -123,7 +124,9 @@ export async function exportSlideAsPdf(
 
   const reactRoots: Root[] = [];
   const frames: HTMLElement[] = [];
-  for (const Page of pages) {
+  for (let i = 0; i < pages.length; i++) {
+    const Page = pages[i];
+    if (!Page) continue;
     const host = document.createElement('div');
     host.className = 'os-print-frame';
     host.setAttribute('data-osd-canvas', '');
@@ -140,7 +143,9 @@ export async function exportSlideAsPdf(
     root.appendChild(host);
     frames.push(host);
     const r = createRoot(inner);
-    r.render(createElement(Page));
+    r.render(
+      createElement(SlidePageProvider, { index: i, total: pages.length }, createElement(Page)),
+    );
     reactRoots.push(r);
   }
   // Yield once so React commits all pages and CSS animations actually start
