@@ -237,6 +237,8 @@ export function Slide() {
         goTo(index - 1);
       } else if (e.key === 'f' || e.key === 'F') {
         setPlayMode('fullscreen');
+      } else if (import.meta.env.DEV && (e.key === 'd' || e.key === 'D')) {
+        setDesignOpen((v) => !v);
       }
     };
     window.addEventListener('keydown', onKey);
@@ -340,7 +342,7 @@ export function Slide() {
 
   return (
     <HistoryProvider>
-      <InspectorProvider slideId={slideId}>
+      <InspectorProvider slideId={slideId} pageIndex={index}>
         <SelectionReporter />
         <div className="flex h-dvh flex-col overflow-hidden bg-background text-foreground">
           {/* Editorial toolbar — three zones, hairline separators, mono-folio center */}

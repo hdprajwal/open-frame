@@ -273,7 +273,15 @@ export function useInspector(): InspectorCtx {
   return v;
 }
 
-export function InspectorProvider({ slideId, children }: { slideId: string; children: ReactNode }) {
+export function InspectorProvider({
+  slideId,
+  pageIndex,
+  children,
+}: {
+  slideId: string;
+  pageIndex: number;
+  children: ReactNode;
+}) {
   const [active, setActive] = useState(false);
   const [selected, setSelected] = useState<SelectedTarget | null>(null);
   const { comments, error, refetch, add, remove } = useComments(slideId);
@@ -871,6 +879,35 @@ export function InspectorProvider({ slideId, children }: { slideId: string; chil
     return () => observer?.disconnect();
   }, []);
 
+  useEffect(() => {
+    void pageIndex;
+    setSelected(null);
+  }, [pageIndex]);
+
+  // Never clear `selected` on a miss: the observer can fire between an
+  // "old removed" and "new added" mutation batch, and clearing then would
+  // drop a selection that's about to reattach on the next fire.
+  useEffect(() => {
+    if (!selected) return;
+    const root = document.querySelector<HTMLElement>('[data-inspector-root]');
+    if (!root) return;
+
+    const revalidate = () => {
+      if (selected.anchor.isConnected) return;
+      const next = root.querySelector<HTMLElement>(
+        `[data-slide-loc="${selected.line}:${selected.column}"]`,
+      );
+      if (next && next !== selected.anchor) {
+        setSelected({ ...selected, anchor: next });
+      }
+    };
+
+    revalidate();
+    const observer = new MutationObserver(revalidate);
+    observer.observe(root, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [selected]);
+
   const toggle = useCallback(() => {
     setActive((a) => {
       if (a) setSelected(null);
@@ -882,6 +919,17 @@ export function InspectorProvider({ slideId, children }: { slideId: string; chil
     setActive(false);
     setSelected(null);
   }, []);
+
+  useEffect(() => {
+    if (import.meta.env.PROD) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLElement && e.target.matches('input, textarea')) return;
+      if (e.key !== 'i' && e.key !== 'I') return;
+      toggle();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [toggle]);
 
   const openCrop = useCallback((anchor: HTMLImageElement) => {
     const loc = anchor.dataset.slideLoc;
@@ -1064,6 +1112,9 @@ export function InspectToggleButton() {
     >
       <Crosshair className="size-3.5" />
       <span className="hidden md:inline">{t.inspector.inspect}</span>
+      <kbd className="ml-1 hidden rounded-[3px] bg-foreground/10 px-1 font-mono text-[9.5px] tracking-[0.04em] md:inline">
+        I
+      </kbd>
     </Button>
   );
 }
