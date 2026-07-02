@@ -5,20 +5,44 @@ description: Use this skill when the user wants to create, draft, author, or gen
 
 # Create a slide in open-slide
 
-This skill owns the **workflow** for drafting a new deck. The technical reference — file contract, 1920×1080 canvas, type scale, palette, layout, assets — lives in the **`slide-authoring`** skill. Read that skill whenever you need details on *how* a page is structured. This skill assumes you'll consult it before writing code.
+This skill owns the **workflow** for drafting a new deck. The technical reference — file contract, format-driven canvas (1920×1080 default), type scale, palette, layout, assets — lives in the **`slide-authoring`** skill. Read that skill whenever you need details on *how* a page is structured. This skill assumes you'll consult it before writing code.
 
 You only write files under `slides/<id>/`. Never modify `package.json`, `open-slide.config.ts`, or existing slides.
 
-## Step 1 — Pick a theme
+## Step 1 — Pick a format
+
+A deck's **format** sets its canvas size — every page renders at that aspect ratio in the editor, thumbnails, play mode, presenter, and every export (PDF / PNG / PPTX). Lock it in first: it shapes page count, text density, and layout downstream, so changing it later means reworking those.
+
+Skip the question when the user's request already names a format unambiguously — "make me a LinkedIn carousel about X" → `carousel`, "a YouTube thumbnail for Y" → `thumbnail`, "an OG card for Z" → `og`. Restate the assumption ("Building this as a 1080×1080 carousel") so the user can correct course — the same convention this skill uses for topic and theme. **A plain "deck" / "slides" / "presentation" request (or anything with no hint of a social or single-image format) is the default `slide` — proceed straight to the next step with no `format` key and no question.** Presentation is the default; don't add friction to reach it.
+
+Only when the format is genuinely open — the request could plausibly be a feed post or a talk — call `AskUserQuestion`. The seven presets exceed the 4-option UI limit, so lead with the three most common plus an escape hatch:
+
+- **Presentation — 1920×1080** — 16:9 slides for talks and decks. *The default; recommend this.*
+- **LinkedIn carousel — 1080×1080** — square swipeable feed post.
+- **Story — 1080×1920** — 9:16 full-screen vertical (Instagram / TikTok / Shorts).
+- **Something else** — portrait post, YouTube thumbnail, OG card, or X post.
+
+If the user picks **"Something else"**, ask one follow-up `AskUserQuestion` with the remaining four:
+
+- **Portrait post — 1080×1350** — 4:5 feed post (Instagram / LinkedIn).
+- **YouTube thumbnail — 1280×720** — single-frame 16:9 thumbnail.
+- **OG card — 1200×630** — link-preview / social-share image.
+- **X post — 1600×900** — 16:9 image for an X / Twitter post.
+
+When the chosen format is anything other than **Presentation**, **set `format: '<preset>'` on the `meta` export** — e.g. `export const meta: SlideMeta = { title: '…', format: 'carousel' };`. The Presentation default needs no `format` key; omit it. The preset names are exactly `slide`, `carousel`, `portrait`, `story`, `thumbnail`, `og`, `x-post` — `slide-authoring` lists every dimension.
+
+The format you land on changes later steps — see the format notes in **Step 3** (page count) and **Step 5** (page roles) for how density and structure shift on non-16:9 canvases.
+
+## Step 2 — Pick a theme
 
 List files under `themes/`. If any theme markdown files exist (anything other than `README.md`), call `AskUserQuestion` with each theme id as an option plus a final **"no theme — design from scratch"** option.
 
-- If the user picks a theme: read `themes/<id>.md` end-to-end. The theme's palette, typography, layout, and Title/Footer components are now authoritative — copy them directly into the slide. **Also set `theme: '<theme-id>'` on the `meta` export in `index.tsx`** (e.g. `export const meta: SlideMeta = { title: '…', theme: '<theme-id>' };`) so the slide back-links to the theme (chip on the slide card + listing on `/themes/<id>`). In Step 2, skip the **aesthetic direction** question (the theme already commits to one direction); you still need the topic itself, so confirm it before moving on. Page count, text density, and motion are independent of theme — ask those normally.
-- If the user picks "no theme", or `themes/` is empty (or contains only `README.md`): proceed to Step 2 unchanged.
+- If the user picks a theme: read `themes/<id>.md` end-to-end. The theme's palette, typography, layout, and Title/Footer components are now authoritative — copy them directly into the slide. **Also set `theme: '<theme-id>'` on the `meta` export in `index.tsx`** (e.g. `export const meta: SlideMeta = { title: '…', theme: '<theme-id>' };`) so the slide back-links to the theme (chip on the slide card + listing on `/themes/<id>`). In Step 3, skip the **aesthetic direction** question (the theme already commits to one direction); you still need the topic itself, so confirm it before moving on. Page count, text density, and motion are independent of theme — ask those normally.
+- If the user picks "no theme", or `themes/` is empty (or contains only `README.md`): proceed to Step 3 unchanged.
 
-If you skip the aesthetic question because a theme was picked, restate the theme name in Step 2 so the user can correct course before you start writing.
+If you skip the aesthetic question because a theme was picked, restate the theme name in Step 3 so the user can correct course before you start writing.
 
-## Step 2 — Clarify requirements (MUST ask before writing code)
+## Step 3 — Clarify requirements (MUST ask before writing code)
 
 **Before writing any code, lock in the four key style decisions below via `AskUserQuestion`.** They shape every downstream choice (layout, type scale, asset needs, motion code), so locking them in up front avoids rework. Only skip a question when the user's original message already gave an unambiguous answer for it — and if you skip, restate your assumption so they can correct it.
 
@@ -36,16 +60,17 @@ Then ask these four in a single `AskUserQuestion` call (multi-question form):
    Mark the option that best fits the topic and audience as "(Recommended)" so the user has a sensible default. (`AskUserQuestion` already auto-adds "Other" — don't add a generic catch-all yourself.)
 
 2. **Page count** — rough length. Offer brackets: 3–5 (short), 6–10 (standard), 11–20 (deep dive), custom.
+   - **Format note.** These brackets are presentation-shaped. For `carousel` / `portrait` / `story`, feeds reward brevity — 5–10 pages is typical, and past ~10 readers drop off; offer the shorter brackets and drop "deep dive". For the single-page formats (`thumbnail`, `og`, `x-post`) there is no page count — the deck is exactly **one page**; skip this question entirely.
 3. **Text density per page** — how much copy lives on each page? Offer: minimal (one line / big number), light (heading + 2–3 bullets), standard (heading + 4–5 bullets or short paragraph), dense (multi-column / detailed). This directly drives type scale and layout.
 4. **Motion** — does the user want CSS/React animations and transitions, or a fully static deck? Offer: static (no motion), subtle (fades / entrance only), rich (keyframes, staggered reveals, looping visuals). If animated, plan to use CSS `@keyframes` / inline `style` + `useEffect`; no extra libraries.
 
 After those four, ask follow-ups **only if still unclear**: brand colors, required assets. Don't pad the conversation with questions already answered.
 
-## Step 3 — Pick a slide id
+## Step 4 — Pick a slide id
 
 Use **kebab-case**, short, descriptive. Examples: `rust-intro`, `q2-roadmap`, `team-offsite-2026`. Check `slides/` to avoid collisions.
 
-## Step 4 — Plan the structure
+## Step 5 — Plan the structure
 
 Sketch the slide as a list of page roles before writing code. Common page types:
 
@@ -62,9 +87,14 @@ Sketch the slide as a list of page roles before writing code. Common page types:
 
 **Rule of thumb**: one idea per page. If you're tempted to put two, split them.
 
+**Format note.** The roles above are presentation-shaped. On other canvases the structure shifts:
+
+- **Carousel / portrait / story** — think in feed beats, not chapters: a **hook page** (page 1 has to earn the swipe — a bold claim, number, or question, not a title card), **content pages** (one idea each), and a **CTA page** (follow / link / takeaway). Keep it to 5–10 pages. `slide-authoring`'s *Per-format design guidance* covers swipe cues, type scale, and (for `story`) the top/bottom safe zones.
+- **Thumbnail / OG / X post** — single-page formats. There's no sequence and no page roles: one page, one focal statement. Skip the multi-page planning here and go straight to making that single frame legible at a glance — see the per-format guidance in `slide-authoring`.
+
 If the deck topic naturally calls for specific real images the user must supply (product screenshots, team photos, customer dashboards), plan where those go and use `<ImagePlaceholder>` from `@open-slide/core` — see the **Image placeholders** section in `slide-authoring`. Default is **no placeholders**: only insert one when a real image is genuinely required.
 
-## Step 5 — Commit to a visual direction
+## Step 6 — Commit to a visual direction
 
 Pick one coherent palette / type scale / aesthetic and hold it across every page. The full set of constraints (palette structure, type scale, padding, aesthetic options) lives in `slide-authoring` — apply it.
 
@@ -72,15 +102,15 @@ Pick one coherent palette / type scale / aesthetic and hold it across every page
 
 Consult the `frontend-design` skill for deeper aesthetic guidance if the user wants something bold.
 
-## Step 6 — Write `slides/<id>/index.tsx`
+## Step 7 — Write `slides/<id>/index.tsx`
 
 Read the **`slide-authoring`** skill before writing — it covers the file contract, canvas rules, type scale, spacing, and asset imports, and it includes a starter template you can copy. Don't duplicate that knowledge here; use it.
 
-## Step 7 — Self-review
+## Step 8 — Self-review
 
 Run the checklist in `slide-authoring` ("Self-review before finishing"). It covers structural correctness, layout discipline, and asset existence.
 
-## Step 8 — Hand off to the user
+## Step 9 — Hand off to the user
 
 Tell the user:
 

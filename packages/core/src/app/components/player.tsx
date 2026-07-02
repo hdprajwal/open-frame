@@ -3,6 +3,7 @@ import { useClickPageNavigation } from '@/lib/use-click-page-navigation';
 import { useWheelPageNavigation } from '@/lib/use-wheel-page-navigation';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
+import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
 import type { Page } from '../lib/sdk';
 import type { EntryDirection, StepAggregate, StepController } from '../lib/step-context';
 import type { SlideTransition } from '../lib/transition';
@@ -46,6 +47,7 @@ type Props = {
    * without entering fullscreen. Defaults to true for back-compat.
    */
   fullscreen?: boolean;
+  canvas?: CanvasSize;
 };
 
 export function Player({
@@ -59,6 +61,7 @@ export function Player({
   controls = false,
   slideId,
   fullscreen = true,
+  canvas = FORMAT_PRESETS.slide,
 }: Props) {
   const isMobile = useIsMobile();
   const prefersReducedMotion = usePrefersReducedMotion();
@@ -401,7 +404,7 @@ export function Player({
       )}
       style={design ? { background: design.palette.bg } : undefined}
     >
-      <SlideCanvas flat design={design}>
+      <SlideCanvas flat design={design} canvas={canvas}>
         <SlideTransitionLayer
           pages={pages}
           index={index}
@@ -451,6 +454,7 @@ export function Player({
             variant="present"
             moduleTransition={transition}
             tooltipContainer={rootEl}
+            canvas={canvas}
           />
           <PresentHelpOverlay open={helpOpen} onOpenChange={setHelpOpen} container={rootEl} />
         </div>

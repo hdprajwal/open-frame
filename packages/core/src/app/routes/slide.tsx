@@ -7,6 +7,7 @@ import {
   FileCode2,
   FileImage,
   FileText,
+  Image,
   Link2,
   Loader2,
   Maximize,
@@ -53,13 +54,16 @@ import { NotesDrawer } from '../components/notes-drawer';
 import { OverviewGrid } from '../components/overview-grid';
 import { PdfProgressToast } from '../components/pdf-progress-toast';
 import { openPresenterWindow, Player } from '../components/player';
+import { PngProgressToast } from '../components/png-progress-toast';
 import { PptxProgressToast } from '../components/pptx-progress-toast';
 import { SlideCanvas } from '../components/slide-canvas';
 import { SlideTransitionLayer } from '../components/slide-transition-layer';
 import { type ThumbnailActions, ThumbnailRail } from '../components/thumbnail-rail';
 import { exportSlideAsHtml } from '../lib/export-html';
 import { exportSlideAsPdf, isSafari } from '../lib/export-pdf';
+import { exportSlideAsPng } from '../lib/export-png';
 import { exportSlideAsImagePptx } from '../lib/export-pptx';
+import { type CanvasSize, FORMAT_PRESETS, resolveCanvas } from '../lib/formats';
 import { remapNotesSessionCacheAfterReorder } from '../lib/inspector/use-notes';
 import type { SlideModule } from '../lib/sdk';
 import { usePrefersReducedMotion } from '../lib/use-prefers-reduced-motion';
@@ -90,6 +94,10 @@ export function Slide() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const modulePages = useMemo(() => slide?.default ?? [], [slide]);
+  const canvas = useMemo(
+    () => (slide ? resolveCanvas(slide.meta, slideId) : FORMAT_PRESETS.slide),
+    [slide, slideId],
+  );
   const [pages, setPages] = useState<typeof modulePages>(modulePages);
   useEffect(() => {
     setPages(modulePages);
@@ -356,6 +364,7 @@ export function Slide() {
         onIndexChange={goTo}
         onExit={() => {}}
         allowExit={false}
+        canvas={canvas}
       />
     );
   }
@@ -372,6 +381,7 @@ export function Slide() {
         controls
         slideId={slideId}
         fullscreen={playMode === 'fullscreen'}
+        canvas={canvas}
       />
     );
   }
@@ -398,6 +408,34 @@ export function Slide() {
       await exportSlideAsHtml(slide, slideId);
     } catch (err) {
       console.error('[open-slide] export failed', err);
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  const exportPng = async () => {
+    if (!slide || exporting) return;
+    setExporting(true);
+    const toastId = `png-export-${slideId}`;
+    toast.custom(
+      () => (
+        <PngProgressToast
+          progress={{ phase: 'processing', current: 0, total: pages.length, percent: 0 }}
+        />
+      ),
+      { id: toastId, duration: Infinity },
+    );
+    try {
+      await exportSlideAsPng(slide, slideId, (p) => {
+        toast.custom(() => <PngProgressToast progress={p} />, { id: toastId, duration: Infinity });
+      });
+      toast.dismiss(toastId);
+    } catch (err) {
+      console.error('[open-slide] png export failed', err);
+      // The error toast must not reuse toastId: sonner keeps rendering a custom
+      // toast's JSX when updated by id, so the error text would never paint.
+      toast.dismiss(toastId);
+      toast.error(t.slide.pngExportFailed, { duration: 4000 });
     } finally {
       setExporting(false);
     }
@@ -462,6 +500,10 @@ export function Slide() {
       <DropdownMenuItem disabled={exporting} onSelect={exportHtml}>
         <FileCode2 />
         {t.slide.exportAsHtml}
+      </DropdownMenuItem>
+      <DropdownMenuItem disabled={exporting} onSelect={exportPng}>
+        <Image />
+        {t.slide.exportAsPng}
       </DropdownMenuItem>
       <DropdownMenuItem disabled={exporting} onSelect={exportPdf}>
         <FileText />
@@ -703,6 +745,7 @@ export function Slide() {
                     actions={thumbnailActions}
                     moduleTransition={slide.transition}
                     onOverview={() => setOverviewOpen(true)}
+                    canvas={canvas}
                   />
                   <main
                     ref={slideViewportRef}
@@ -717,7 +760,7 @@ export function Slide() {
                       canPrev={index > 0}
                       canNext={index < pageCount - 1}
                     />
-                    <SlideCanvas design={slide.design}>
+                    <SlideCanvas design={slide.design} canvas={canvas}>
                       <SlideTransitionLayer
                         pages={pages}
                         index={index}
@@ -743,6 +786,7 @@ export function Slide() {
                       onSelect={goTo}
                       orientation="horizontal"
                       actions={thumbnailActions}
+                      canvas={canvas}
                     />
                   </div>
                   <InspectorPanel />
@@ -765,6 +809,7 @@ export function Slide() {
                   onSelect={goTo}
                   variant="editor"
                   moduleTransition={slide.transition}
+                  canvas={canvas}
                 />
               </div>
             </DesignProvider>
@@ -797,6 +842,7 @@ function ResizableRail(props: {
   actions?: ThumbnailActions;
   moduleTransition?: SlideModule['transition'];
   onOverview?: () => void;
+  canvas?: CanvasSize;
 }) {
   const t = useLocale();
   const [width, setWidth] = useState<number>(readStoredRailWidth);

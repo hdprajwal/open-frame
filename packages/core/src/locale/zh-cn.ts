@@ -109,12 +109,14 @@ export const zhCN: Locale = {
     toastCopyLinkSuccess: '已复制链接到剪贴板',
     toastCopyLinkFailed: '复制链接失败',
     exportAsHtml: '导出为 HTML',
+    exportAsPng: '导出为 PNG',
     exportAsPdf: '导出为 PDF',
     exportAsImagePptx: '导出图片 PPTX',
     exportAsPptx: '导出 PPTX',
     comingSoon: '即将推出',
     pptxComingSoonTooltip: '可编辑的 PPTX 导出尚未支持，在此之前可以先使用“导出图片 PPTX”。',
     pdfExportFailed: 'PDF 导出失败',
+    pngExportFailed: 'PNG 导出失败',
     imagePptxExportFailed: 'PPTX 导出失败',
     pdfExportSafariUnsupported:
       '导出 PDF 目前不支持 Safari 设备，请尝试使用基于 Chromium 的浏览器替代。',
@@ -362,6 +364,13 @@ export const zhCN: Locale = {
     title: '导出 PPTX',
     processing: '正在渲染第 {current} / {total} 页',
     generating: '正在组合演示文稿…',
+    done: '完成',
+  },
+
+  pngToast: {
+    title: '导出 PNG',
+    processing: '正在渲染第 {current} / {total} 页',
+    generating: '正在打包图片…',
     done: '完成',
   },
 

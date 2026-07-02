@@ -109,12 +109,14 @@ export const zhTW: Locale = {
     toastCopyLinkSuccess: '已複製連結到剪貼簿',
     toastCopyLinkFailed: '複製連結失敗',
     exportAsHtml: '匯出為 HTML',
+    exportAsPng: '匯出為 PNG',
     exportAsPdf: '匯出為 PDF',
     exportAsImagePptx: '匯出圖片 PPTX',
     exportAsPptx: '匯出 PPTX',
     comingSoon: '即將推出',
     pptxComingSoonTooltip: '可編輯的 PPTX 匯出尚未支援，在此之前可以先使用「匯出圖片 PPTX」。',
     pdfExportFailed: 'PDF 匯出失敗',
+    pngExportFailed: 'PNG 匯出失敗',
     imagePptxExportFailed: 'PPTX 匯出失敗',
     pdfExportSafariUnsupported:
       '匯出 PDF 目前不支援 Safari 裝置，請嘗試用 Chromium 基底瀏覽器替代。',
@@ -362,6 +364,13 @@ export const zhTW: Locale = {
     title: '匯出 PPTX',
     processing: '正在算繪第 {current} / {total} 頁',
     generating: '正在組合簡報…',
+    done: '完成',
+  },
+
+  pngToast: {
+    title: '匯出 PNG',
+    processing: '正在算繪第 {current} / {total} 頁',
+    generating: '正在打包圖片…',
     done: '完成',
   },
 

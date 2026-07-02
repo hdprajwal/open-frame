@@ -9,8 +9,8 @@ import {
   usePresenterChannel,
 } from '../components/present/use-presenter-channel';
 import { SlideCanvas } from '../components/slide-canvas';
+import { resolveCanvas } from '../lib/formats';
 import { SlidePageProvider } from '../lib/page-context';
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../lib/sdk';
 import { type StepController, StepHost } from '../lib/step-context';
 import { useSlideModule } from '../lib/use-slide-module';
 
@@ -113,6 +113,7 @@ export function Presenter() {
   }
 
   const pages = slide.default;
+  const canvas = resolveCanvas(slide.meta, slideId);
   const total = pages.length;
   const index = Math.max(0, Math.min(total - 1, state?.index ?? 0));
   const note = slide.notes?.[index];
@@ -145,7 +146,7 @@ export function Presenter() {
         <section className="flex min-h-0 flex-col gap-3">
           <SectionLabel>{t.presenter.nowShowing}</SectionLabel>
           <div className="relative min-h-0 flex-1 overflow-hidden rounded-[8px] bg-black ring-1 ring-border">
-            <SlideCanvas flat design={slide.design}>
+            <SlideCanvas flat design={slide.design} canvas={canvas}>
               <SlidePageProvider index={index} total={total}>
                 <PreviewStepHost revealed={stepIndex}>
                   <CurrentPage />
@@ -172,10 +173,10 @@ export function Presenter() {
             <SectionLabel>{hasNext ? t.presenter.upNext : t.presenter.lastSlide}</SectionLabel>
             <div
               className="relative w-full overflow-hidden rounded-[8px] bg-black ring-1 ring-border"
-              style={{ aspectRatio: `${CANVAS_WIDTH}/${CANVAS_HEIGHT}` }}
+              style={{ aspectRatio: `${canvas.width}/${canvas.height}` }}
             >
               {NextPage ? (
-                <SlideCanvas flat freezeMotion design={slide.design}>
+                <SlideCanvas flat freezeMotion design={slide.design} canvas={canvas}>
                   <SlidePageProvider index={nextPageIndex} total={total}>
                     <PreviewStepHost revealed={nextRevealed}>
                       <NextPage />

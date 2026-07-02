@@ -1,6 +1,6 @@
 ---
 name: slide-authoring
-description: Technical reference for writing or editing open-slide pages — file contract, 1920×1080 canvas, type scale, layout, palette/visual direction, and assets. Consult this whenever you are about to write or modify any file under `slides/<id>/`, including from inside the `create-slide` or `apply-comments` workflows, or for any ad-hoc slide edit. Triggers on phrases like "edit slide", "tweak this page", "fix the layout", "change the palette", "investigate the slide framework", "how do slides work here".
+description: Technical reference for writing or editing open-slide pages — file contract, format-driven canvas (1920×1080 default), type scale, layout, palette/visual direction, and assets. Consult this whenever you are about to write or modify any file under `slides/<id>/`, including from inside the `create-slide` or `apply-comments` workflows, or for any ad-hoc slide edit. Triggers on phrases like "edit slide", "tweak this page", "fix the layout", "change the palette", "investigate the slide framework", "how do slides work here".
 ---
 
 # Authoring open-slide pages
@@ -34,6 +34,7 @@ const Body: Page = () => <div>…</div>;
 export const meta: SlideMeta = {
   title: 'My slide',
   createdAt: '2026-05-16T12:00:00Z',
+  // format: 'carousel', // omit for the default 1920×1080 slide canvas
 };
 export default [Cover, Body] satisfies Page[];
 ```
@@ -42,6 +43,7 @@ export default [Cover, Body] satisfies Page[];
 - `meta.title` (optional) shows in the slide header. Default is the folder name.
 - The slide id is the kebab-case folder name. Pick something short and descriptive (`q2-roadmap`, `team-offsite-2026`).
 - `meta.theme` (optional) marks the slide as built from a theme under `themes/`. The id must match a `<id>.md` basename. Surfaces a back-link chip on the slide card and lists the slide on `/themes/<id>`. Omit if the slide isn't derived from a registered theme.
+- `meta.format` (optional) sets the canvas size from a named preset — `slide` (default, 1920×1080), `carousel`, `portrait`, `story`, `thumbnail`, `og`, `x-post`. Omit it for a standard 1920×1080 deck; set it (`format: 'carousel'`) for social formats. See **Canvas** for every dimension. `meta.canvas: { width, height }` overrides with an arbitrary size, but prefer a named format.
 - `meta.createdAt` is an **ISO 8601 string literal** (e.g. `'2026-05-16T12:00:00Z'`) set once when the slide is scaffolded. The home page uses it for the default "newest first" sort. Always include it on new slides — **immediately before writing the file, run `node -e "console.log(new Date().toISOString())"` via Bash and paste the exact output** as the value. Don't type a timestamp from memory — you will get the date or time wrong. Must be a plain string literal (no `new Date(...)` or imports in the slide itself) — the framework reads it via a regex at build time, not by evaluating the module.
 
 ## Editing an existing slide
@@ -56,13 +58,28 @@ This lists every `const Foo: Page = …` declaration with its line number. Read 
 
 ## Canvas
 
-Every page renders into a fixed **1920 × 1080** canvas. The framework scales it; you design as if the viewport is literally 1920×1080.
+Every page renders into a **fixed canvas** whose size is set by the deck's `meta.format` (default `slide` — 1920×1080). The framework scales that canvas to fit; you design as if the viewport is literally the deck's canvas size — not always 1080 tall. The format is chosen in the `create-slide` workflow; here is what each preset resolves to:
 
+| `meta.format`      | Canvas (px) | Aspect  | Typical use                                  |
+| ------------------ | ----------- | ------- | -------------------------------------------- |
+| `slide` (default)  | 1920 × 1080 | 16:9    | Presentation decks, talks                    |
+| `carousel`         | 1080 × 1080 | 1:1     | LinkedIn / Instagram square carousel         |
+| `portrait`         | 1080 × 1350 | 4:5     | Instagram / LinkedIn feed post               |
+| `story`            | 1080 × 1920 | 9:16    | IG / TikTok / Shorts full-screen vertical    |
+| `thumbnail`        | 1280 × 720  | 16:9    | YouTube thumbnail (single frame)             |
+| `og`               | 1200 × 630  | ~1.91:1 | Open Graph / link-preview card               |
+| `x-post`           | 1600 × 900  | 16:9    | Image for an X / Twitter post                |
+
+Set it once in `meta`: `export const meta: SlideMeta = { title: '…', format: 'carousel' };`. Omit `format` for the default 1920×1080. (`meta.canvas: { width, height }` overrides with an arbitrary size — prefer a named format.) **Non-`slide` formats bend the type-scale, padding, and density rules below — read *Per-format design guidance* before designing one.**
+
+- **Design as if the viewport is literally the deck's canvas size.** The numbers below (type scale, padding, vertical budget) are written for the 1920×1080 `slide` canvas; scale them to the actual canvas for other formats.
 - Use **absolute pixel values** for `font-size`, padding, positioning. No `rem`, no `vw`/`vh`, no `%` for type.
 - The root element of each page should fill the canvas: `width: '100%'; height: '100%'`.
 - Prefer inline `style={{ … }}`. Any CSS you load is global — scope classnames carefully.
 
 ### Type scale (start here, adjust to taste)
+
+Calibrated for the 1920×1080 `slide` canvas. Smaller-canvas formats need their own scale — see **Per-format design guidance** (carousel/portrait run type *bigger* relative to the canvas so it stays legible in a phone feed).
 
 | Element          | Size       |
 | ---------------- | ---------- |
@@ -74,19 +91,19 @@ Every page renders into a fixed **1920 × 1080** canvas. The framework scales it
 
 ### Spacing
 
-- Content padding: **100–160px** from canvas edges. Never let text touch the edge.
+- Content padding: **100–160px** from canvas edges on the 1920×1080 `slide` canvas. Scale it down on smaller canvases — for the 1080-wide formats (`carousel`, `portrait`, `story`) use **64–96px**. Never let text touch the edge.
 - Line-height: 1.2 for headings, 1.5–1.7 for body.
 - Breathing room between elements: 32–64px.
 
-### Vertical budget — content MUST fit 1080px
+### Vertical budget — content MUST fit the canvas height
 
-The canvas does **not** scroll. Anything below 1080px is silently cropped. Before writing JSX, do the math on paper and confirm the page fits. This is the #1 cause of broken slides — assume you will overflow unless you've checked.
+The canvas does **not** scroll. Anything below the canvas height is silently cropped. Before writing JSX, do the math on paper and confirm the page fits. This is the #1 cause of broken slides — assume you will overflow unless you've checked.
 
-**Usable height** = `1080 − top_padding − bottom_padding`. With 120px padding on each side that's **840px**. With 160px each side, **760px**. Pick the padding first, then design within that budget.
+**Usable height** = `canvas_height − top_padding − bottom_padding`. On the 1920×1080 `slide` canvas with 120px padding each side that's **840px** (160px each → 760px). On a 1080×1080 `carousel` with 80px padding each side it's `1080 − 2×80 = 920px`. A 1080×1920 `story` gives far more room (`1920 − 2×96 = 1728px`), but you must also keep the top and bottom ~200px clear of platform UI — see **Per-format design guidance**. Pick the format and padding first, then design within that budget.
 
 **Element height** = `font_size × line_height × number_of_lines`. A bullet that wraps to 2 lines counts as 2 lines. Add the gap below it (32–64px) before summing the next element.
 
-**Worked example — single content page, 120px padding (budget = 840px):**
+**Worked example — `slide` canvas, single content page, 120px padding (budget = 840px):**
 
 | Element                                  | Height                  |
 | ---------------------------------------- | ----------------------- |
@@ -109,6 +126,34 @@ Swap the heading to 120px or add a 6th bullet and you're over. **Verify every pa
 - If you find yourself raising padding, shrinking type below the scale's lower bound, or tightening line-height under 1.4 to make things fit — **split into two pages instead**. Splitting is always the right answer when the budget is tight.
 
 **Never** use `overflow: auto/scroll`, negative margins, or transforms to hide overflow. The canvas is fixed; cropped content is gone.
+
+## Per-format design guidance
+
+The canvas rules above are the `slide` baseline. Each non-`slide` format bends them:
+
+### Carousel & portrait (`carousel` 1080×1080, `portrait` 1080×1350)
+
+Read on a phone, thumb-scrolling a feed — far smaller than a projected slide, so type runs **bigger relative to the canvas**, not smaller:
+
+- **Body text ~40px minimum** on the 1080-wide canvas; heroes **120–200px**. Anything under ~40px disappears at feed scale.
+- **One idea per page, hard** — ≤3 bullets, or a single statement. Less per page than a presentation.
+- **Page 1 is a hook**, not a title card. It has to earn the swipe — a bold claim, a number, a question.
+- **Cue the swipe** on every non-final page — a small "→", arrow, or page dots — so readers know to keep going. The final page drops the cue and carries the CTA.
+
+### Story (`story` 1080×1920)
+
+Full-screen vertical, 9:16:
+
+- **Stack vertically.** You have ~1728px of usable height; use it top-to-bottom rather than cramming one centered block.
+- **Keep critical content out of the top ~200px and bottom ~200px.** Platform UI (profile header, caption, reply bar, progress dots) overlays those zones and covers anything you place there. Treat the middle ~1500px as the safe area.
+
+### Single-page formats (`thumbnail` 1280×720, `og` 1200×630, `x-post` 1600×900)
+
+These are **one page** — a single image, not a deck:
+
+- Author exactly **one page**. There is no sequence, no navigation, no page roles.
+- Build around **one focal statement** that stays legible when the image is shrunk to ~300px wide (a feed thumbnail, a search result, a link card). If it's unreadable small, it fails.
+- **No page counters, no footers, no "01 / 12".** `useSlidePageNumber` and swipe cues are meaningless on a single frame.
 
 ## Visual direction
 
@@ -263,6 +308,7 @@ const Content: Page = () => (
 export const meta: SlideMeta = {
   title: 'The Big Idea',
   createdAt: '2026-05-16T12:00:00Z',
+  // format: 'carousel', // omit for the default 1920×1080 slide canvas
 };
 export default [Cover, Content] satisfies Page[];
 ```
@@ -592,7 +638,7 @@ This applies whenever the *visual element* repeats, not whenever the *data* does
 - [ ] `slides/<id>/index.tsx` `export default`s a non-empty `Page[]`.
 - [ ] Every page's root fills `100% × 100%`.
 - [ ] Content lives inside padding (no text kisses the edge).
-- [ ] **For every page, sum (font_size × line_height × lines) + gaps + 2×padding ≤ 1080px.** If close, split the page. No `overflow: auto` escape hatches.
+- [ ] **For every page, sum (font_size × line_height × lines) + gaps + 2×padding ≤ the canvas height** (1080px on `slide`; use the deck's format height for other canvases). If close, split the page. No `overflow: auto` escape hatches.
 - [ ] No bullet wraps to a second line at the chosen font size.
 - [ ] One coherent visual direction across every page (palette + type scale).
 - [ ] Slide declares a top-level `export const design: DesignSystem = { … }` and references the values via `var(--osd-X)` (use `design.X` only when you need a JS number for arithmetic). Only omit the `design` const for a one-off slide whose palette is intentionally locked.
@@ -607,8 +653,8 @@ This applies whenever the *visual element* repeats, not whenever the *data* does
 ## Anti-patterns
 
 - ❌ Walls of text. If a page has more than ~40 words, split it.
-- ❌ Using the full canvas for body copy. Respect 100–160px padding.
-- ❌ Overflowing 1080px vertically. Cropped content is invisible — split the page.
+- ❌ Using the full canvas for body copy. Respect the format's padding (100–160px on `slide`, 64–96px on 1080-wide formats).
+- ❌ Overflowing the canvas height vertically. Cropped content is invisible — split the page.
 - ❌ `overflow: auto` / `overflow: scroll` / `overflow: hidden` to "hide" too much content. The canvas doesn't scroll; you've just hidden the bug.
 - ❌ Shrinking type below the scale's lower bound, or padding below 100px, to cram more in. Split instead.
 - ❌ Bullets that wrap to a second line — either shorten or move to its own page.

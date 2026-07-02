@@ -29,9 +29,9 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
+import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
 import { SlidePageProvider } from '../lib/page-context';
 import type { Page } from '../lib/sdk';
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../lib/sdk';
 import type { SlideTransition } from '../lib/transition';
 import { SlideCanvas } from './slide-canvas';
 
@@ -56,6 +56,7 @@ type Props = {
   moduleTransition?: SlideTransition;
   /** When provided, the vertical rail header renders a button that opens the overview grid. */
   onOverview?: () => void;
+  canvas?: CanvasSize;
 };
 
 const DEFAULT_VERTICAL_THUMB_WIDTH = 184;
@@ -82,6 +83,7 @@ export function ThumbnailRail({
   width,
   moduleTransition,
   onOverview,
+  canvas = FORMAT_PRESETS.slide,
 }: Props) {
   const activeRef = useRef<HTMLButtonElement | null>(null);
   const t = useLocale();
@@ -101,8 +103,8 @@ export function ThumbnailRail({
     width != null
       ? Math.max(MIN_VERTICAL_THUMB_WIDTH, width - VERTICAL_RAIL_CHROME)
       : DEFAULT_VERTICAL_THUMB_WIDTH;
-  const scale = thumbWidth / CANVAS_WIDTH;
-  const height = CANVAS_HEIGHT * scale;
+  const scale = thumbWidth / canvas.width;
+  const height = canvas.height * scale;
   const rowHeight = height + VERTICAL_THUMB_PADDING_Y + VERTICAL_THUMB_GAP;
 
   const renderThumb = useCallback(
@@ -118,6 +120,7 @@ export function ThumbnailRail({
           scale={scale}
           thumbWidth={thumbWidth}
           height={height}
+          canvas={canvas}
           moduleTransition={moduleTransition}
         />
       );
@@ -162,6 +165,7 @@ export function ThumbnailRail({
     },
     [
       actions,
+      canvas,
       current,
       design,
       height,
@@ -177,8 +181,8 @@ export function ThumbnailRail({
   );
 
   if (orientation === 'horizontal') {
-    const scale = HORIZONTAL_THUMB_HEIGHT / CANVAS_HEIGHT;
-    const horizontalWidth = CANVAS_WIDTH * scale;
+    const scale = HORIZONTAL_THUMB_HEIGHT / canvas.height;
+    const horizontalWidth = canvas.width * scale;
     return (
       <div className="bg-sidebar">
         <div className="overflow-x-auto overflow-y-hidden">
@@ -191,6 +195,7 @@ export function ThumbnailRail({
             onSelect={onSelect}
             scale={scale}
             thumbWidth={horizontalWidth}
+            canvas={canvas}
           />
         </div>
       </div>
@@ -276,6 +281,7 @@ function HorizontalVirtualThumbList({
   onSelect,
   scale,
   thumbWidth,
+  canvas,
 }: {
   pages: Page[];
   design?: DesignSystem;
@@ -285,6 +291,7 @@ function HorizontalVirtualThumbList({
   onSelect: (index: number) => void;
   scale: number;
   thumbWidth: number;
+  canvas: CanvasSize;
 }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const viewportRef = useRef<HTMLElement | null>(null);
@@ -382,7 +389,14 @@ function HorizontalVirtualThumbList({
           )}
           style={{ width: thumbWidth, height: HORIZONTAL_THUMB_HEIGHT }}
         >
-          <SlideCanvas scale={scale} center={false} flat freezeMotion design={design}>
+          <SlideCanvas
+            scale={scale}
+            center={false}
+            flat
+            freezeMotion
+            design={design}
+            canvas={canvas}
+          >
             <SlidePageProvider index={i} total={pages.length}>
               <PageComp />
             </SlidePageProvider>
@@ -567,6 +581,7 @@ function ThumbContents({
   scale,
   thumbWidth,
   height,
+  canvas,
   moduleTransition,
 }: {
   index: number;
@@ -577,6 +592,7 @@ function ThumbContents({
   scale: number;
   thumbWidth: number;
   height: number;
+  canvas: CanvasSize;
   moduleTransition?: SlideTransition;
 }) {
   const t = useLocale();
@@ -624,7 +640,7 @@ function ThumbContents({
         )}
         style={{ width: thumbWidth, height }}
       >
-        <SlideCanvas scale={scale} center={false} flat freezeMotion design={design}>
+        <SlideCanvas scale={scale} center={false} flat freezeMotion design={design} canvas={canvas}>
           <SlidePageProvider index={index} total={total}>
             <PageComp />
           </SlidePageProvider>

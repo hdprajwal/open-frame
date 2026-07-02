@@ -1,6 +1,7 @@
 import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { designToCssVars } from './design';
+import { type CanvasSize, resolveCanvas } from './formats';
 import { SlidePageProvider } from './page-context';
 import { isFrameAnimationSettled, waitForDataWaitfor, waitForFonts } from './print-ready';
 import type { SlideModule } from './sdk';
@@ -8,8 +9,9 @@ import type { SlideModule } from './sdk';
 const PRINT_ROOT_ID = 'os-print-root';
 const PRINT_STYLE_ID = 'os-print-style';
 
-const PRINT_STYLES = `
-@page { size: 1920px 1080px; margin: 0; }
+function buildPrintStyles(canvas: CanvasSize): string {
+  return `
+@page { size: ${canvas.width}px ${canvas.height}px; margin: 0; }
 
 @media screen {
   #${PRINT_ROOT_ID} {
@@ -36,8 +38,8 @@ const PRINT_STYLES = `
     background: #fff !important;
   }
   #${PRINT_ROOT_ID} .os-print-frame {
-    width: 1920px !important;
-    height: 1080px !important;
+    width: ${canvas.width}px !important;
+    height: ${canvas.height}px !important;
     background: #fff;
     color: #000;
     overflow: hidden;
@@ -52,13 +54,13 @@ const PRINT_STYLES = `
   }
   /* Supersample: Chrome rasterizes filtered/composited layers (e.g. filter:
      blur, mix-blend-mode) at the layer's CSS-pixel size, so a blurred
-     gradient on a 1920×1080 page bakes in at ~1× DPI and bands when the PDF
-     is viewed scaled up. zoom:2 doubles the layer raster size; scale(0.5)
-     composites it back to 1920×1080. Vector content (text, plain CSS
-     gradients, SVG) stays vector through both transforms. */
+     gradient bakes in at ~1× DPI and bands when the PDF is viewed scaled up.
+     zoom:2 doubles the layer raster size; scale(0.5) composites it back to
+     the canvas size. Vector content (text, plain CSS gradients, SVG) stays
+     vector through both transforms. */
   #${PRINT_ROOT_ID} .os-print-supersample {
-    width: 1920px !important;
-    height: 1080px !important;
+    width: ${canvas.width}px !important;
+    height: ${canvas.height}px !important;
     zoom: 2;
     transform: scale(0.5);
     transform-origin: top left;
@@ -79,6 +81,7 @@ const PRINT_STYLES = `
   }
 }
 `;
+}
 
 export function isSafari(): boolean {
   if (typeof navigator === 'undefined') return false;
@@ -107,10 +110,11 @@ export async function exportSlideAsPdf(
   if (pages.length === 0) return;
 
   const total = pages.length;
+  const canvas = resolveCanvas(slide.meta, slideId);
 
   const style = document.createElement('style');
   style.id = PRINT_STYLE_ID;
-  style.textContent = PRINT_STYLES;
+  style.textContent = buildPrintStyles(canvas);
   document.head.appendChild(style);
 
   const root = document.createElement('div');
@@ -130,15 +134,15 @@ export async function exportSlideAsPdf(
     const host = document.createElement('div');
     host.className = 'os-print-frame';
     host.setAttribute('data-osd-canvas', '');
-    host.style.width = '1920px';
-    host.style.height = '1080px';
+    host.style.width = `${canvas.width}px`;
+    host.style.height = `${canvas.height}px`;
     if (designVars) {
       for (const [k, v] of Object.entries(designVars)) host.style.setProperty(k, v);
     }
     const inner = document.createElement('div');
     inner.className = 'os-print-supersample';
-    inner.style.width = '1920px';
-    inner.style.height = '1080px';
+    inner.style.width = `${canvas.width}px`;
+    inner.style.height = `${canvas.height}px`;
     host.appendChild(inner);
     root.appendChild(host);
     frames.push(host);
