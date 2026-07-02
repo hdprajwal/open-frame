@@ -4,14 +4,13 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
+import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
 import { SlidePageProvider } from '../lib/page-context';
 import type { Page } from '../lib/sdk';
-import { CANVAS_HEIGHT, CANVAS_WIDTH } from '../lib/sdk';
 import type { SlideTransition } from '../lib/transition';
 import { SlideCanvas } from './slide-canvas';
 
 const THUMB_W = 320;
-const THUMB_H = (THUMB_W * CANVAS_HEIGHT) / CANVAS_WIDTH;
 
 export type OverviewVariant = 'present' | 'editor';
 
@@ -25,6 +24,7 @@ type Props = {
   variant?: OverviewVariant;
   moduleTransition?: SlideTransition;
   tooltipContainer?: HTMLElement | null;
+  canvas?: CanvasSize;
 };
 
 export function OverviewGrid({
@@ -37,7 +37,9 @@ export function OverviewGrid({
   variant = 'present',
   moduleTransition,
   tooltipContainer,
+  canvas = FORMAT_PRESETS.slide,
 }: Props) {
+  const thumbHeight = (THUMB_W * canvas.height) / canvas.width;
   const [focused, setFocused] = useState(current);
   const gridRef = useRef<HTMLDivElement>(null);
   const focusedRef = useRef<HTMLButtonElement | null>(null);
@@ -152,6 +154,8 @@ export function OverviewGrid({
                   isFocused={isFocused}
                   isCurrent={isCurrent}
                   styles={styles}
+                  canvas={canvas}
+                  thumbHeight={thumbHeight}
                   moduleTransition={moduleTransition}
                   tooltipContainer={tooltipContainer}
                   onFocus={() => setFocused(i)}
@@ -177,6 +181,8 @@ function OverviewThumb({
   isFocused,
   isCurrent,
   styles,
+  canvas,
+  thumbHeight,
   moduleTransition,
   tooltipContainer,
   onFocus,
@@ -190,6 +196,8 @@ function OverviewThumb({
   isFocused: boolean;
   isCurrent: boolean;
   styles: OverviewStyles;
+  canvas: CanvasSize;
+  thumbHeight: number;
   moduleTransition?: SlideTransition;
   tooltipContainer?: HTMLElement | null;
   onFocus: () => void;
@@ -227,14 +235,15 @@ function OverviewThumb({
           styles.thumbSurface,
           isFocused ? 'ring-2 ring-[var(--brand,#ef4444)]' : styles.thumbRing,
         )}
-        style={{ height: THUMB_H }}
+        style={{ height: thumbHeight }}
       >
         <SlideCanvas
-          scale={THUMB_W / CANVAS_WIDTH}
+          scale={THUMB_W / canvas.width}
           center={false}
           flat
           freezeMotion
           design={design}
+          canvas={canvas}
         >
           <SlidePageProvider index={index} total={total}>
             <PageComp />
