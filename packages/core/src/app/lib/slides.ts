@@ -4,6 +4,7 @@ import {
   loadSlide as load,
   slideThemes as themes,
 } from 'virtual:open-slide/slides';
+import { resolveCanvas } from './formats.ts';
 import type { SlideModule } from './sdk';
 
 export const slideIds: string[] = ids;
@@ -15,7 +16,9 @@ export function slidesByTheme(themeId: string): string[] {
 }
 
 export async function loadSlide(id: string): Promise<SlideModule> {
-  return load(id);
+  const mod = await load(id);
+  resolveCanvas(mod.meta, id);
+  return mod;
 }
 
 export function slideChangeIncludes(data: unknown, slideId: string): boolean {

@@ -1,5 +1,6 @@
 import type { ComponentType } from 'react';
 import type { DesignSystem } from './design.ts';
+import { FORMAT_PRESETS, type FormatPreset } from './formats.ts';
 import type { SlideTransition } from './transition.ts';
 
 export type Page = ComponentType & { transition?: SlideTransition };
@@ -9,6 +10,8 @@ export type SlideMeta = {
   theme?: string;
   /** ISO 8601 timestamp. Set once at scaffold time; used to sort the slide list. */
   createdAt?: string;
+  format?: FormatPreset;
+  canvas?: { width: number; height: number };
 };
 
 export type SlideModule = {
@@ -33,5 +36,5 @@ export type FoldersManifest = {
   assignments: Record<string, string>;
 };
 
-export const CANVAS_WIDTH = 1920;
-export const CANVAS_HEIGHT = 1080;
+export const CANVAS_WIDTH = FORMAT_PRESETS.slide.width;
+export const CANVAS_HEIGHT = FORMAT_PRESETS.slide.height;
