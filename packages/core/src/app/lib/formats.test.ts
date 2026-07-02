@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { type FormatPreset, resolveCanvas } from './formats.ts';
+import { FORMAT_PRESETS, type FormatPreset, resolveCanvas } from './formats.ts';
 import type { SlideMeta } from './sdk.ts';
 
 describe('FORMAT_PRESETS', () => {
@@ -93,5 +93,14 @@ describe('resolveCanvas registry immutability', () => {
     first.height = 1;
     const second = resolveCanvas({ format: 'og' });
     expect(second).toEqual({ width: 1200, height: 630 });
+  });
+
+  it('does not let callers mutate FORMAT_PRESETS entries directly', () => {
+    try {
+      FORMAT_PRESETS.slide.width = 1;
+      FORMAT_PRESETS.slide.height = 1;
+    } catch {}
+    expect(FORMAT_PRESETS.slide).toEqual({ width: 1920, height: 1080 });
+    expect(resolveCanvas({ format: 'slide' })).toEqual({ width: 1920, height: 1080 });
   });
 });
