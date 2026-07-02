@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils';
 import { FolderIconChip, SLIDE_DND_MIME } from '../components/sidebar/folder-item';
 import { DRAFT_ID } from '../components/sidebar/sidebar';
 import { SlideCanvas } from '../components/slide-canvas';
+import { resolveCanvas } from '../lib/formats';
 import { SlidePageProvider } from '../lib/page-context';
 import type { Folder, FolderIcon, SlideModule } from '../lib/sdk';
 import { loadSlide, slideCreatedAt } from '../lib/slides';
@@ -460,7 +461,12 @@ function SlideCard({
           <div className="relative aspect-video overflow-hidden rounded-[6px] border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
             {FirstPage ? (
               <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
-                <SlideCanvas flat freezeMotion design={slide?.design}>
+                <SlideCanvas
+                  flat
+                  freezeMotion
+                  design={slide?.design}
+                  canvas={resolveCanvas(slide?.meta)}
+                >
                   <SlidePageProvider index={0} total={slide?.default.length ?? 1}>
                     <FirstPage />
                   </SlidePageProvider>

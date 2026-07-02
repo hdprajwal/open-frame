@@ -60,6 +60,7 @@ import { type ThumbnailActions, ThumbnailRail } from '../components/thumbnail-ra
 import { exportSlideAsHtml } from '../lib/export-html';
 import { exportSlideAsPdf, isSafari } from '../lib/export-pdf';
 import { exportSlideAsImagePptx } from '../lib/export-pptx';
+import { type CanvasSize, FORMAT_PRESETS, resolveCanvas } from '../lib/formats';
 import { remapNotesSessionCacheAfterReorder } from '../lib/inspector/use-notes';
 import type { SlideModule } from '../lib/sdk';
 import { usePrefersReducedMotion } from '../lib/use-prefers-reduced-motion';
@@ -90,6 +91,10 @@ export function Slide() {
   const prefersReducedMotion = usePrefersReducedMotion();
 
   const modulePages = useMemo(() => slide?.default ?? [], [slide]);
+  const canvas = useMemo(
+    () => (slide ? resolveCanvas(slide.meta, slideId) : FORMAT_PRESETS.slide),
+    [slide, slideId],
+  );
   const [pages, setPages] = useState<typeof modulePages>(modulePages);
   useEffect(() => {
     setPages(modulePages);
@@ -356,6 +361,7 @@ export function Slide() {
         onIndexChange={goTo}
         onExit={() => {}}
         allowExit={false}
+        canvas={canvas}
       />
     );
   }
@@ -372,6 +378,7 @@ export function Slide() {
         controls
         slideId={slideId}
         fullscreen={playMode === 'fullscreen'}
+        canvas={canvas}
       />
     );
   }
@@ -703,6 +710,7 @@ export function Slide() {
                     actions={thumbnailActions}
                     moduleTransition={slide.transition}
                     onOverview={() => setOverviewOpen(true)}
+                    canvas={canvas}
                   />
                   <main
                     ref={slideViewportRef}
@@ -717,7 +725,7 @@ export function Slide() {
                       canPrev={index > 0}
                       canNext={index < pageCount - 1}
                     />
-                    <SlideCanvas design={slide.design}>
+                    <SlideCanvas design={slide.design} canvas={canvas}>
                       <SlideTransitionLayer
                         pages={pages}
                         index={index}
@@ -743,6 +751,7 @@ export function Slide() {
                       onSelect={goTo}
                       orientation="horizontal"
                       actions={thumbnailActions}
+                      canvas={canvas}
                     />
                   </div>
                   <InspectorPanel />
@@ -765,6 +774,7 @@ export function Slide() {
                   onSelect={goTo}
                   variant="editor"
                   moduleTransition={slide.transition}
+                  canvas={canvas}
                 />
               </div>
             </DesignProvider>
@@ -797,6 +807,7 @@ function ResizableRail(props: {
   actions?: ThumbnailActions;
   moduleTransition?: SlideModule['transition'];
   onOverview?: () => void;
+  canvas?: CanvasSize;
 }) {
   const t = useLocale();
   const [width, setWidth] = useState<number>(readStoredRailWidth);
