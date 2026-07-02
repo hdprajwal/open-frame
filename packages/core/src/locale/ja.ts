@@ -111,6 +111,7 @@ export const ja: Locale = {
     toastCopyLinkSuccess: 'リンクをクリップボードにコピーしました',
     toastCopyLinkFailed: 'リンクのコピーに失敗しました',
     exportAsHtml: 'HTML として書き出し',
+    exportAsPng: 'PNG として書き出し',
     exportAsPdf: 'PDF として書き出し',
     exportAsImagePptx: '画像 PPTX として書き出し',
     exportAsPptx: 'PPTX として書き出し',
@@ -118,6 +119,7 @@ export const ja: Locale = {
     pptxComingSoonTooltip:
       '編集可能な PPTX の書き出しはまだ対応していません。それまでは「画像 PPTX として書き出し」をご利用ください。',
     pdfExportFailed: 'PDF の書き出しに失敗しました',
+    pngExportFailed: 'PNG の書き出しに失敗しました',
     imagePptxExportFailed: 'PPTX の書き出しに失敗しました',
     pdfExportSafariUnsupported:
       'PDF の書き出しは現在 Safari では対応していません。Chromium ベースのブラウザでお試しください。',
@@ -369,6 +371,13 @@ export const ja: Locale = {
     title: 'PPTX を書き出し中',
     processing: 'ページ {current} / {total} を描画中',
     generating: 'プレゼンテーションを構築中…',
+    done: '完了',
+  },
+
+  pngToast: {
+    title: 'PNG を書き出し中',
+    processing: 'ページ {current} / {total} を描画中',
+    generating: '画像をパッケージ中…',
     done: '完了',
   },
 
