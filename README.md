@@ -68,16 +68,14 @@ pnpm dev
 
 `pnpm dev` runs the demo workspace in `apps/demo` against the local core. From there you drive decks through your agent, or edit `slides/<id>/index.tsx` directly.
 
-Note: the packages inside the repo are still named `@open-slide/core` and `@open-slide/cli`. A rename to `@open-studio/*` is planned.
-
 ## Repo layout
 
 This repo is a pnpm + Turbo monorepo.
 
 | Path | Description |
 | --- | --- |
-| [packages/core](packages/core) | `@open-slide/core`. The runtime (home page, slide viewer, present mode, inspector), the Vite plugin, and the dev/build/preview CLI. |
-| [packages/cli](packages/cli) | `@open-slide/cli`. The `init` scaffolder. It generates a minimal workspace where Vite, React, and tsconfig stay hidden inside core. |
+| [packages/core](packages/core) | `@open-studio/core`. The runtime (home page, slide viewer, present mode, inspector), the Vite plugin, and the dev/build/preview CLI. |
+| [packages/cli](packages/cli) | `@open-studio/cli`. The `init` scaffolder. It generates a minimal workspace where Vite, React, and tsconfig stay hidden inside core. |
 | [apps/demo](apps/demo) | Example workspace that consumes the local core. Used for developing the framework. |
 | [apps/web](apps/web) | Marketing site (Next.js). |
 

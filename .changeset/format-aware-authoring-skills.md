@@ -1,5 +1,5 @@
 ---
-"@open-slide/core": minor
+"@open-studio/core": minor
 ---
 
 Teach the authoring skills to select and design for canvas formats.

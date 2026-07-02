@@ -1,5 +1,5 @@
 ---
-"@open-slide/core": patch
+"@open-studio/core": patch
 ---
 
 Size exported PPTX slides to the deck's canvas format.
