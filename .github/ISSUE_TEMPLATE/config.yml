@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
   - name: Questions & discussion
-    url: https://github.com/hdprajwal/open-studio/discussions
-    about: Ask a question or share what you're building with open-studio.
+    url: https://github.com/hdprajwal/open-frame/discussions
+    about: Ask a question or share what you're building with open-frame.
   - name: Support the project
     url: https://ko-fi.com/D1D11YPUP1
-    about: If open-studio has been useful to you, consider supporting development.
+    about: If open-frame has been useful to you, consider supporting development.

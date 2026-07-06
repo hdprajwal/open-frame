@@ -1,4 +1,4 @@
-import config from 'virtual:open-studio/config';
+import config from 'virtual:open-frame/config';
 import {
   Check,
   ChevronDown,
@@ -110,7 +110,7 @@ export function Slide() {
   useEffect(() => {
     if (!import.meta.hot) return;
     if (!slideId || !slide || pageCount === 0) return;
-    import.meta.hot.send('open-studio:current', {
+    import.meta.hot.send('open-frame:current', {
       slideId,
       pageIndex: index,
       totalPages: pageCount,
@@ -396,7 +396,7 @@ export function Slide() {
       if (linkCopiedTimerRef.current) clearTimeout(linkCopiedTimerRef.current);
       linkCopiedTimerRef.current = setTimeout(() => setLinkCopied(false), 1200);
     } catch (err) {
-      console.error('[open-studio] copy link failed', err);
+      console.error('[open-frame] copy link failed', err);
       toast.error(t.slide.toastCopyLinkFailed);
     }
   };
@@ -407,7 +407,7 @@ export function Slide() {
     try {
       await exportSlideAsHtml(slide, slideId);
     } catch (err) {
-      console.error('[open-studio] export failed', err);
+      console.error('[open-frame] export failed', err);
     } finally {
       setExporting(false);
     }
@@ -431,7 +431,7 @@ export function Slide() {
       });
       toast.dismiss(toastId);
     } catch (err) {
-      console.error('[open-studio] png export failed', err);
+      console.error('[open-frame] png export failed', err);
       // The error toast must not reuse toastId: sonner keeps rendering a custom
       // toast's JSX when updated by id, so the error text would never paint.
       toast.dismiss(toastId);
@@ -462,7 +462,7 @@ export function Slide() {
         toast.custom(() => <PdfProgressToast progress={p} />, { id: toastId, duration: Infinity });
       });
     } catch (err) {
-      console.error('[open-studio] pdf export failed', err);
+      console.error('[open-frame] pdf export failed', err);
       toast.error(t.slide.pdfExportFailed, { id: toastId, duration: 4000 });
     } finally {
       setExporting(false);
@@ -487,7 +487,7 @@ export function Slide() {
         toast.custom(() => <PptxProgressToast progress={p} />, { id: toastId, duration: Infinity });
       });
     } catch (err) {
-      console.error('[open-studio] image pptx export failed', err);
+      console.error('[open-frame] image pptx export failed', err);
       toast.error(t.slide.imagePptxExportFailed, { id: toastId, duration: 4000 });
     } finally {
       setExporting(false);
@@ -820,7 +820,7 @@ export function Slide() {
   );
 }
 
-const RAIL_WIDTH_STORAGE_KEY = 'open-studio:thumbnail-rail-width';
+const RAIL_WIDTH_STORAGE_KEY = 'open-frame:thumbnail-rail-width';
 const DEFAULT_RAIL_WIDTH = 264;
 const MIN_RAIL_WIDTH = 200;
 const MAX_RAIL_WIDTH = 480;
@@ -994,7 +994,7 @@ function SelectionReporter() {
           text: (selected.anchor.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 120),
         }
       : null;
-    import.meta.hot.send('open-studio:current', { selection });
+    import.meta.hot.send('open-frame:current', { selection });
   }, [selected]);
   return null;
 }

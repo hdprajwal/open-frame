@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-studio/core';
+import type { DesignSystem, Page, SlideMeta } from '@open-frame/core';
 
 export const meta: SlideMeta = {
   title: 'Vercel Labs · 2026',

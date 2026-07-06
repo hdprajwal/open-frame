@@ -10,7 +10,7 @@ export function registerWatchers(server: ViteDevServer, ctx: ApiContext): void {
   server.watcher.add(ctx.manifestPath);
   server.watcher.on('change', (p) => {
     if (p === ctx.manifestPath) {
-      server.ws.send({ type: 'custom', event: 'open-studio:files-changed' });
+      server.ws.send({ type: 'custom', event: 'open-frame:files-changed' });
     }
   });
 
@@ -19,7 +19,7 @@ export function registerWatchers(server: ViteDevServer, ctx: ApiContext): void {
     if (p.startsWith(ctx.globalAssetsRoot + path.sep) || p === ctx.globalAssetsRoot) {
       server.ws.send({
         type: 'custom',
-        event: 'open-studio:assets-changed',
+        event: 'open-frame:assets-changed',
         data: { slideId: GLOBAL_SCOPE },
       });
       return;
@@ -32,7 +32,7 @@ export function registerWatchers(server: ViteDevServer, ctx: ApiContext): void {
     if (!SLIDE_ID_RE.test(slideId)) return;
     server.ws.send({
       type: 'custom',
-      event: 'open-studio:assets-changed',
+      event: 'open-frame:assets-changed',
       data: { slideId },
     });
   };

@@ -1,4 +1,4 @@
-import { ImagePlaceholder, type Page, type SlideMeta } from '@open-studio/core';
+import { ImagePlaceholder, type Page, type SlideMeta } from '@open-frame/core';
 
 const fill = {
   width: '100%',

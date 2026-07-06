@@ -1,12 +1,12 @@
 import type { Locale } from './locale/types';
 
-export type OpenStudioBuildConfig = {
+export type OpenFrameBuildConfig = {
   showSlideBrowser?: boolean;
   showSlideUi?: boolean;
   allowHtmlDownload?: boolean;
 };
 
-export type OpenStudioConfig = {
+export type OpenFrameConfig = {
   base?: string;
   slidesDir?: string;
   themesDir?: string;
@@ -18,5 +18,5 @@ export type OpenStudioConfig = {
    * chooses one (their choice is then remembered locally).
    */
   locale?: Locale;
-  build?: OpenStudioBuildConfig;
+  build?: OpenFrameBuildConfig;
 };

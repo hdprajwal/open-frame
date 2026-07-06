@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "open-studio dev",
-    "build": "open-studio build",
-    "preview": "open-studio preview",
-    "sync:skills": "open-studio sync:skills"
+    "dev": "open-frame dev",
+    "build": "open-frame build",
+    "preview": "open-frame preview",
+    "sync:skills": "open-frame sync:skills"
   },
   "dependencies": {
-    "@open-studio/core": "^0.0.6",
+    "@open-frame/core": "^0.0.6",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

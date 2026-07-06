@@ -5,7 +5,7 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { detectPackageManager, updateCommandFor } from './update.ts';
 
 async function tempProject(): Promise<string> {
-  return await fs.mkdtemp(path.join(os.tmpdir(), 'open-studio-update-'));
+  return await fs.mkdtemp(path.join(os.tmpdir(), 'open-frame-update-'));
 }
 
 describe('update routes helpers', () => {
@@ -46,19 +46,19 @@ describe('update routes helpers', () => {
   it('uses fixed update commands for each package manager', () => {
     expect(updateCommandFor('pnpm')).toEqual({
       cmd: 'pnpm',
-      args: ['add', '@open-studio/core@latest'],
+      args: ['add', '@open-frame/core@latest'],
     });
     expect(updateCommandFor('yarn')).toEqual({
       cmd: 'yarn',
-      args: ['add', '@open-studio/core@latest'],
+      args: ['add', '@open-frame/core@latest'],
     });
     expect(updateCommandFor('bun')).toEqual({
       cmd: 'bun',
-      args: ['add', '@open-studio/core@latest'],
+      args: ['add', '@open-frame/core@latest'],
     });
     expect(updateCommandFor('npm')).toEqual({
       cmd: 'npm',
-      args: ['install', '@open-studio/core@latest'],
+      args: ['install', '@open-frame/core@latest'],
     });
   });
 });

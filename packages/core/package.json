@@ -1,7 +1,7 @@
 {
-  "name": "@open-studio/core",
+  "name": "@open-frame/core",
   "version": "1.13.2",
-  "description": "Runtime and CLI for open-studio — write slides in slides/, we handle the rest.",
+  "description": "Runtime and CLI for open-frame — write slides in slides/, we handle the rest.",
   "type": "module",
   "exports": {
     ".": {
@@ -21,7 +21,7 @@
     }
   },
   "bin": {
-    "open-studio": "./bin.js"
+    "open-frame": "./bin.js"
   },
   "files": [
     "bin.js",
@@ -51,14 +51,14 @@
     "name": "HD Prajwal",
     "url": "https://github.com/hdprajwal"
   },
-  "homepage": "https://github.com/hdprajwal/open-studio",
+  "homepage": "https://github.com/hdprajwal/open-frame",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hdprajwal/open-studio.git",
+    "url": "git+https://github.com/hdprajwal/open-frame.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/hdprajwal/open-studio/issues"
+    "url": "https://github.com/hdprajwal/open-frame/issues"
   },
   "publishConfig": {
     "access": "public"

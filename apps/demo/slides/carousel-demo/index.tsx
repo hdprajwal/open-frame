@@ -1,4 +1,4 @@
-import type { Page, SlideMeta } from '@open-studio/core';
+import type { Page, SlideMeta } from '@open-frame/core';
 import type { CSSProperties } from 'react';
 
 const ink = '#0d0d0f';

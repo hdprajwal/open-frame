@@ -36,7 +36,7 @@ export const ja: Locale = {
   },
 
   home: {
-    appTitle: 'open-studio',
+    appTitle: 'open-frame',
     draft: '下書き',
     duplicate: '複製',
     themes: 'テーマ',
@@ -45,7 +45,7 @@ export const ja: Locale = {
     newFolder: '新規フォルダ',
     folderName: 'フォルダ名',
     updateAvailable:
-      'open-studio {version} が利用可能です — パッケージを更新して最新版を入手してください。',
+      'open-frame {version} が利用可能です — パッケージを更新して最新版を入手してください。',
     updatePackage: '更新',
     updatingPackage: '更新中',
     updatePackageDone: '更新しました。新しいバージョンを使うには dev server を再起動してください。',

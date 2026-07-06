@@ -1,4 +1,4 @@
-import { type DesignSystem, type Page, type SlideMeta, Step, Steps } from '@open-studio/core';
+import { type DesignSystem, type Page, type SlideMeta, Step, Steps } from '@open-frame/core';
 import type { CSSProperties } from 'react';
 
 export const design: DesignSystem = {

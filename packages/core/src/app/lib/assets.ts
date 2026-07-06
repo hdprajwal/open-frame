@@ -202,9 +202,9 @@ export function useAssets(slideId: string): UseAssetsResult {
         refresh().catch(() => {});
       }
     };
-    import.meta.hot.on('open-studio:assets-changed', handler);
+    import.meta.hot.on('open-frame:assets-changed', handler);
     return () => {
-      import.meta.hot?.off('open-studio:assets-changed', handler);
+      import.meta.hot?.off('open-frame:assets-changed', handler);
     };
   }, [slideId, refresh]);
 

@@ -21,5 +21,5 @@ export type {
   SlideTransition,
   TransitionPhase,
 } from './app/lib/transition.ts';
-export type { OpenStudioConfig } from './config.ts';
+export type { OpenFrameConfig } from './config.ts';
 export type { Locale, Plural } from './locale/types.ts';

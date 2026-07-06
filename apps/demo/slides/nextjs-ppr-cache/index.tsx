@@ -1,9 +1,4 @@
-import {
-  type DesignSystem,
-  type Page,
-  type SlideMeta,
-  useSlidePageNumber,
-} from '@open-studio/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-frame/core';
 import type { ReactNode } from 'react';
 import nextMark from './assets/next-js.svg';
 import vercelMark from './assets/vercel.svg';

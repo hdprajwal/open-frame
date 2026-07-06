@@ -1,10 +1,10 @@
-# open-studio
+# open-frame
 
-A studio for making slides, LinkedIn carousels, story graphics, YouTube thumbnails, OG images, and X post images with React and a coding agent. You describe what you want in plain language. Your agent writes the pages. open-studio handles the canvas, scaling, navigation, hot reload, present mode, and exports.
+A studio for making slides, LinkedIn carousels, story graphics, YouTube thumbnails, OG images, and X post images with React and a coding agent. You describe what you want in plain language. Your agent writes the pages. open-frame handles the canvas, scaling, navigation, hot reload, present mode, and exports.
 
 ## What it is
 
-open-studio started as a fork of [open-slide](https://github.com/1weiho/open-slide), a slide framework built for coding agents. open-slide renders every page into a fixed 1920 × 1080 canvas. open-studio generalizes that: each deck picks its own canvas format, so one workspace can hold talk slides, a LinkedIn carousel, an Instagram story, and a thumbnail side by side. Every page is a plain React component, not a constrained DSL.
+open-frame started as a fork of [open-slide](https://github.com/1weiho/open-slide), a slide framework built for coding agents. open-slide renders every page into a fixed 1920 × 1080 canvas. open-frame generalizes that: each deck picks its own canvas format, so one workspace can hold talk slides, a LinkedIn carousel, an Instagram story, and a thumbnail side by side. Every page is a plain React component, not a constrained DSL.
 
 ## Formats
 
@@ -57,11 +57,11 @@ The build output is plain static files. Host it on Vercel, Cloudflare Pages, Net
 
 ## Get started
 
-The packages are not published to npm under the open-studio name yet, so for now run it from the repo:
+The packages are not published to npm under the open-frame name yet, so for now run it from the repo:
 
 ```bash
-git clone https://github.com/hdprajwal/open-studio
-cd open-studio
+git clone https://github.com/hdprajwal/open-frame
+cd open-frame
 pnpm install
 pnpm dev
 ```
@@ -74,8 +74,8 @@ This repo is a pnpm + Turbo monorepo.
 
 | Path | Description |
 | --- | --- |
-| [packages/core](packages/core) | `@open-studio/core`. The runtime (home page, slide viewer, present mode, inspector), the Vite plugin, and the dev/build/preview CLI. |
-| [packages/cli](packages/cli) | `@open-studio/cli`. The `init` scaffolder. It generates a minimal workspace where Vite, React, and tsconfig stay hidden inside core. |
+| [packages/core](packages/core) | `@open-frame/core`. The runtime (home page, slide viewer, present mode, inspector), the Vite plugin, and the dev/build/preview CLI. |
+| [packages/cli](packages/cli) | `@open-frame/cli`. The `init` scaffolder. It generates a minimal workspace where Vite, React, and tsconfig stay hidden inside core. |
 | [apps/demo](apps/demo) | Example workspace that consumes the local core. Used for developing the framework. |
 | [apps/web](apps/web) | Marketing site (Next.js). |
 
@@ -96,4 +96,4 @@ MIT
 
 ## Credits
 
-open-studio is built on [open-slide](https://github.com/1weiho/open-slide) by [Yiwei Ho (1weiho)](https://github.com/1weiho). The runtime, the inspector, the present mode, and the agent-first authoring model all come from his work. This fork adds multi-format canvases and format-correct exports on top. If open-slide is useful to you, go star it and [support him on Ko-fi](https://ko-fi.com/D1D11YPUP1).
+open-frame is built on [open-slide](https://github.com/1weiho/open-slide) by [Yiwei Ho (1weiho)](https://github.com/1weiho). The runtime, the inspector, the present mode, and the agent-first authoring model all come from his work. This fork adds multi-format canvases and format-correct exports on top. If open-slide is useful to you, go star it and [support him on Ko-fi](https://ko-fi.com/D1D11YPUP1).

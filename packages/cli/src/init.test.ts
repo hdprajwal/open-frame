@@ -14,8 +14,8 @@ describe('sanitizeDirName', () => {
   });
 
   it('replaces spaces with hyphens', () => {
-    expect(sanitizeDirName('future of open studio and how can i help')).toBe(
-      'future-of-open-studio-and-how-can-i-help',
+    expect(sanitizeDirName('future of open frame and how can i help')).toBe(
+      'future-of-open-frame-and-how-can-i-help',
     );
   });
 

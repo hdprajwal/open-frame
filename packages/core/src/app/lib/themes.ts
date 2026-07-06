@@ -1,4 +1,4 @@
-import { loadThemeDemo as load, themes as raw } from 'virtual:open-studio/themes';
+import { loadThemeDemo as load, themes as raw } from 'virtual:open-frame/themes';
 import type { DesignSystem } from './design';
 import type { Page } from './sdk';
 

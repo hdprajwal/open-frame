@@ -1,4 +1,4 @@
-import { type Page, useSlidePageNumber } from '@open-studio/core';
+import { type Page, useSlidePageNumber } from '@open-frame/core';
 import type { ReactNode } from 'react';
 
 const styles = `

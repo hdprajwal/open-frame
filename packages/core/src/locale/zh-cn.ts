@@ -36,7 +36,7 @@ export const zhCN: Locale = {
   },
 
   home: {
-    appTitle: 'open-studio',
+    appTitle: 'open-frame',
     draft: '草稿',
     duplicate: '复制',
     themes: '主题',
@@ -44,7 +44,7 @@ export const zhCN: Locale = {
     folders: '文件夹',
     newFolder: '新建文件夹',
     folderName: '文件夹名称',
-    updateAvailable: 'open-studio {version} 已发布，请更新软件包以获取最新版本。',
+    updateAvailable: 'open-frame {version} 已发布，请更新软件包以获取最新版本。',
     updatePackage: '更新',
     updatingPackage: '更新中',
     updatePackageDone: '已更新。请重启 dev server 以使用新版本。',

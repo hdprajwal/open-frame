@@ -1,6 +1,6 @@
-# open-studio workspace
+# open-frame workspace
 
-Slides as React components. Each slide lives under `slides/<id>/index.tsx` and default-exports an array of page components. The `@open-studio/core` runtime handles layout, scaling, navigation, thumbnails, and fullscreen play mode — you just write the pages.
+Slides as React components. Each slide lives under `slides/<id>/index.tsx` and default-exports an array of page components. The `@open-frame/core` runtime handles layout, scaling, navigation, thumbnails, and fullscreen play mode — you just write the pages.
 
 ## Getting started
 
@@ -23,7 +23,7 @@ Then open the dev server and edit `slides/getting-started/index.tsx`, or create 
 
 ```tsx
 // slides/my-slide/index.tsx
-import type { Page, SlideMeta } from '@open-studio/core';
+import type { Page, SlideMeta } from '@open-frame/core';
 
 const Cover: Page = () => (
   <div style={{ width: '100%', height: '100%' }}>Hello</div>
@@ -49,16 +49,16 @@ This workspace ships with Claude Code skills preconfigured under `.claude/skills
 
 ## Config
 
-Optional `open-studio.config.ts` at the workspace root:
+Optional `open-frame.config.ts` at the workspace root:
 
 ```ts
-import type { OpenStudioConfig } from '@open-studio/core';
+import type { OpenFrameConfig } from '@open-frame/core';
 
-const openStudioConfig: OpenStudioConfig = {
+const openFrameConfig: OpenFrameConfig = {
   port: 5173,
 };
 
-export default openStudioConfig;
+export default openFrameConfig;
 ```
 
 Supported fields: `slidesDir`, `port`.

@@ -1,5 +1,5 @@
 name: Feature request
-description: Suggest a new capability for open-studio.
+description: Suggest a new capability for open-frame.
 title: "[Feature]: "
 labels: ["request"]
 body:
@@ -7,7 +7,7 @@ body:
     id: problem
     attributes:
       label: Problem
-      description: What are you trying to do that open-studio makes hard or impossible today?
+      description: What are you trying to do that open-frame makes hard or impossible today?
     validations:
       required: true
   - type: textarea
@@ -28,8 +28,8 @@ body:
       label: Which package would this affect?
       multiple: true
       options:
-        - "@open-studio/core (runtime, inspector, present mode, CLI)"
-        - "@open-studio/cli (scaffolder / template)"
+        - "@open-frame/core (runtime, inspector, present mode, CLI)"
+        - "@open-frame/cli (scaffolder / template)"
         - Agent skills (create-slide, slide-authoring, apply-comments)
         - Docs / marketing site
         - Not sure

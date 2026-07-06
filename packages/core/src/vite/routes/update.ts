@@ -6,13 +6,13 @@ import { validateMutationRequest } from '../../http/request-guard.ts';
 import { type ApiContext, json } from './context.ts';
 
 // GET /__update-check  → { current, latest, outdated }
-//   Compares the running @open-studio/core version against the npm `latest`
+//   Compares the running @open-frame/core version against the npm `latest`
 //   dist-tag. Network/parse failures degrade to { latest: null, outdated: false }.
 // POST /__update-package → { packageManager, command, latest, message }
-//   Installs @open-studio/core@latest with the detected package manager, then
-//   runs `open-studio sync:skills`.
+//   Installs @open-frame/core@latest with the detected package manager, then
+//   runs `open-frame sync:skills`.
 
-const PKG = '@open-studio/core';
+const PKG = '@open-frame/core';
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const COMMAND_TIMEOUT_MS = 300_000;
 
@@ -100,8 +100,8 @@ export function updateCommandFor(packageManager: PackageManager): CommandSpec {
   }
 }
 
-function localOpenStudioCommand(cwd: string): CommandSpec {
-  const bin = process.platform === 'win32' ? 'open-studio.cmd' : 'open-studio';
+function localOpenFrameCommand(cwd: string): CommandSpec {
+  const bin = process.platform === 'win32' ? 'open-frame.cmd' : 'open-frame';
   return { cmd: path.join(cwd, 'node_modules', '.bin', bin), args: ['sync:skills'] };
 }
 
@@ -146,7 +146,7 @@ async function runCommand(spec: CommandSpec, cwd: string): Promise<void> {
 async function updatePackage(ctx: ApiContext): Promise<UpdateResult> {
   const packageManager = await detectPackageManager(ctx.userCwd);
   const updateCommand = updateCommandFor(packageManager);
-  const syncCommand = localOpenStudioCommand(ctx.userCwd);
+  const syncCommand = localOpenFrameCommand(ctx.userCwd);
 
   await runCommand(updateCommand, ctx.userCwd);
   await runCommand(syncCommand, ctx.userCwd);
@@ -155,9 +155,9 @@ async function updatePackage(ctx: ApiContext): Promise<UpdateResult> {
   const latest = await fetchLatest(Date.now());
   return {
     packageManager,
-    command: `${formatCommand(updateCommand)} && open-studio sync:skills`,
+    command: `${formatCommand(updateCommand)} && open-frame sync:skills`,
     latest,
-    message: 'Updated @open-studio/core and synced skills.',
+    message: 'Updated @open-frame/core and synced skills.',
   };
 }
 

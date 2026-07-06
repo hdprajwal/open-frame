@@ -1,13 +1,13 @@
 ---
 name: create-slide
-description: Use this skill when the user wants to create, draft, author, or generate new slides / a presentation in this open-studio repo. Triggers on phrases like "make slides about X", "create a presentation", "draft slides for", "new slide", or when the user asks to add content under `slides/`. Do NOT use for editing the framework itself — only for authoring content inside `slides/<id>/`.
+description: Use this skill when the user wants to create, draft, author, or generate new slides / a presentation in this open-frame repo. Triggers on phrases like "make slides about X", "create a presentation", "draft slides for", "new slide", or when the user asks to add content under `slides/`. Do NOT use for editing the framework itself — only for authoring content inside `slides/<id>/`.
 ---
 
-# Create a slide in open-studio
+# Create a slide in open-frame
 
 This skill owns the **workflow** for drafting a new deck. The technical reference — file contract, format-driven canvas (1920×1080 default), type scale, palette, layout, assets — lives in the **`slide-authoring`** skill. Read that skill whenever you need details on *how* a page is structured. This skill assumes you'll consult it before writing code.
 
-You only write files under `slides/<id>/`. Never modify `package.json`, `open-studio.config.ts`, or existing slides.
+You only write files under `slides/<id>/`. Never modify `package.json`, `open-frame.config.ts`, or existing slides.
 
 ## Step 1 — Pick a format
 
@@ -92,7 +92,7 @@ Sketch the slide as a list of page roles before writing code. Common page types:
 - **Carousel / portrait / story** — think in feed beats, not chapters: a **hook page** (page 1 has to earn the swipe — a bold claim, number, or question, not a title card), **content pages** (one idea each), and a **CTA page** (follow / link / takeaway). Keep it to 5–10 pages. `slide-authoring`'s *Per-format design guidance* covers swipe cues, type scale, and (for `story`) the top/bottom safe zones.
 - **Thumbnail / OG / X post** — single-page formats. There's no sequence and no page roles: one page, one focal statement. Skip the multi-page planning here and go straight to making that single frame legible at a glance — see the per-format guidance in `slide-authoring`.
 
-If the deck topic naturally calls for specific real images the user must supply (product screenshots, team photos, customer dashboards), plan where those go and use `<ImagePlaceholder>` from `@open-studio/core` — see the **Image placeholders** section in `slide-authoring`. Default is **no placeholders**: only insert one when a real image is genuinely required.
+If the deck topic naturally calls for specific real images the user must supply (product screenshots, team photos, customer dashboards), plan where those go and use `<ImagePlaceholder>` from `@open-frame/core` — see the **Image placeholders** section in `slide-authoring`. Default is **no placeholders**: only insert one when a real image is genuinely required.
 
 ## Step 6 — Commit to a visual direction
 

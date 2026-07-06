@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-studio/core';
+import type { DesignSystem, Page, SlideMeta } from '@open-frame/core';
 import type { CSSProperties } from 'react';
 import openSlide from './assets/open-slide.png';
 

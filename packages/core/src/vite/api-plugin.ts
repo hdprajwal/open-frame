@@ -11,12 +11,12 @@ import { registerWatchers } from './routes/watchers.ts';
 
 export type { ApiPluginOptions };
 
-// All open-studio dev-server endpoints in one plugin. To see the routes
+// All open-frame dev-server endpoints in one plugin. To see the routes
 // owned by a group, open the matching file under `routes/` — each file
 // leads with a comment-block manifest of its endpoints.
 export function apiPlugin(opts: ApiPluginOptions): Plugin {
   return {
-    name: 'open-studio:api',
+    name: 'open-frame:api',
     apply: 'serve',
     configureServer(server) {
       const ctx = makeContext(opts);

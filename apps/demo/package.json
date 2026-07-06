@@ -4,12 +4,12 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "open-studio dev",
-    "build": "open-studio build",
-    "preview": "open-studio preview"
+    "dev": "open-frame dev",
+    "build": "open-frame build",
+    "preview": "open-frame preview"
   },
   "dependencies": {
-    "@open-studio/core": "workspace:*",
+    "@open-frame/core": "workspace:*",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

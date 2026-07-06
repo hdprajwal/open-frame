@@ -1,6 +1,6 @@
-# open-studio — Framework Repo Guide
+# open-frame — Framework Repo Guide
 
-You are working on the **open-studio framework** — the runtime, CLI, and tooling that ship to npm.
+You are working on the **open-frame framework** — the runtime, CLI, and tooling that ship to npm.
 
 (Slide-authoring guidance lives in the `slide-authoring` / `create-slide` skills under `apps/demo/.claude/skills/`. Use those only when editing files inside `apps/demo/slides/`.)
 
@@ -10,9 +10,9 @@ pnpm + Turbo monorepo.
 
 | Path | Package | Role |
 | --- | --- | --- |
-| `packages/core` | `@open-studio/core` | Runtime (viewer, present mode, inspector), Vite plugin, `open-studio` dev/build CLI. |
-| `packages/cli` | `@open-studio/cli` | `npx @open-studio/cli init` scaffolder + project template. |
-| `apps/demo` | private | Local consumer of `@open-studio/core` via `workspace:*`. Dogfood target — run `pnpm dev` here to exercise the framework. |
+| `packages/core` | `@open-frame/core` | Runtime (viewer, present mode, inspector), Vite plugin, `open-frame` dev/build CLI. |
+| `packages/cli` | `@open-frame/cli` | `npx @open-frame/cli init` scaffolder + project template. |
+| `apps/demo` | private | Local consumer of `@open-frame/core` via `workspace:*`. Dogfood target — run `pnpm dev` here to exercise the framework. |
 | `apps/web` | private | Marketing site (Next.js). |
 
 Shared config: `biome.json`, `turbo.json`, `pnpm-workspace.yaml`, `tsconfig` per package.

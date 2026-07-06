@@ -33,7 +33,7 @@ interface DevFlags extends ServerFlags {
 }
 
 async function runSkillsDriftCheck(skillsDir: string): Promise<void> {
-  if (process.env.OPEN_STUDIO_SKIP_SKILLS_CHECK === '1') return;
+  if (process.env.OPEN_FRAME_SKIP_SKILLS_CHECK === '1') return;
 
   let drift: Awaited<ReturnType<typeof detectSkillsDrift>>;
   try {
@@ -49,7 +49,7 @@ async function runSkillsDriftCheck(skillsDir: string): Promise<void> {
 
   if (!interactive) {
     process.stderr.write(
-      `${chalk.yellow('!')} Skills out of date (${names}). Run \`open-studio sync:skills\` to update.\n`,
+      `${chalk.yellow('!')} Skills out of date (${names}). Run \`open-frame sync:skills\` to update.\n`,
     );
     return;
   }
@@ -66,7 +66,7 @@ async function runSkillsDriftCheck(skillsDir: string): Promise<void> {
     if (answer === '' || answer === 'y' || answer === 'yes') {
       await syncSkills(skillsDir);
     } else {
-      process.stdout.write(chalk.dim('Skipped. Run `open-studio sync:skills` later to update.\n'));
+      process.stdout.write(chalk.dim('Skipped. Run `open-frame sync:skills` later to update.\n'));
     }
   } finally {
     rl.close();
@@ -92,11 +92,11 @@ export async function run(argv: string[]): Promise<void> {
 
   const program = new Command();
   program
-    .name('open-studio')
+    .name('open-frame')
     .description('Author slides — we handle the Vite/React stack.')
     .version(version, '-v, --version', 'print version')
     .helpOption('-h, --help', 'show help')
-    .showHelpAfterError(chalk.dim('(run `open-studio --help` for usage)'));
+    .showHelpAfterError(chalk.dim('(run `open-frame --help` for usage)'));
 
   program
     .command('dev')
@@ -135,7 +135,7 @@ export async function run(argv: string[]): Promise<void> {
 
   program
     .command('sync:skills')
-    .description('Sync built-in skills from @open-studio/core into this workspace')
+    .description('Sync built-in skills from @open-frame/core into this workspace')
     .option('--dry-run', 'show what would change without writing')
     .action(async (flags: SyncFlags) => {
       const { syncSkills } = await import('./sync.ts');

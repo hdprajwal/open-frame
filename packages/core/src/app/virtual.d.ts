@@ -1,4 +1,4 @@
-declare module 'virtual:open-studio/slides' {
+declare module 'virtual:open-frame/slides' {
   import type { SlideModule } from './lib/sdk';
   export const slideIds: string[];
   export const slideThemes: Record<string, string>;
@@ -6,7 +6,7 @@ declare module 'virtual:open-studio/slides' {
   export function loadSlide(id: string): Promise<SlideModule>;
 }
 
-declare module 'virtual:open-studio/config' {
+declare module 'virtual:open-frame/config' {
   import type { Locale } from '../locale/types';
 
   const config: {
@@ -24,14 +24,14 @@ declare module 'virtual:open-studio/config' {
   export default config;
 }
 
-declare module 'virtual:open-studio/folders' {
+declare module 'virtual:open-frame/folders' {
   import type { FoldersManifest } from './lib/sdk';
 
   const manifest: FoldersManifest;
   export default manifest;
 }
 
-declare module 'virtual:open-studio/themes' {
+declare module 'virtual:open-frame/themes' {
   import type { DesignSystem } from './lib/design';
   import type { Page } from './lib/sdk';
 

@@ -1,4 +1,4 @@
-import config from 'virtual:open-studio/config';
+import config from 'virtual:open-frame/config';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { Toaster } from './components/ui/sonner';
 import { useLocale } from './lib/use-locale';

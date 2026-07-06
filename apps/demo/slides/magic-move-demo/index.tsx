@@ -4,7 +4,7 @@ import {
   unstable_SharedElement as SharedElement,
   type SlideMeta,
   type SlideTransition,
-} from '@open-studio/core';
+} from '@open-frame/core';
 import type { CSSProperties, ReactNode } from 'react';
 
 export const design: DesignSystem = {

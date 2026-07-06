@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-studio/core';
+import type { DesignSystem, Page, SlideMeta } from '@open-frame/core';
 import type { ReactNode } from 'react';
 
 // ─── Panel-tweakable design tokens ────────────────────────────────────────────

@@ -466,5 +466,5 @@ export function Player({
 export function openPresenterWindow(slideId: string) {
   if (typeof window === 'undefined') return;
   const url = `${import.meta.env.BASE_URL}s/${encodeURIComponent(slideId)}/presenter`;
-  window.open(url, `open-studio-presenter-${slideId}`, 'popup,width=1280,height=800');
+  window.open(url, `open-frame-presenter-${slideId}`, 'popup,width=1280,height=800');
 }

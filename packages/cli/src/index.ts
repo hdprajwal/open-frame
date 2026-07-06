@@ -146,15 +146,15 @@ export async function run(argv: string[]): Promise<void> {
 
   const program = new Command();
   program
-    .name('open-studio')
-    .description('Scaffold and manage open-studio workspaces.')
+    .name('open-frame')
+    .description('Scaffold and manage open-frame workspaces.')
     .version(version, '-v, --version', 'print version')
     .helpOption('-h, --help', 'show help')
-    .showHelpAfterError(chalk.dim('(run `open-studio --help` for usage)'));
+    .showHelpAfterError(chalk.dim('(run `open-frame --help` for usage)'));
 
   program
     .command('init')
-    .description('Create a new open-studio workspace')
+    .description('Create a new open-frame workspace')
     .argument('[dir]', 'target directory', undefined)
     .option('-f, --force', 'overwrite non-empty target directory', false)
     .option('-n, --name <name>', 'override package name (defaults to folder name)')

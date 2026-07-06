@@ -1,4 +1,4 @@
-import type { DesignSystem, Page, SlideMeta } from '@open-studio/core';
+import type { DesignSystem, Page, SlideMeta } from '@open-frame/core';
 
 import claudeLogo from './assets/claude.svg';
 import cloudflareLogo from './assets/cloudflare.svg';
@@ -414,7 +414,7 @@ const Cover: Page = () => (
     >
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <Eyebrow className="es-fadeUp" style={{ animationDelay: '0.05s' }}>
-          open-studio · getting started
+          open-frame · getting started
         </Eyebrow>
         <div
           className="es-fadeUp"
@@ -517,7 +517,7 @@ const Init: Page = () => {
     { kind: 'blank' },
     {
       kind: 'success',
-      text: 'Created open-studio workspace',
+      text: 'Created open-frame workspace',
       dim: 'in /Users/you/my-slide',
     },
     { kind: 'blank' },
@@ -619,7 +619,7 @@ const Init: Page = () => {
             <div style={{ display: 'flex', gap: 16 }}>
               <span style={{ color: palette.mint }}>$</span>
               <span className="gs-type" style={{ color: palette.text }}>
-                npx @open-studio/cli init my-slide
+                npx @open-frame/cli init my-slide
               </span>
             </div>
             <div style={{ height: 16 }} />
@@ -2559,7 +2559,7 @@ const Themes: Page = () => {
 // ─── Slide 6: Recap ──────────────────────────────────────────────────────────
 const Recap: Page = () => {
   const steps = [
-    { n: '01', title: 'init', caption: 'npx @open-studio/cli init' },
+    { n: '01', title: 'init', caption: 'npx @open-frame/cli init' },
     { n: '02', title: 'prompt', caption: 'create-slide' },
     { n: '03', title: 'edit', caption: 'click → save' },
     { n: '04', title: 'assets', caption: 'drag · drop · svgl' },
@@ -2677,7 +2677,7 @@ const Recap: Page = () => {
             edit <span style={{ color: palette.text }}>slides/&lt;your-slide&gt;/index.tsx</span> —
             HMR does the rest
           </span>
-          <span>open-studio</span>
+          <span>open-frame</span>
         </div>
       </div>
     </div>
@@ -2707,7 +2707,7 @@ const AgentAgnostic: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-studio · 01</Eyebrow>
+          <Eyebrow>why open-frame · 01</Eyebrow>
           <h2
             style={{
               marginTop: 24,
@@ -2741,7 +2741,7 @@ const AgentAgnostic: Page = () => {
               letterSpacing: '-0.01em',
             }}
           >
-            open-studio speaks plain React and a file-convention protocol. Any agent can author and
+            open-frame speaks plain React and a file-convention protocol. Any agent can author and
             edit slides — no lock-in, no bespoke SDK.
           </p>
         </div>
@@ -3011,7 +3011,7 @@ const FreeLayout: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-studio · 02</Eyebrow>
+          <Eyebrow>why open-frame · 02</Eyebrow>
           <h2
             style={{
               marginTop: 24,
@@ -3112,7 +3112,7 @@ const GitTracked: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-studio · 03</Eyebrow>
+          <Eyebrow>why open-frame · 03</Eyebrow>
           <h2
             style={{
               marginTop: 20,
@@ -3300,7 +3300,7 @@ const DeployAnywhere: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-studio · 04</Eyebrow>
+          <Eyebrow>why open-frame · 04</Eyebrow>
           <h2
             style={{
               marginTop: 24,
@@ -3334,7 +3334,7 @@ const DeployAnywhere: Page = () => {
               letterSpacing: '-0.01em',
             }}
           >
-            open-studio builds to plain static assets. Drop them on Vercel, Cloudflare, Zeabur — or
+            open-frame builds to plain static assets. Drop them on Vercel, Cloudflare, Zeabur — or
             any server that serves HTML.
           </p>
         </div>
@@ -3386,7 +3386,7 @@ const DeployAnywhere: Page = () => {
 
 // ─── Slide export ────────────────────────────────────────────────────────────
 export const meta: SlideMeta = {
-  title: 'Getting started with open-studio',
+  title: 'Getting started with open-frame',
 };
 
 export default [

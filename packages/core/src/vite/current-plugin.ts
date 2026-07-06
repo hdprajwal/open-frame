@@ -66,17 +66,17 @@ function parseSelection(raw: unknown): Selection | null {
 export function currentPlugin(opts: CurrentPluginOptions): Plugin {
   const userCwd = opts.userCwd;
   const slidesDir = opts.slidesDir ?? 'slides';
-  const outDir = path.join(userCwd, 'node_modules', '.open-studio');
+  const outDir = path.join(userCwd, 'node_modules', '.open-frame');
   const outFile = path.join(outDir, 'current.json');
   const tmpFile = `${outFile}.tmp`;
 
   let cached: Cached | null = null;
 
   return {
-    name: 'open-studio:current',
+    name: 'open-frame:current',
     apply: 'serve',
     configureServer(server: ViteDevServer) {
-      server.ws.on('open-studio:current', async (raw: IncomingPayload) => {
+      server.ws.on('open-frame:current', async (raw: IncomingPayload) => {
         const next: Cached = cached
           ? { ...cached }
           : {

@@ -3,7 +3,7 @@ import {
   slideIds as ids,
   loadSlide as load,
   slideThemes as themes,
-} from 'virtual:open-studio/slides';
+} from 'virtual:open-frame/slides';
 import { resolveCanvas } from './formats.ts';
 import type { SlideModule } from './sdk';
 

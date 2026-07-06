@@ -1,5 +1,5 @@
 {
-  "name": "open-studio-monorepo",
+  "name": "open-frame-monorepo",
   "private": true,
   "version": "0.0.0",
   "packageManager": "pnpm@10.17.0",
@@ -17,11 +17,11 @@
     "check:fix": "biome check --write .",
     "test": "vitest run",
     "test:watch": "vitest",
-    "core": "pnpm --filter @open-studio/core",
-    "cli": "pnpm --filter @open-studio/cli",
+    "core": "pnpm --filter @open-frame/core",
+    "cli": "pnpm --filter @open-frame/cli",
     "changeset": "changeset",
     "version-packages": "changeset version",
-    "release": "turbo run build --filter=@open-studio/core --filter=@open-studio/cli && changeset publish"
+    "release": "turbo run build --filter=@open-frame/core --filter=@open-frame/cli && changeset publish"
   },
   "devDependencies": {
     "@biomejs/biome": "2.4.12",

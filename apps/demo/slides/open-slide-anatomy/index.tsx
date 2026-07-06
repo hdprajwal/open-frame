@@ -1,9 +1,4 @@
-import {
-  type DesignSystem,
-  type Page,
-  type SlideMeta,
-  useSlidePageNumber,
-} from '@open-studio/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-frame/core';
 import type { ReactNode } from 'react';
 
 export const design: DesignSystem = {

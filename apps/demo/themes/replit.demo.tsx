@@ -1,5 +1,5 @@
-import type { DesignSystem } from '@open-studio/core';
-import { type Page, useSlidePageNumber } from '@open-studio/core';
+import type { DesignSystem } from '@open-frame/core';
+import { type Page, useSlidePageNumber } from '@open-frame/core';
 
 const css = `
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap');

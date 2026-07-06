@@ -43,7 +43,7 @@ type StepHostContextValue = {
   controlled: boolean;
 };
 
-const GLOBAL_KEY = '__open_studio_step_host_context__';
+const GLOBAL_KEY = '__open_frame_step_host_context__';
 type GlobalWithCtx = typeof globalThis & {
   [GLOBAL_KEY]?: Context<StepHostContextValue | null>;
 };

@@ -1,9 +1,4 @@
-import {
-  type DesignSystem,
-  type Page,
-  type SlideMeta,
-  useSlidePageNumber,
-} from '@open-studio/core';
+import { type DesignSystem, type Page, type SlideMeta, useSlidePageNumber } from '@open-frame/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#fafaf9', text: '#1c1917', accent: '#2563eb' },

@@ -34,7 +34,7 @@ export function usePresenterChannel(slideId: string, onMessage?: Handler) {
 
   useEffect(() => {
     if (!SUPPORTED) return;
-    const channel = new BroadcastChannel(`open-studio:presenter:${slideId}`);
+    const channel = new BroadcastChannel(`open-frame:presenter:${slideId}`);
     channelRef.current = channel;
     setAvailable(true);
     const handler = (e: MessageEvent<PresenterCommand>) => {

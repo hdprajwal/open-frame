@@ -36,7 +36,7 @@ export const zhTW: Locale = {
   },
 
   home: {
-    appTitle: 'open-studio',
+    appTitle: 'open-frame',
     draft: '草稿',
     duplicate: '複製',
     themes: '主題',
@@ -44,7 +44,7 @@ export const zhTW: Locale = {
     folders: '資料夾',
     newFolder: '新增資料夾',
     folderName: '資料夾名稱',
-    updateAvailable: 'open-studio {version} 已發布，請更新套件以取得最新版本。',
+    updateAvailable: 'open-frame {version} 已發布，請更新套件以取得最新版本。',
     updatePackage: '更新',
     updatingPackage: '更新中',
     updatePackageDone: '已更新。請重新啟動 dev server 以使用新版本。',
