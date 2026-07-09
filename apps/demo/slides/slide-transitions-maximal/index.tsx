@@ -101,7 +101,7 @@ const Cover: Page = () => (
     }}
   >
     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-      <div style={EYEBROW}>open-slide · field notes · vol. ii</div>
+      <div style={EYEBROW}>open-frame · field notes · vol. ii</div>
       <div style={{ ...EYEBROW, color: muted }}>showcase</div>
     </div>
     <div style={{ alignSelf: 'center' }}>
@@ -421,7 +421,7 @@ const Cli: Page = () => (
         }}
       >
         <span style={{ color: muted }}>$ </span>
-        npx <span style={{ color: 'var(--osd-accent)' }}>@open-slide/cli</span> init
+        npx <span style={{ color: 'var(--osd-accent)' }}>@open-frame/cli</span> init
       </div>
       <p
         style={{
@@ -440,7 +440,7 @@ const Cli: Page = () => (
     </div>
     <div style={{ ...FOOT, display: 'flex', justifyContent: 'space-between' }}>
       <span>07 · cube</span>
-      <span>open-slide.dev</span>
+      <span>github.com/hdprajwal/open-frame</span>
     </div>
   </div>
 );
