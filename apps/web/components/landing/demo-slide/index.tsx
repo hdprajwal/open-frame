@@ -406,7 +406,7 @@ const Cover: Page = () => (
         }}
       >
         <Eyebrow className="es-fadeUp" style={{ animationDelay: '0.05s' }}>
-          open-frame · getting started
+          open-frame · overview
         </Eyebrow>
         <div
           className="es-fadeUp"
@@ -436,7 +436,7 @@ const Cover: Page = () => (
             animationDelay: '0.15s',
           }}
         >
-          Author slides
+          Prompt once.
           <br />
           <span
             style={{
@@ -446,21 +446,22 @@ const Cover: Page = () => (
               color: 'transparent',
             }}
           >
-            with your agent.
+            Ship every format.
           </span>
         </h1>
         <p
           className="es-fadeUp"
           style={{
             marginTop: 48,
-            maxWidth: 1100,
+            maxWidth: 1240,
             fontSize: 36,
             lineHeight: 1.35,
             color: palette.textSoft,
             animationDelay: '0.35s',
           }}
         >
-          Three steps from empty folder to a live, editable slide.
+          Slides, carousels, stories, thumbnails, and OG images — every page a React component your
+          agent writes.
         </p>
       </div>
 
@@ -476,24 +477,175 @@ const Cover: Page = () => (
         }}
       >
         <span>
-          <span style={{ color: palette.accentSoft }}>01</span> init
+          <span style={{ color: palette.accentSoft }}>01</span> formats
         </span>
         <span>
-          <span style={{ color: palette.accentSoft }}>02</span> prompt
+          <span style={{ color: palette.accentSoft }}>02</span> agents
         </span>
         <span>
-          <span style={{ color: palette.accentSoft }}>03</span> edit
+          <span style={{ color: palette.accentSoft }}>03</span> author
         </span>
         <span>
-          <span style={{ color: palette.accentSoft }}>04</span> assets
+          <span style={{ color: palette.accentSoft }}>04</span> edit
         </span>
         <span>
-          <span style={{ color: palette.accentSoft }}>05</span> comment
+          <span style={{ color: palette.accentSoft }}>05</span> ship
         </span>
       </div>
     </div>
   </div>
 );
+
+// ─── Slide: Formats ──────────────────────────────────────────────────────────
+const Formats: Page = () => {
+  const formats: {
+    name: string;
+    w: number;
+    h: number;
+    dims: string;
+    use: string;
+    custom?: boolean;
+  }[] = [
+    { name: 'Slide', w: 1920, h: 1080, dims: '1920 × 1080', use: 'talks & presentations' },
+    { name: 'Carousel', w: 1080, h: 1080, dims: '1080 × 1080', use: 'LinkedIn & Instagram' },
+    { name: 'Portrait', w: 1080, h: 1350, dims: '1080 × 1350', use: 'portrait feed posts' },
+    { name: 'Story', w: 1080, h: 1920, dims: '1080 × 1920', use: 'Instagram & WhatsApp' },
+    { name: 'Thumbnail', w: 1280, h: 720, dims: '1280 × 720', use: 'YouTube thumbnails' },
+    { name: 'OG image', w: 1200, h: 630, dims: '1200 × 630', use: 'link previews' },
+    { name: 'X post', w: 1600, h: 900, dims: '1600 × 900', use: 'X post images' },
+    { name: 'Custom', w: 4, h: 3, dims: 'any × any', use: 'set any width & height', custom: true },
+  ];
+  const box = (f: (typeof formats)[number]) => {
+    const scale = Math.min(170 / f.w, 120 / f.h);
+    return { width: Math.round(f.w * scale), height: Math.round(f.h * scale) };
+  };
+  return (
+    <div style={fill}>
+      <Styles />
+      <GridBg />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          padding: '100px 140px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 44,
+        }}
+      >
+        <div className="es-fadeUp">
+          <Eyebrow>what you can make</Eyebrow>
+          <h2
+            style={{
+              marginTop: 24,
+              marginBottom: 0,
+              fontSize: 104,
+              fontWeight: 600,
+              letterSpacing: '-0.04em',
+              lineHeight: 1.0,
+            }}
+          >
+            Seven presets.{' '}
+            <span
+              style={{
+                background: `linear-gradient(90deg, ${palette.accentSoft}, ${palette.accent})`,
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Any canvas.
+            </span>
+          </h2>
+          <p
+            style={{
+              marginTop: 24,
+              maxWidth: 1320,
+              fontSize: 30,
+              lineHeight: 1.4,
+              color: palette.textSoft,
+              letterSpacing: '-0.01em',
+            }}
+          >
+            Set <span style={{ fontFamily: font.mono, color: palette.accentSoft }}>format</span> in
+            a deck's meta and every page renders, previews, and exports at that size — or define a
+            custom canvas.
+          </p>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(4, 1fr)',
+            gridTemplateRows: 'repeat(2, 1fr)',
+            gap: 24,
+            minHeight: 0,
+          }}
+        >
+          {formats.map((f, i) => (
+            <div
+              key={f.name}
+              className="gs-thumbIn"
+              style={{
+                animationDelay: `${0.25 + i * 0.08}s`,
+                borderRadius: 16,
+                border: `1px solid ${palette.border}`,
+                background: palette.surface,
+                padding: '22px 24px 20px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: 14,
+                minHeight: 0,
+              }}
+            >
+              <div
+                style={{
+                  flex: 1,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  minHeight: 0,
+                }}
+              >
+                <div
+                  style={{
+                    ...box(f),
+                    borderRadius: 6,
+                    border: f.custom
+                      ? `1.5px dashed ${palette.muted}`
+                      : `1.5px solid ${palette.textSoft}`,
+                    background: f.custom
+                      ? 'transparent'
+                      : `linear-gradient(135deg, ${palette.accent}18, transparent 70%)`,
+                  }}
+                />
+              </div>
+              <div>
+                <div
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'baseline',
+                    gap: 10,
+                  }}
+                >
+                  <span style={{ fontSize: 28, fontWeight: 600, letterSpacing: '-0.02em' }}>
+                    {f.name}
+                  </span>
+                  <span style={{ fontFamily: font.mono, fontSize: 17, color: palette.muted }}>
+                    {f.dims}
+                  </span>
+                </div>
+                <div style={{ marginTop: 4, fontSize: 19, color: palette.muted }}>{f.use}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // ─── Slide 2: Init in a terminal ─────────────────────────────────────────────
 const Init: Page = () => {
@@ -2325,11 +2477,11 @@ const Apply: Page = () => (
 // ─── Slide 6: Recap ──────────────────────────────────────────────────────────
 const Recap: Page = () => {
   const steps = [
-    { n: '01', title: 'init', caption: 'npx @open-frame/cli init' },
-    { n: '02', title: 'prompt', caption: 'create-slide' },
-    { n: '03', title: 'edit', caption: 'click → save' },
-    { n: '04', title: 'assets', caption: 'drag · drop · svgl' },
-    { n: '05', title: 'comment', caption: 'apply-comments' },
+    { n: '01', title: 'formats', caption: '7 presets + custom' },
+    { n: '02', title: 'agents', caption: 'bring your own' },
+    { n: '03', title: 'author', caption: 'init → prompt' },
+    { n: '04', title: 'edit', caption: 'click · comment · apply' },
+    { n: '05', title: 'ship', caption: 'png · pdf · pptx · web' },
   ];
   return (
     <div style={fill}>
@@ -2367,7 +2519,7 @@ const Recap: Page = () => {
                 color: 'transparent',
               }}
             >
-              whole loop.
+              whole studio.
             </span>
           </h2>
         </div>
@@ -2506,7 +2658,7 @@ const AgentAgnostic: Page = () => {
             }}
           >
             open-frame speaks plain React and a file-convention protocol. Any agent can author and
-            edit slides — no lock-in, no bespoke SDK.
+            edit pages — no lock-in, no bespoke SDK.
           </p>
         </div>
 
@@ -2829,8 +2981,8 @@ const FreeLayout: Page = () => {
               letterSpacing: '-0.01em',
             }}
           >
-            Zero layouts. Zero slide types. Zero "themes". Each page is just a React component on a
-            1920×1080 canvas — the agent decides everything.
+            Zero layouts. Zero slide types. Zero templates. Each page is just a React component on a
+            canvas sized for its format — the agent decides everything.
           </p>
         </div>
 
@@ -2847,6 +2999,143 @@ const FreeLayout: Page = () => {
           {kinds.map((k, i) => (
             <div key={k} className="gs-thumbIn" style={{ animationDelay: `${0.25 + i * 0.09}s` }}>
               {mockSlide(k)}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// ─── Slide: Batteries included ───────────────────────────────────────────────
+const Loaded: Page = () => {
+  const features = [
+    {
+      n: '01',
+      title: 'Present',
+      caption: 'Fullscreen presenter mode with keyboard navigation.',
+    },
+    {
+      n: '02',
+      title: 'Transitions',
+      caption: 'Page transitions and shared-element magic move.',
+    },
+    {
+      n: '03',
+      title: 'Steps',
+      caption: 'Reveal a page in stages as you present.',
+    },
+    {
+      n: '04',
+      title: 'Themes',
+      caption: 'Define a palette once — every deck stays on it.',
+    },
+    {
+      n: '05',
+      title: 'Export',
+      caption: 'PNG, PDF, PPTX — or build a full static site.',
+    },
+    {
+      n: '06',
+      title: 'Agent skills',
+      caption: 'create-slide, apply-comments, create-theme — bundled.',
+    },
+  ];
+  return (
+    <div style={fill}>
+      <Styles />
+      <GridBg />
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          padding: '100px 140px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 48,
+        }}
+      >
+        <div className="es-fadeUp">
+          <Eyebrow>batteries included</Eyebrow>
+          <h2
+            style={{
+              marginTop: 24,
+              marginBottom: 0,
+              fontSize: 104,
+              fontWeight: 600,
+              letterSpacing: '-0.04em',
+              lineHeight: 1.0,
+            }}
+          >
+            Everything a deck needs.{' '}
+            <span
+              style={{
+                background: `linear-gradient(90deg, ${palette.accentSoft}, ${palette.accent})`,
+                WebkitBackgroundClip: 'text',
+                backgroundClip: 'text',
+                color: 'transparent',
+              }}
+            >
+              Built in.
+            </span>
+          </h2>
+        </div>
+
+        <div
+          style={{
+            flex: 1,
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
+            gridTemplateRows: 'repeat(2, 1fr)',
+            gap: 28,
+            minHeight: 0,
+          }}
+        >
+          {features.map((f, i) => (
+            <div
+              key={f.n}
+              className="es-fadeUp"
+              style={{
+                animationDelay: `${0.25 + i * 0.1}s`,
+                padding: '32px 36px',
+                border: `1px solid ${palette.border}`,
+                borderRadius: 16,
+                background: palette.surface,
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'center',
+                gap: 16,
+                minHeight: 0,
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: font.mono,
+                  fontSize: 20,
+                  color: palette.accentSoft,
+                  letterSpacing: '0.12em',
+                }}
+              >
+                {f.n}
+              </div>
+              <div
+                style={{
+                  fontSize: 44,
+                  fontWeight: 600,
+                  letterSpacing: '-0.03em',
+                }}
+              >
+                {f.title}
+              </div>
+              <div
+                style={{
+                  fontSize: 24,
+                  lineHeight: 1.4,
+                  color: palette.muted,
+                }}
+              >
+                {f.caption}
+              </div>
             </div>
           ))}
         </div>
@@ -3168,12 +3457,13 @@ const DeployAnywhere: Page = () => {
 
 // ─── Slide export ────────────────────────────────────────────────────────────
 export const meta: SlideMeta = {
-  title: 'Getting started with open-frame',
+  title: 'What open-frame does',
   theme: 'dark',
 };
 
 export default [
   Cover,
+  Formats,
   AgentAgnostic,
   FreeLayout,
   Init,
@@ -3182,6 +3472,7 @@ export default [
   AssetsManager,
   Inspect,
   Apply,
+  Loaded,
   GitTracked,
   DeployAnywhere,
   Recap,
