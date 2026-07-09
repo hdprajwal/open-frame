@@ -158,28 +158,28 @@ export function HomeShell() {
         />
       </div>
 
-      <div className="paper relative flex min-w-0 flex-1 flex-col overflow-y-auto bg-canvas">
+      <div className="relative flex min-w-0 flex-1 flex-col overflow-y-auto bg-background">
         <div className="flex items-center justify-between border-b border-hairline bg-sidebar px-4 py-3 md:hidden">
           <h1 className="font-heading text-lg font-bold tracking-tight">{t.home.appTitle}</h1>
         </div>
         <div className="border-b border-hairline bg-sidebar px-4 py-2 md:hidden">
           <div className="flex gap-2 overflow-x-auto pb-1">
             <MobileFolderPill
-              icon={{ type: 'emoji', value: '📝' }}
+              icon={{ type: 'lucide', value: 'square-pen' }}
               label={t.home.draft}
               count={countFor(null)}
               active={selectedId === DRAFT_ID}
               onClick={() => selectFolder(DRAFT_ID)}
             />
             <MobileFolderPill
-              icon={{ type: 'emoji', value: '🎨' }}
+              icon={{ type: 'lucide', value: 'palette' }}
               label={t.home.themes}
               count={themeRegistry.length}
               active={selectedId === THEMES_ID}
               onClick={() => selectFolder(THEMES_ID)}
             />
             <MobileFolderPill
-              icon={{ type: 'emoji', value: '🗂️' }}
+              icon={{ type: 'lucide', value: 'images' }}
               label={t.home.assets}
               count={globalAssets.length}
               active={selectedId === ASSETS_ID}

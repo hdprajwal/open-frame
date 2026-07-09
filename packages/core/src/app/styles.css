@@ -68,39 +68,38 @@
 }
 
 :root {
-  /* Warm paper, ink foreground. Not pure white / pure black — those read as
-     "default browser"; the slight warmth gives the surface a quiet voice. */
-  --background: oklch(0.985 0.004 75);
-  --foreground: oklch(0.2 0.012 60);
-  --canvas: oklch(0.974 0.005 75);
+  /* Flat documentation palette shared with apps/web: paper-white canvas,
+     neutral grays, hairline borders. */
+  --background: #ffffff;
+  --foreground: #090909;
+  --canvas: #ffffff;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0.012 60);
-  --popover: oklch(0.998 0.002 75);
-  --popover-foreground: oklch(0.2 0.012 60);
+  --card: #ffffff;
+  --card-foreground: #090909;
+  --popover: #ffffff;
+  --popover-foreground: #090909;
 
-  --primary: oklch(0.215 0.012 60);
-  --primary-foreground: oklch(0.985 0.004 75);
-  --secondary: oklch(0.96 0.006 75);
-  --secondary-foreground: oklch(0.215 0.012 60);
-  --muted: oklch(0.955 0.008 75);
-  --muted-foreground: oklch(0.485 0.012 60);
-  --accent: oklch(0.945 0.012 75);
-  --accent-foreground: oklch(0.215 0.012 60);
+  --primary: #0091fd;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #090909;
+  --muted: #f5f5f5;
+  --muted-foreground: #737373;
+  --accent: #f5f5f5;
+  --accent-foreground: #090909;
   --destructive: oklch(0.55 0.21 27);
 
-  --border: oklch(0.895 0.008 70);
-  --hairline: oklch(0.86 0.008 70);
-  --input: oklch(0.91 0.008 70);
-  --ring: oklch(0.55 0.18 28);
+  --border: #e5e5e5;
+  --hairline: #e5e5e5;
+  --input: #d4d4d4;
+  --ring: #0091fd;
 
-  /* Vermillion — refined editorial red. Single accent across the app;
-     restraint is the point. */
-  --brand: oklch(0.555 0.185 28);
-  --brand-foreground: oklch(0.985 0.004 75);
-  --brand-soft: oklch(0.555 0.185 28 / 0.1);
+  /* Azure — single accent across the app; restraint is the point. */
+  --brand: #0091fd;
+  --brand-foreground: #ffffff;
+  --brand-soft: rgb(0 145 253 / 0.1);
 
-  --chart-1: oklch(0.555 0.185 28);
+  --chart-1: #0091fd;
   --chart-2: oklch(0.55 0.1 60);
   --chart-3: oklch(0.45 0.06 245);
   --chart-4: oklch(0.55 0.12 160);
@@ -109,14 +108,14 @@
   /* Tight, considered radius — drops the trendy 10px squish for 6px crisp. */
   --radius: 0.375rem;
 
-  --sidebar: oklch(0.972 0.005 75);
-  --sidebar-foreground: oklch(0.215 0.012 60);
-  --sidebar-primary: oklch(0.215 0.012 60);
-  --sidebar-primary-foreground: oklch(0.985 0.004 75);
-  --sidebar-accent: oklch(0.94 0.01 75);
-  --sidebar-accent-foreground: oklch(0.215 0.012 60);
-  --sidebar-border: oklch(0.895 0.008 70);
-  --sidebar-ring: oklch(0.55 0.18 28);
+  --sidebar: #fafafa;
+  --sidebar-foreground: #090909;
+  --sidebar-primary: #0091fd;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f0f0;
+  --sidebar-accent-foreground: #090909;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #0091fd;
 }
 
 .dark {
@@ -129,8 +128,8 @@
   --popover: oklch(0.21 0.006 70);
   --popover-foreground: oklch(0.945 0.005 80);
 
-  --primary: oklch(0.94 0.005 80);
-  --primary-foreground: oklch(0.18 0.008 70);
+  --primary: #0091fd;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.245 0.006 70);
   --secondary-foreground: oklch(0.945 0.005 80);
   --muted: oklch(0.235 0.006 70);
@@ -142,13 +141,13 @@
   --border: oklch(1 0 0 / 0.1);
   --hairline: oklch(1 0 0 / 0.06);
   --input: oklch(1 0 0 / 0.13);
-  --ring: oklch(0.62 0.18 28);
+  --ring: #0091fd;
 
-  --brand: oklch(0.66 0.19 28);
-  --brand-foreground: oklch(0.155 0.005 70);
-  --brand-soft: oklch(0.66 0.19 28 / 0.18);
+  --brand: #0091fd;
+  --brand-foreground: #ffffff;
+  --brand-soft: rgb(0 145 253 / 0.18);
 
-  --chart-1: oklch(0.66 0.19 28);
+  --chart-1: #0091fd;
   --chart-2: oklch(0.7 0.1 60);
   --chart-3: oklch(0.65 0.08 245);
   --chart-4: oklch(0.65 0.12 160);
@@ -156,12 +155,12 @@
 
   --sidebar: oklch(0.18 0.006 70);
   --sidebar-foreground: oklch(0.945 0.005 80);
-  --sidebar-primary: oklch(0.94 0.005 80);
-  --sidebar-primary-foreground: oklch(0.18 0.008 70);
+  --sidebar-primary: #0091fd;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: oklch(0.265 0.008 70);
   --sidebar-accent-foreground: oklch(0.945 0.005 80);
   --sidebar-border: oklch(1 0 0 / 0.1);
-  --sidebar-ring: oklch(0.62 0.18 28);
+  --sidebar-ring: #0091fd;
 }
 
 /* Tabular numerics — pages, counts, hex values, slider readouts.
@@ -250,9 +249,8 @@
 }
 
 /*
- * Comment input cue — kept from the original design but retoned to match
- * the new palette (warm vermillion + amber instead of the AI-classic
- * blue/violet halo). Plays once on first open, then settles.
+ * Comment input cue — retoned to the azure accent. Plays once on first
+ * open, then settles.
  */
 @property --comment-cue-angle {
   syntax: "<angle>";
@@ -275,9 +273,9 @@
     from var(--comment-cue-angle),
     transparent 0deg,
     transparent 250deg,
-    oklch(0.78 0.14 60 / 0.55) 295deg,
-    oklch(0.62 0.2 28 / 0.85) 325deg,
-    oklch(0.78 0.14 60 / 0.55) 350deg,
+    oklch(0.78 0.11 230 / 0.55) 295deg,
+    oklch(0.63 0.19 250 / 0.85) 325deg,
+    oklch(0.78 0.11 230 / 0.55) 350deg,
     transparent 360deg
   );
   -webkit-mask:
@@ -300,8 +298,8 @@
   inset: -10px;
   border-radius: calc(var(--radius-md) + 10px);
   background:
-    radial-gradient(80% 60% at 30% 50%, oklch(0.62 0.2 28 / 0.18), transparent 70%),
-    radial-gradient(70% 60% at 75% 60%, oklch(0.78 0.14 60 / 0.16), transparent 70%);
+    radial-gradient(80% 60% at 30% 50%, oklch(0.63 0.19 250 / 0.18), transparent 70%),
+    radial-gradient(70% 60% at 75% 60%, oklch(0.78 0.11 230 / 0.16), transparent 70%);
   filter: blur(14px);
   opacity: 0;
   z-index: -1;

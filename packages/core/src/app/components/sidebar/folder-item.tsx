@@ -1,4 +1,4 @@
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
+import { Images, MoreHorizontal, Palette, Pencil, SquarePen, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import {
   DropdownMenu,
@@ -33,7 +33,26 @@ function useSlideDragActive() {
   return active;
 }
 
+const LUCIDE_ICONS = {
+  'square-pen': SquarePen,
+  palette: Palette,
+  images: Images,
+} as const;
+
 export function FolderIconChip({ icon, className }: { icon: FolderIcon; className?: string }) {
+  if (icon.type === 'lucide') {
+    const Icon = LUCIDE_ICONS[icon.value];
+    return (
+      <span
+        className={cn(
+          'inline-flex size-5 items-center justify-center text-[15px] leading-none',
+          className,
+        )}
+      >
+        <Icon className="size-[1.1em]" strokeWidth={1.75} />
+      </span>
+    );
+  }
   if (icon.type === 'emoji') {
     return (
       <span
@@ -125,11 +144,11 @@ export function FolderItem({
 
   const icon: FolderIcon =
     row.kind === 'draft'
-      ? { type: 'emoji', value: '📝' }
+      ? { type: 'lucide', value: 'square-pen' }
       : row.kind === 'themes'
-        ? { type: 'emoji', value: '🎨' }
+        ? { type: 'lucide', value: 'palette' }
         : row.kind === 'assets'
-          ? { type: 'emoji', value: '🗂️' }
+          ? { type: 'lucide', value: 'images' }
           : row.folder.icon;
   const label =
     row.kind === 'draft'

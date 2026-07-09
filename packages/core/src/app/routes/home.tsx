@@ -91,7 +91,10 @@ export function Home() {
   const visibleSlides = selectedId === DRAFT_ID ? draftSlides : (slidesByFolder[selectedId] ?? []);
 
   const title = selectedFolder?.name ?? t.home.draft;
-  const headerIcon = selectedFolder?.icon ?? { type: 'emoji' as const, value: '📝' };
+  const headerIcon = selectedFolder?.icon ?? {
+    type: 'lucide' as const,
+    value: 'square-pen' as const,
+  };
   const isDraft = selectedId === DRAFT_ID;
 
   const [query, setQuery] = useState('');
@@ -698,7 +701,7 @@ function MoveDialog({
         </DialogHeader>
         <div className="max-h-[320px] overflow-y-auto rounded-[6px] border border-border bg-background">
           <FolderOption
-            icon={{ type: 'emoji', value: '📝' }}
+            icon={{ type: 'lucide', value: 'square-pen' }}
             label={t.home.draft}
             active={selected === null}
             onClick={() => setSelected(null)}

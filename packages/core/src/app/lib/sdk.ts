@@ -23,7 +23,12 @@ export type SlideModule = {
   transition?: SlideTransition;
 };
 
-export type FolderIcon = { type: 'emoji'; value: string } | { type: 'color'; value: string };
+// 'lucide' is display-only for built-in rows (Draft, Themes, Assets); the
+// icon picker and persisted folders only ever produce 'emoji' or 'color'.
+export type FolderIcon =
+  | { type: 'emoji'; value: string }
+  | { type: 'color'; value: string }
+  | { type: 'lucide'; value: 'square-pen' | 'palette' | 'images' };
 
 export type Folder = {
   id: string;

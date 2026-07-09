@@ -187,9 +187,9 @@ export function AssetView({ slideId }: Props) {
           <label
             htmlFor={inputId}
             className={cn(
-              'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[5px] bg-foreground px-3 text-[12.5px] font-medium text-background transition-colors',
+              'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[5px] bg-brand px-3 text-[12.5px] font-medium text-brand-foreground transition-colors',
               'shadow-[inset_0_1px_0_oklch(1_0_0/0.12),0_1px_0_oklch(0_0_0/0.12)]',
-              'hover:bg-foreground/90 active:translate-y-px',
+              'hover:bg-brand/90 active:translate-y-px',
             )}
           >
             <Upload className="size-3.5" />

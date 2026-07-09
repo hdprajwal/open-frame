@@ -1,3 +1,4 @@
+import { Palette } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { format, useLocale } from '@/lib/use-locale';
 import { SlidePageProvider } from '../../lib/page-context';
@@ -112,7 +113,7 @@ function ThemesEmptyState() {
   return (
     <div className="rounded-[10px] border border-dashed border-border bg-card/60 px-8 py-20">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
-        <div className="text-2xl">🎨</div>
+        <Palette className="size-6 text-muted-foreground" strokeWidth={1.75} />
         <p className="mt-3 font-heading text-[15px] font-semibold tracking-tight">
           {t.themes.noThemesTitle}
         </p>
