@@ -134,7 +134,7 @@ export function Home() {
       <header className="mb-8 md:mb-12">
         <div className="flex flex-wrap items-center gap-3">
           <FolderIconChip icon={headerIcon} className="size-7 text-2xl" />
-          <h1 className="font-heading text-[32px] font-semibold leading-[1.05] tracking-[-0.025em] md:text-[44px]">
+          <h1 className="font-heading text-32 font-semibold leading-1.05 tracking-tight md:text-44">
             {title}
           </h1>
           {!loading && (
@@ -210,14 +210,14 @@ function SearchInput({ value, onChange }: { value: string; onChange: (value: str
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={t.home.searchPlaceholder}
-        className="h-8 w-full rounded-[6px] border border-border bg-background pl-8 pr-7 text-[12.5px] outline-none placeholder:text-muted-foreground/70 focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
+        className="h-8 w-full rounded-6 border border-border bg-background pl-8 pr-7 text-12.5 outline-none placeholder:text-muted-foreground/70 focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
       />
       {value && (
         <button
           type="button"
           onClick={() => onChange('')}
           aria-label={t.home.clearSearch}
-          className="absolute right-1.5 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded-[4px] text-muted-foreground hover:bg-muted hover:text-foreground"
+          className="absolute right-1.5 top-1/2 flex size-5 -translate-y-1/2 items-center justify-center rounded-4 text-muted-foreground hover:bg-muted hover:text-foreground"
         >
           <X className="size-3" />
         </button>
@@ -246,7 +246,7 @@ function SortControl({ value, onChange }: { value: SortKey; onChange: (next: Sor
         <button
           type="button"
           aria-label={`${t.home.sortLabel}: ${labels[value]}`}
-          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-[6px] border border-border bg-background pl-2 pr-1.5 text-[12.5px] font-medium text-foreground outline-none hover:bg-muted focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
+          className="flex h-8 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-6 border border-border bg-background pl-2 pr-1.5 text-12.5 font-medium text-foreground outline-none hover:bg-muted focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
         >
           <FieldIcon k={value} className="size-3.5 text-muted-foreground" />
           <span>{labels[value]}</span>
@@ -283,7 +283,7 @@ function HomeLoading() {
             className="line-loader-bar absolute inset-y-[-0.5px] left-0 w-1/4 bg-foreground"
           />
         </div>
-        <span className="eyebrow text-[11.5px]">{t.slide.loadingEyebrow}</span>
+        <span className="eyebrow text-11.5">{t.slide.loadingEyebrow}</span>
       </div>
     </div>
   );
@@ -292,15 +292,13 @@ function HomeLoading() {
 function NoResultsState({ query, onClear }: { query: string; onClear: () => void }) {
   const t = useLocale();
   return (
-    <div className="rounded-[10px] border border-dashed border-border bg-card/60 px-8 py-20">
+    <div className="rounded-10 border border-dashed border-border bg-card/60 px-8 py-20">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
         <div className="flex size-12 items-center justify-center rounded-full border border-hairline bg-card text-muted-foreground">
           <Search className="size-5" />
         </div>
-        <p className="mt-4 font-heading text-[15px] font-semibold tracking-tight">
-          {t.home.noMatches}
-        </p>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+        <p className="mt-4 font-heading text-15 font-semibold tracking-tight">{t.home.noMatches}</p>
+        <p className="mt-1.5 text-13 leading-relaxed text-muted-foreground">
           {t.home.nothingMatchesPrefix}
           <span className="font-medium text-foreground">&ldquo;{query}&rdquo;</span>
           {t.home.nothingMatchesSuffix}
@@ -320,19 +318,19 @@ function EmptyState({ isDraft, folderName }: { isDraft: boolean; folderName?: st
     folderName ?? t.home.folderEmptyTitle,
   );
   return (
-    <div className="rounded-[10px] border border-dashed border-border bg-card/60 px-8 py-20">
+    <div className="rounded-10 border border-dashed border-border bg-card/60 px-8 py-20">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
         <div className="flex size-12 items-center justify-center rounded-full border border-hairline bg-card text-muted-foreground">
           <FolderPlus className="size-5" />
         </div>
         {isDraft ? (
           <>
-            <p className="mt-4 font-heading text-[15px] font-semibold tracking-tight">
+            <p className="mt-4 font-heading text-15 font-semibold tracking-tight">
               {t.home.noSlidesYet}
             </p>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+            <p className="mt-1.5 text-13 leading-relaxed text-muted-foreground">
               {t.home.createSlideHintPrefix}
-              <code className="rounded-[4px] bg-muted px-1.5 py-0.5 font-mono text-[11.5px] text-foreground">
+              <code className="rounded-4 bg-muted px-1.5 py-0.5 font-mono text-11.5 text-foreground">
                 /create-slide
               </code>
               {t.home.createSlideHintSuffix}
@@ -340,10 +338,10 @@ function EmptyState({ isDraft, folderName }: { isDraft: boolean; folderName?: st
           </>
         ) : (
           <>
-            <p className="mt-4 font-heading text-[15px] font-semibold tracking-tight">
+            <p className="mt-4 font-heading text-15 font-semibold tracking-tight">
               {folderEmptyTitle}
             </p>
-            <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">
+            <p className="mt-1.5 text-13 leading-relaxed text-muted-foreground">
               {t.home.folderEmptyHint}
             </p>
           </>
@@ -461,7 +459,7 @@ function SlideCard({
       >
         <Link to={`/s/${id}`} className="block focus-visible:outline-none">
           {/* Slide thumb — tight border, grey baseboard, no shadcn rounded-xl */}
-          <div className="relative aspect-video overflow-hidden rounded-[6px] border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
+          <div className="relative aspect-video overflow-hidden rounded-6 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
             {FirstPage ? (
               <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
                 <SlideCanvas
@@ -476,7 +474,7 @@ function SlideCard({
                 </SlideCanvas>
               </div>
             ) : (
-              <div className="grid h-full w-full place-items-center text-[10px] tracking-[0.16em] uppercase text-muted-foreground/60">
+              <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
                 {tCard.common.loading}
               </div>
             )}
@@ -484,14 +482,14 @@ function SlideCard({
         </Link>
         <div className="mt-3 flex items-center gap-2">
           <Link to={`/s/${id}`} className="min-w-0 flex-1 focus-visible:outline-none">
-            <h3 className="min-w-0 truncate font-heading text-[14px] font-medium tracking-tight">
+            <h3 className="min-w-0 truncate font-heading text-14 font-medium tracking-tight">
               {displayTitle}
             </h3>
           </Link>
           {slide?.meta?.theme && (
             <Link
               to={`/themes/${encodeURIComponent(slide.meta.theme)}`}
-              className="inline-flex shrink-0 items-center gap-1 text-[11px] text-muted-foreground hover:text-foreground"
+              className="inline-flex shrink-0 items-center gap-1 text-11 text-muted-foreground hover:text-foreground"
             >
               <Palette className="size-3" aria-hidden />
               <span className="max-w-[120px] truncate">{slide.meta.theme}</span>
@@ -509,7 +507,7 @@ function SlideCard({
                     e.stopPropagation();
                     e.preventDefault();
                   }}
-                  className="flex size-7 items-center justify-center rounded-[5px] bg-card/90 text-foreground shadow-edge ring-1 ring-border opacity-0 backdrop-blur hover:bg-card group-hover:opacity-100 aria-expanded:opacity-100 motion-safe:transition-opacity"
+                  className="flex size-7 items-center justify-center rounded-5 bg-card/90 text-foreground shadow-edge ring-1 ring-border opacity-0 backdrop-blur hover:bg-card group-hover:opacity-100 aria-expanded:opacity-100 motion-safe:transition-opacity"
                   aria-label={tCard.home.slideActions}
                 >
                   <MoreHorizontal className="size-3.5" />
@@ -633,7 +631,7 @@ function RenameDialog({
           }}
           maxLength={80}
           placeholder={t.home.slideNamePlaceholder}
-          className="h-9 w-full rounded-[6px] border border-border bg-background px-3 text-[13px] outline-none focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
+          className="h-9 w-full rounded-6 border border-border bg-background px-3 text-13 outline-none focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
         />
         <DialogFooter>
           <Button variant="ghost" size="sm" onClick={() => onOpenChange(false)}>
@@ -699,7 +697,7 @@ function MoveDialog({
             {t.home.moveDialogDescriptionSuffix}
           </DialogDescription>
         </DialogHeader>
-        <div className="max-h-[320px] overflow-y-auto rounded-[6px] border border-border bg-background">
+        <div className="max-h-[320px] overflow-y-auto rounded-6 border border-border bg-background">
           <FolderOption
             icon={{ type: 'lucide', value: 'square-pen' }}
             label={t.home.draft}
@@ -746,14 +744,14 @@ function FolderOption({
       type="button"
       onClick={onClick}
       className={cn(
-        'flex w-full items-center gap-2 border-b border-hairline px-3 py-2 text-left text-[13px] transition-colors last:border-b-0',
+        'flex w-full items-center gap-2 border-b border-hairline px-3 py-2 text-left text-13 transition-colors last:border-b-0',
         active ? 'bg-muted text-foreground' : 'hover:bg-muted/60',
       )}
     >
       <FolderIconChip icon={icon} />
       <span className="truncate">{label}</span>
       {active && (
-        <span className="ml-auto inline-flex items-center gap-1 text-[10.5px] text-brand">
+        <span className="ml-auto inline-flex items-center gap-1 text-10.5 text-brand">
           <span className="inline-block size-1 rounded-full bg-brand" aria-hidden />
           {tOpt.common.selected}
         </span>

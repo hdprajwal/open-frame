@@ -95,7 +95,7 @@ export function ImageCropDialog({
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
-        <div className="flex h-[420px] w-full items-center justify-center overflow-hidden rounded-md border bg-[repeating-conic-gradient(theme(colors.muted)_0_25%,transparent_0_50%)] bg-[length:12px_12px]">
+        <div className="flex h-[420px] w-full items-center justify-center overflow-hidden rounded-md border bg-checker bg-[length:12px_12px]">
           {fit === 'cover' ? (
             <ReactCrop
               crop={crop}

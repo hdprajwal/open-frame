@@ -88,7 +88,7 @@ export function Presenter() {
         <div className="max-w-md text-center">
           <span className="eyebrow text-destructive/80">{t.common.loadFailed}</span>
           <h2 className="mt-2 font-heading text-xl font-semibold">{t.common.failedToLoadSlide}</h2>
-          <pre className="mt-4 overflow-auto rounded-[6px] border border-border bg-card p-4 text-left text-[11.5px] whitespace-pre-wrap shadow-edge">
+          <pre className="mt-4 overflow-auto rounded-6 border border-border bg-card p-4 text-left text-11.5 whitespace-pre-wrap shadow-edge">
             {error}
           </pre>
         </div>
@@ -106,7 +106,7 @@ export function Presenter() {
               className="line-loader-bar absolute inset-y-[-0.5px] left-0 w-1/4 bg-foreground"
             />
           </div>
-          <div className="text-[11.5px]">{format(t.presenter.loadingSlide, { slideId })}</div>
+          <div className="text-11.5">{format(t.presenter.loadingSlide, { slideId })}</div>
         </div>
       </div>
     );
@@ -145,7 +145,7 @@ export function Presenter() {
         {/* Now-showing */}
         <section className="flex min-h-0 flex-col gap-3">
           <SectionLabel>{t.presenter.nowShowing}</SectionLabel>
-          <div className="relative min-h-0 flex-1 overflow-hidden rounded-[8px] bg-black ring-1 ring-border">
+          <div className="relative min-h-0 flex-1 overflow-hidden rounded-8 bg-black ring-1 ring-border">
             <SlideCanvas flat design={slide.design} canvas={canvas}>
               <SlidePageProvider index={index} total={total}>
                 <PreviewStepHost revealed={stepIndex}>
@@ -157,7 +157,7 @@ export function Presenter() {
               <div
                 aria-hidden
                 className={cn(
-                  'pointer-events-none absolute inset-0 grid place-items-center text-[11px] tracking-[0.16em] uppercase',
+                  'pointer-events-none absolute inset-0 grid place-items-center text-11 tracking-16 uppercase',
                   blackout === 'black' ? 'bg-black text-white/35' : 'bg-white text-black/35',
                 )}
               >
@@ -172,7 +172,7 @@ export function Presenter() {
           <div className="flex flex-col gap-2">
             <SectionLabel>{hasNext ? t.presenter.upNext : t.presenter.lastSlide}</SectionLabel>
             <div
-              className="relative w-full overflow-hidden rounded-[8px] bg-black ring-1 ring-border"
+              className="relative w-full overflow-hidden rounded-8 bg-black ring-1 ring-border"
               style={{ aspectRatio: `${canvas.width}/${canvas.height}` }}
             >
               {NextPage ? (
@@ -184,7 +184,7 @@ export function Presenter() {
                   </SlidePageProvider>
                 </SlideCanvas>
               ) : (
-                <div className="grid h-full place-items-center text-[11.5px] text-muted-foreground">
+                <div className="grid h-full place-items-center text-11.5 text-muted-foreground">
                   {t.presenter.endOfDeck}
                 </div>
               )}
@@ -193,13 +193,13 @@ export function Presenter() {
 
           <div className="flex min-h-0 flex-1 flex-col gap-2">
             <SectionLabel>{t.presenter.speakerNotes}</SectionLabel>
-            <div className="min-h-0 flex-1 overflow-y-auto rounded-[6px] border border-border bg-card p-3 text-[13.5px] leading-relaxed whitespace-pre-wrap text-card-foreground">
+            <div className="min-h-0 flex-1 overflow-y-auto rounded-6 border border-border bg-card p-3 text-13.5 leading-relaxed whitespace-pre-wrap text-card-foreground">
               {note?.trim() ? (
                 note
               ) : (
                 <span className="text-muted-foreground">
                   {t.presenter.noNotesPrefix}
-                  <code className="rounded-[3px] bg-muted px-1 py-0.5 font-mono text-[12px]">
+                  <code className="rounded-3 bg-muted px-1 py-0.5 font-mono text-12">
                     export const notes = […]
                   </code>
                   {t.presenter.noNotesSuffix}
@@ -243,11 +243,11 @@ function PresenterTopBar({
     <header className="flex h-12 shrink-0 items-center justify-between border-b border-hairline px-6">
       <div className="flex items-baseline gap-3">
         <span className="eyebrow text-white/45">{t.presenter.eyebrow}</span>
-        <span className="truncate font-heading text-[14px] font-semibold tracking-tight">
+        <span className="truncate font-heading text-14 font-semibold tracking-tight">
           {slideTitle}
         </span>
         {!connected && (
-          <span className="rounded-[3px] border border-amber-300/30 bg-amber-300/10 px-1.5 py-0.5 font-mono text-[10px] tracking-[0.06em] uppercase text-amber-200/85">
+          <span className="rounded-3 border border-amber-300/30 bg-amber-300/10 px-1.5 py-0.5 font-mono text-10 tracking-6 uppercase text-amber-200/85">
             {t.presenter.notLinked}
           </span>
         )}
@@ -255,7 +255,7 @@ function PresenterTopBar({
       <div className="flex items-center gap-6">
         <Clock />
         <ElapsedClock startedAt={startedAt} />
-        <div className="font-mono text-[18px] tabular-nums">
+        <div className="font-mono text-18 tabular-nums">
           <span className="text-foreground">{(index + 1).toString().padStart(2, '0')}</span>
           <span className="text-foreground/30"> / </span>
           <span className="text-muted-foreground">{total.toString().padStart(2, '0')}</span>
@@ -351,9 +351,9 @@ function PresenterJumpControl({
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={(current + 1).toString()}
-        className="h-8 w-20 rounded-[5px] border border-border bg-card px-2 font-mono text-[12px] tabular-nums outline-none focus-visible:border-foreground/30"
+        className="h-8 w-20 rounded-5 border border-border bg-card px-2 font-mono text-12 tabular-nums outline-none focus-visible:border-foreground/30"
       />
-      <span className="font-mono text-[11px] text-muted-foreground">/ {total}</span>
+      <span className="font-mono text-11 text-muted-foreground">/ {total}</span>
     </form>
   );
 }
@@ -386,7 +386,7 @@ function Clock() {
   return (
     <time
       title={t.presenter.currentTime}
-      className="font-mono text-[12px] tabular-nums text-muted-foreground"
+      className="font-mono text-12 tabular-nums text-muted-foreground"
     >
       {now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
     </time>
@@ -409,10 +409,7 @@ function ElapsedClock({ startedAt }: { startedAt: number }) {
       ? `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`
       : `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   return (
-    <time
-      title={t.presenter.elapsed}
-      className="font-mono text-[18px] tabular-nums text-foreground"
-    >
+    <time title={t.presenter.elapsed} className="font-mono text-18 tabular-nums text-foreground">
       {text}
     </time>
   );

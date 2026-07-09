@@ -86,11 +86,11 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
       </div>
 
       <header className="flex flex-wrap items-baseline gap-3">
-        <h2 className="font-heading text-[26px] font-semibold leading-[1.05] tracking-[-0.025em] md:text-[32px]">
+        <h2 className="font-heading text-[26px] font-semibold leading-1.05 tracking-tight md:text-32">
           {theme.name}
         </h2>
         {theme.description ? (
-          <p className="basis-full text-[13px] leading-relaxed text-muted-foreground">
+          <p className="basis-full text-13 leading-relaxed text-muted-foreground">
             {theme.description}
           </p>
         ) : null}
@@ -99,11 +99,11 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
       <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)] lg:gap-8">
         <div className="flex min-w-0 flex-col gap-6">
           <div className="flex flex-col gap-3">
-            <div className="relative aspect-video overflow-hidden rounded-[8px] border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04]">
+            <div className="relative aspect-video overflow-hidden rounded-8 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04]">
               {!theme.hasDemo ? (
                 <NoDemoLargeState />
               ) : !demo ? (
-                <div className="grid h-full w-full place-items-center text-[11px] tracking-[0.16em] uppercase text-muted-foreground/60">
+                <div className="grid h-full w-full place-items-center text-11 tracking-16 uppercase text-muted-foreground/60">
                   {t.common.loading}
                 </div>
               ) : Current ? (
@@ -122,7 +122,7 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
                   aria-label={t.themes.prevPageAria}
                   disabled={pageIndex === 0}
                   onClick={() => setPageIndex((i) => Math.max(0, i - 1))}
-                  className="flex size-8 items-center justify-center rounded-[6px] border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:opacity-40"
+                  className="flex size-8 items-center justify-center rounded-6 border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:opacity-40"
                 >
                   <ChevronLeft className="size-4" />
                 </button>
@@ -134,7 +134,7 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
                   aria-label={t.themes.nextPageAria}
                   disabled={pageIndex === totalPages - 1}
                   onClick={() => setPageIndex((i) => Math.min(totalPages - 1, i + 1))}
-                  className="flex size-8 items-center justify-center rounded-[6px] border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:opacity-40"
+                  className="flex size-8 items-center justify-center rounded-6 border border-border bg-card text-foreground transition-colors hover:bg-muted disabled:opacity-40"
                 >
                   <ChevronRight className="size-4" />
                 </button>
@@ -149,7 +149,7 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
                 promptOverflows && !promptExpanded ? { maxHeight: PROMPT_COLLAPSED_PX } : undefined
               }
               className={cn(
-                'w-full rounded-[8px] border border-hairline bg-card p-4 font-mono text-[11.5px] leading-relaxed text-foreground/90',
+                'w-full rounded-8 border border-hairline bg-card p-4 font-mono text-11.5 leading-relaxed text-foreground/90',
                 promptOverflows && !promptExpanded ? 'overflow-hidden' : 'overflow-auto',
               )}
             >
@@ -188,7 +188,7 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
             ) : null}
           </div>
           {usedBySlideIds.length === 0 ? (
-            <p className="text-[12.5px] leading-relaxed text-muted-foreground">
+            <p className="text-12.5 leading-relaxed text-muted-foreground">
               {t.themes.usedByEmpty}
             </p>
           ) : (
@@ -227,7 +227,7 @@ function ThemeSlideCard({ id }: { id: string }) {
 
   return (
     <Link to={`/s/${id}`} className="group block focus-visible:outline-none">
-      <div className="relative aspect-video overflow-hidden rounded-[6px] border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
+      <div className="relative aspect-video overflow-hidden rounded-6 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
         {FirstPage ? (
           <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
             <SlideCanvas
@@ -242,16 +242,16 @@ function ThemeSlideCard({ id }: { id: string }) {
             </SlideCanvas>
           </div>
         ) : (
-          <div className="grid h-full w-full place-items-center text-[10px] tracking-[0.16em] uppercase text-muted-foreground/60">
+          <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
             {t.common.loading}
           </div>
         )}
       </div>
       <div className="mt-2.5">
-        <h3 className="min-w-0 truncate font-heading text-[13px] font-medium tracking-tight">
+        <h3 className="min-w-0 truncate font-heading text-13 font-medium tracking-tight">
           {displayTitle}
         </h3>
-        <p className="mt-0.5 truncate font-mono text-[10.5px] text-muted-foreground/80">{id}</p>
+        <p className="mt-0.5 truncate font-mono text-10.5 text-muted-foreground/80">{id}</p>
       </div>
     </Link>
   );
@@ -295,12 +295,10 @@ function NoDemoLargeState() {
   return (
     <div className="grid h-full w-full place-items-center bg-muted/40 px-8 text-center">
       <div className="max-w-sm">
-        <p className="font-heading text-[15px] font-semibold tracking-tight">
-          {t.themes.noDemoYet}
-        </p>
-        <p className="mt-1.5 text-[12.5px] leading-relaxed text-muted-foreground">
+        <p className="font-heading text-15 font-semibold tracking-tight">{t.themes.noDemoYet}</p>
+        <p className="mt-1.5 text-12.5 leading-relaxed text-muted-foreground">
           {t.themes.noDemoHintPrefix}
-          <code className="rounded-[4px] bg-card px-1.5 py-0.5 font-mono text-[11.5px] text-foreground">
+          <code className="rounded-4 bg-card px-1.5 py-0.5 font-mono text-11.5 text-foreground">
             /create-theme
           </code>
           {t.themes.noDemoHintSuffix}

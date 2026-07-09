@@ -44,11 +44,11 @@ export function DesignPanel({ open, onClose }: DesignPanelProps) {
         <>
           <div className="flex min-w-0 items-center gap-2">
             <Palette className="size-3.5 text-muted-foreground" />
-            <span className="font-heading text-[12px] font-semibold tracking-tight">
+            <span className="font-heading text-12 font-semibold tracking-tight">
               {t.stylePanel.designTokens}
             </span>
             {!exists && (
-              <span className="rounded-[3px] border border-hairline bg-muted/60 px-1.5 py-px font-mono text-[9.5px] uppercase tracking-[0.08em] text-muted-foreground">
+              <span className="rounded-3 border border-hairline bg-muted/60 px-1.5 py-px font-mono text-9.5 uppercase tracking-8 text-muted-foreground">
                 {t.stylePanel.draftBadge}
               </span>
             )}
@@ -85,7 +85,7 @@ export function DesignPanel({ open, onClose }: DesignPanelProps) {
       }
       banner={
         warning && (
-          <div className="flex gap-2 border-b border-hairline bg-[oklch(0.97_0.04_85)] px-3 py-2 text-[11px] leading-relaxed text-[oklch(0.35_0.08_45)] dark:bg-[oklch(0.25_0.04_60)] dark:text-[oklch(0.85_0.08_85)]">
+          <div className="flex gap-2 border-b border-hairline bg-[oklch(0.97_0.04_85)] px-3 py-2 text-11 leading-relaxed text-[oklch(0.35_0.08_45)] dark:bg-[oklch(0.25_0.04_60)] dark:text-[oklch(0.85_0.08_85)]">
             <span aria-hidden className="mt-0.5 size-1.5 shrink-0 rounded-full bg-brand" />
             <span>{warning}</span>
           </div>
@@ -211,7 +211,7 @@ export function DesignToggleButton({
     >
       <Palette className="size-3.5" />
       <span className="hidden md:inline">{t.stylePanel.designToggle}</span>
-      <kbd className="ml-1 hidden rounded-[3px] bg-foreground/10 px-1 font-mono text-[9.5px] tracking-[0.04em] md:inline">
+      <kbd className="ml-1 hidden rounded-3 bg-foreground/10 px-1 font-mono text-9.5 tracking-4 md:inline">
         D
       </kbd>
     </Button>
@@ -252,7 +252,7 @@ function ColorField({
         onBlur={() => {
           if (!/^#[0-9a-fA-F]{6}$/.test(hexDraft)) setHexDraft(value);
         }}
-        className="h-8 flex-1 font-mono text-[11px] uppercase"
+        className="h-8 flex-1 font-mono text-11 uppercase"
         spellCheck={false}
       />
     </Field>

@@ -60,7 +60,7 @@ export function SaveCard({
       {...dataAttrs}
       className="pointer-events-none absolute bottom-6 left-1/2 z-30 -translate-x-1/2 animate-in fade-in slide-in-from-bottom-2 duration-200 ease-out"
     >
-      <div className="pointer-events-auto flex h-9 items-center gap-1 rounded-[8px] border border-border bg-popover/95 py-0.5 pr-0.5 pl-1 shadow-overlay backdrop-blur-md">
+      <div className="pointer-events-auto flex h-9 items-center gap-1 rounded-8 border border-border bg-popover/95 py-0.5 pr-0.5 pl-1 shadow-overlay backdrop-blur-md">
         {showHistory && (
           <div className="flex items-center">
             <Button
@@ -91,12 +91,12 @@ export function SaveCard({
           </div>
         )}
         {justSaved ? (
-          <span className="flex items-center gap-1.5 whitespace-nowrap px-2.5 text-[12px] font-medium text-foreground">
+          <span className="flex items-center gap-1.5 whitespace-nowrap px-2.5 text-12 font-medium text-foreground">
             <Check className="size-3.5 shrink-0 text-[oklch(0.55_0.13_165)]" strokeWidth={2.5} />
             {resolvedSavedLabel}
           </span>
         ) : dirty || committing ? (
-          <span className="inline-flex items-center gap-1.5 whitespace-nowrap px-2.5 text-[12px] font-medium text-foreground">
+          <span className="inline-flex items-center gap-1.5 whitespace-nowrap px-2.5 text-12 font-medium text-foreground">
             <span
               aria-hidden
               className="size-1.5 shrink-0 rounded-full bg-brand shadow-[0_0_0_3px_var(--brand-soft)]"

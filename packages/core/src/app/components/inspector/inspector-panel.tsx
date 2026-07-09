@@ -238,11 +238,11 @@ export function InspectorPanel() {
         <>
           <div className="flex min-w-0 items-center gap-2">
             <Crosshair className="size-3.5 text-muted-foreground" />
-            <span className="font-heading text-[12px] font-semibold tracking-tight">
+            <span className="font-heading text-12 font-semibold tracking-tight">
               {t.inspector.inspect}
             </span>
             <span aria-hidden className="h-3 w-px bg-hairline" />
-            <span className="rounded-[3px] border border-hairline bg-card px-1.5 py-px font-mono text-[10.5px] text-foreground/85">
+            <span className="rounded-3 border border-hairline bg-card px-1.5 py-px font-mono text-10.5 text-foreground/85">
               &lt;{pinSelected.anchor.tagName.toLowerCase()}&gt;
             </span>
           </div>
@@ -714,7 +714,7 @@ function ColorField({
           setDraft(e.target.value);
           commitHex(e.target.value);
         }}
-        className="h-8 flex-1 font-mono text-[11px] uppercase"
+        className="h-8 flex-1 font-mono text-11 uppercase"
         spellCheck={false}
       />
       {clearable && onClear && (
@@ -739,7 +739,7 @@ function ImageField({ src, anchor }: { src: string; anchor: HTMLElement }) {
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-3">
-        <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-[repeating-conic-gradient(theme(colors.muted)_0_25%,transparent_0_50%)] bg-[length:8px_8px]">
+        <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-md border bg-checker bg-[length:8px_8px]">
           <img
             src={src}
             alt=""
@@ -797,7 +797,7 @@ function PlaceholderField({
   const t = useLocale();
   return (
     <div className="space-y-2">
-      <p className="text-[11px] leading-relaxed text-muted-foreground">
+      <p className="text-11 leading-relaxed text-muted-foreground">
         {t.inspector.placeholderHintLabel}{' '}
         <span className="font-medium text-foreground">{hint}</span>
       </p>
@@ -847,7 +847,7 @@ function AgentWatchingBadge() {
         <TooltipTrigger asChild>
           <button
             type="button"
-            className="flex shrink-0 cursor-help items-center gap-1.5 rounded-[3px] border border-hairline bg-card px-1.5 py-px text-[10.5px] text-foreground/85 outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="flex shrink-0 cursor-help items-center gap-1.5 rounded-3 border border-hairline bg-card px-1.5 py-px text-10.5 text-foreground/85 outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
             <span aria-hidden className="relative flex size-1.5 items-center justify-center">
               {connected ? (
@@ -915,7 +915,7 @@ function CommentsSection({
   return (
     <Section title={t.inspector.leaveComment}>
       <div className="flex flex-col gap-2">
-        <div ref={wrapRef} className="comment-cue rounded-[6px]">
+        <div ref={wrapRef} className="comment-cue rounded-6">
           <Textarea
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -926,11 +926,11 @@ function CommentsSection({
               }
             }}
             placeholder={t.inspector.commentPlaceholder}
-            className="min-h-16 resize-none text-[12px]"
+            className="min-h-16 resize-none text-12"
           />
         </div>
         <div className="flex items-center justify-between gap-2">
-          <span className="font-mono text-[10.5px] text-muted-foreground/70">
+          <span className="font-mono text-10.5 text-muted-foreground/70">
             {t.inspector.commentShortcutHint}
           </span>
           <Button size="sm" variant="brand" disabled={submitting || !draft.trim()} onClick={submit}>

@@ -3,7 +3,7 @@
 @import "fumadocs-ui/css/preset.css";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Brand override — pure white background with neutral grays, vermillion
+   Brand override — pure white background with neutral grays, azure
    as the single accent, shared across the marketing site and the docs.
    ───────────────────────────────────────────────────────────────────── */
 
@@ -19,13 +19,13 @@
   --color-fd-card: #ffffff;
   --color-fd-card-foreground: #292929;
   --color-fd-border: #f2f2f2;
-  --color-fd-primary: oklch(0.555 0.185 28);
+  --color-fd-primary: #0091fd;
   --color-fd-primary-foreground: #ffffff;
   --color-fd-secondary: #f5f5f5;
   --color-fd-secondary-foreground: #292929;
   --color-fd-accent: #f5f5f5;
   --color-fd-accent-foreground: #292929;
-  --color-fd-ring: oklch(0.555 0.185 28);
+  --color-fd-ring: #0091fd;
   --color-fd-overlay: oklch(0 0 0 / 0.18);
 }
 
@@ -39,13 +39,13 @@
   --color-fd-card: oklch(0.195 0.006 70);
   --color-fd-card-foreground: oklch(0.945 0.005 80);
   --color-fd-border: oklch(1 0 0 / 0.1);
-  --color-fd-primary: oklch(0.66 0.19 28);
+  --color-fd-primary: #0091fd;
   --color-fd-primary-foreground: oklch(0.155 0.005 70);
   --color-fd-secondary: oklch(0.245 0.006 70);
   --color-fd-secondary-foreground: oklch(0.945 0.005 80);
   --color-fd-accent: oklch(0.27 0.008 70);
   --color-fd-accent-foreground: oklch(0.945 0.005 80);
-  --color-fd-ring: oklch(0.66 0.19 28);
+  --color-fd-ring: #0091fd;
   --color-fd-overlay: oklch(0 0 0 / 0.2);
 }
 
@@ -67,6 +67,6 @@ html > body[data-scroll-locked] {
 }
 
 ::selection {
-  background: oklch(0.555 0.185 28 / 0.18);
+  background: rgb(0 145 253 / 0.22);
   color: var(--color-fd-foreground);
 }

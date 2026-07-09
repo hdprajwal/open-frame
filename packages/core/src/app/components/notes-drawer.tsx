@@ -56,17 +56,17 @@ export function NotesDrawer({ slideId, index, total, initial }: Props) {
             return !o;
           });
         }}
-        className="flex h-9 w-full items-center gap-2 px-3 text-[12px] text-foreground/80 hover:bg-muted/40"
+        className="flex h-9 w-full items-center gap-2 px-3 text-12 text-foreground/80 hover:bg-muted/40"
         aria-expanded={open}
       >
         <NotebookPen className="size-3.5 text-muted-foreground" />
         <span className="font-medium">{t.notesDrawer.toggle}</span>
-        <span className="font-mono text-[11px] text-muted-foreground">
+        <span className="font-mono text-11 text-muted-foreground">
           {format(t.notesDrawer.pageLabel, { n: index + 1, total })}
         </span>
         <span
           className={cn(
-            'ml-auto truncate text-[11px]',
+            'ml-auto truncate text-11',
             status.kind === 'error' ? 'text-destructive' : 'text-muted-foreground',
           )}
           aria-live="polite"
@@ -110,7 +110,7 @@ export function NotesDrawer({ slideId, index, total, initial }: Props) {
               placeholder={t.notesDrawer.placeholder}
               rows={6}
               spellCheck
-              className="block h-[150px] w-full resize-none rounded-[6px] border border-border bg-card px-3 py-2 text-[13px] leading-relaxed text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+              className="block h-[150px] w-full resize-none rounded-6 border border-border bg-card px-3 py-2 text-13 leading-relaxed text-card-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
             />
           </div>
         </div>

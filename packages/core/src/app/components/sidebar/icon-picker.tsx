@@ -49,7 +49,7 @@ export function IconPicker({
               key={c}
               type="button"
               onClick={() => onChange({ type: 'color', value: c })}
-              className="size-6 rounded-[4px] ring-1 ring-foreground/10 shadow-[inset_0_1px_0_oklch(1_0_0/0.18)] transition-transform hover:scale-110"
+              className="size-6 rounded-4 ring-1 ring-foreground/10 shadow-[inset_0_1px_0_oklch(1_0_0/0.18)] transition-transform hover:scale-110"
               style={{ background: c }}
               aria-label={c}
             />

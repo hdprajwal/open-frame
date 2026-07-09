@@ -234,7 +234,7 @@ export function Sidebar({
           (creating ? (
             <div
               data-folder-create
-              className="mt-1 flex items-center gap-2.5 rounded-[5px] border border-dashed border-foreground/30 bg-card px-2 py-[5px]"
+              className="mt-1 flex items-center gap-2.5 rounded-5 border border-dashed border-foreground/30 bg-card px-2 py-[5px]"
             >
               <Popover open={iconOpen} onOpenChange={setIconOpen}>
                 <PopoverTrigger asChild>
@@ -261,14 +261,14 @@ export function Sidebar({
                 }}
                 placeholder={t.home.folderName}
                 maxLength={40}
-                className="min-w-0 flex-1 bg-transparent text-[12.5px] outline-none placeholder:text-muted-foreground/60"
+                className="min-w-0 flex-1 bg-transparent text-12.5 outline-none placeholder:text-muted-foreground/60"
               />
             </div>
           ) : (
             <button
               type="button"
               onClick={startCreating}
-              className="mt-1 flex w-full items-center gap-2 rounded-[5px] px-2 py-1.5 text-[12px] text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+              className="mt-1 flex w-full items-center gap-2 rounded-5 px-2 py-1.5 text-12 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
             >
               <Plus className="size-3.5" />
               <span>{t.home.newFolder}</span>

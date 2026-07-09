@@ -156,8 +156,8 @@ export function AssetView({ slideId }: Props) {
               </TabsList>
             </Tabs>
           )}
-          <p className="min-w-0 truncate text-[12px] text-muted-foreground">
-            <span className="font-mono text-[11.5px]">
+          <p className="min-w-0 truncate text-12 text-muted-foreground">
+            <span className="font-mono text-11.5">
               {scope === 'global' ? 'assets/' : `slides/${slideId}/assets/`}
             </span>
             {!loading && (
@@ -177,7 +177,7 @@ export function AssetView({ slideId }: Props) {
             type="button"
             onClick={() => setLogoSearchOpen(true)}
             className={cn(
-              'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[5px] border border-border bg-card px-2.5 text-[12.5px] font-medium transition-colors',
+              'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-5 border border-border bg-card px-2.5 text-12.5 font-medium transition-colors',
               'hover:bg-muted/60 hover:border-foreground/20 active:translate-y-px',
             )}
           >
@@ -187,7 +187,7 @@ export function AssetView({ slideId }: Props) {
           <label
             htmlFor={inputId}
             className={cn(
-              'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-[5px] bg-brand px-3 text-[12.5px] font-medium text-brand-foreground transition-colors',
+              'inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-5 bg-brand px-3 text-12.5 font-medium text-brand-foreground transition-colors',
               'shadow-[inset_0_1px_0_oklch(1_0_0/0.12),0_1px_0_oklch(0_0_0/0.12)]',
               'hover:bg-brand/90 active:translate-y-px',
             )}
@@ -269,9 +269,9 @@ export function AssetView({ slideId }: Props) {
           aria-hidden="true"
         >
           <div className="absolute inset-0 bg-brand/5" />
-          <div className="absolute inset-2 rounded-[10px] border border-dashed border-brand/40" />
+          <div className="absolute inset-2 rounded-10 border border-dashed border-brand/40" />
           <div className="absolute inset-x-0 bottom-8 flex justify-center">
-            <div className="flex animate-in items-center gap-2 rounded-[6px] border border-border bg-card px-3 py-1.5 text-[12px] font-medium shadow-floating fade-in-0 slide-in-from-bottom-1 duration-300">
+            <div className="flex animate-in items-center gap-2 rounded-6 border border-border bg-card px-3 py-1.5 text-12 font-medium shadow-floating fade-in-0 slide-in-from-bottom-1 duration-300">
               <ArrowDownToLine className="size-3.5 text-brand" />
               <span>{t.asset.dropToUpload}</span>
             </div>
@@ -351,10 +351,8 @@ function EmptyState() {
         <ImageIcon className="size-5" />
       </div>
       <div>
-        <p className="font-heading text-[14px] font-semibold tracking-tight">
-          {t.asset.noAssetsYet}
-        </p>
-        <p className="mt-1 max-w-xs text-[12.5px] leading-relaxed text-muted-foreground">
+        <p className="font-heading text-14 font-semibold tracking-tight">{t.asset.noAssetsYet}</p>
+        <p className="mt-1 max-w-xs text-12.5 leading-relaxed text-muted-foreground">
           {t.asset.noAssetsHintPrefix}
           <span className="font-mono text-foreground">{t.asset.upload}</span>
           {t.asset.noAssetsHintSuffix}
@@ -387,12 +385,12 @@ function AssetCard({
   const isImage = asset.mime.startsWith('image/');
   const t = useLocale();
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-[6px] border border-border bg-card shadow-edge transition-shadow hover:shadow-floating focus-within:ring-2 focus-within:ring-ring/30">
+    <div className="group relative flex flex-col overflow-hidden rounded-6 border border-border bg-card shadow-edge transition-shadow hover:shadow-floating focus-within:ring-2 focus-within:ring-ring/30">
       <button
         type="button"
         onClick={onPreview}
         aria-label={format(t.asset.previewAria, { name: asset.name })}
-        className="relative flex aspect-square w-full items-center justify-center overflow-hidden border-b border-hairline bg-[repeating-conic-gradient(theme(colors.muted)_0_25%,transparent_0_50%)] bg-[length:14px_14px]"
+        className="relative flex aspect-square w-full items-center justify-center overflow-hidden border-b border-hairline bg-checker bg-[length:14px_14px]"
       >
         {isImage ? (
           <img
@@ -411,13 +409,13 @@ function AssetCard({
 
       <div className="flex items-center gap-1 px-2.5 py-2">
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[12.5px] font-medium" title={asset.name}>
+          <div className="truncate text-12.5 font-medium" title={asset.name}>
             {asset.name}
           </div>
           <div className="folio flex items-center gap-1.5">
             <span className="truncate">{formatSize(asset.size)}</span>
             {asset.unused ? (
-              <span className="shrink-0 rounded-sm bg-muted px-1 py-px text-[10px] font-medium text-muted-foreground leading-none">
+              <span className="shrink-0 rounded-sm bg-muted px-1 py-px text-10 font-medium text-muted-foreground leading-none">
                 {t.asset.usageUnused}
               </span>
             ) : null}
@@ -493,7 +491,7 @@ function RenameCard({
   const isImage = asset.mime.startsWith('image/');
   return (
     <div className="relative flex flex-col overflow-hidden rounded-xl border-2 border-primary bg-card shadow-sm">
-      <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[repeating-conic-gradient(theme(colors.muted)_0_25%,transparent_0_50%)] bg-[length:16px_16px]">
+      <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden bg-checker bg-[length:16px_16px]">
         {isImage ? (
           <img src={asset.url} alt="" className="size-full object-contain" draggable={false} />
         ) : (
@@ -602,7 +600,7 @@ function DeleteDialog({
           </DialogDescription>
         </DialogHeader>
         {inUse && usages && (
-          <ul className="max-h-40 overflow-y-auto rounded-[5px] border border-hairline bg-muted/40 px-3 py-2 font-mono text-[11.5px] leading-relaxed">
+          <ul className="max-h-40 overflow-y-auto rounded-5 border border-hairline bg-muted/40 px-3 py-2 font-mono text-11.5 leading-relaxed">
             {usages.map((u) => (
               <li key={u.slideId} className="flex items-center justify-between gap-3">
                 <span className="truncate">{u.slideId}</span>
@@ -657,7 +655,7 @@ function PreviewDialog({
           </DialogDescription>
         </DialogHeader>
         {isImage ? (
-          <div className="flex max-h-[60vh] items-center justify-center overflow-hidden rounded-md border bg-[repeating-conic-gradient(theme(colors.muted)_0_25%,transparent_0_50%)] bg-[length:16px_16px]">
+          <div className="flex max-h-[60vh] items-center justify-center overflow-hidden rounded-md border bg-checker bg-[length:16px_16px]">
             <img
               src={asset.url}
               alt={asset.name}
@@ -670,7 +668,7 @@ function PreviewDialog({
             <span className="text-sm">{t.asset.noPreview}</span>
           </div>
         )}
-        <div className="rounded-[5px] border border-hairline bg-muted/50 px-3 py-2 font-mono text-[11.5px] leading-relaxed">
+        <div className="rounded-5 border border-hairline bg-muted/50 px-3 py-2 font-mono text-11.5 leading-relaxed">
           <span className="text-muted-foreground">{t.asset.importHintComment}</span>
           <span className="text-brand">'{importPath}'</span>
           <span className="text-muted-foreground">{t.asset.importHintSemi}</span>
@@ -751,7 +749,7 @@ function LogoSearchDialog({
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             placeholder={t.asset.logoSearchPlaceholder}
-            className="h-9 w-full rounded-[6px] border border-border bg-background py-2 pl-8 pr-3 text-[13px] outline-none focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="h-9 w-full rounded-6 border border-border bg-background py-2 pl-8 pr-3 text-13 outline-none focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
           />
         </div>
 
@@ -884,7 +882,7 @@ function LogoResultCard({
     <div className="group flex flex-col overflow-hidden rounded-lg border bg-card">
       <div
         className={cn(
-          'relative flex aspect-square w-full items-center justify-center overflow-hidden bg-[repeating-conic-gradient(theme(colors.muted)_0_25%,transparent_0_50%)] bg-[length:16px_16px]',
+          'relative flex aspect-square w-full items-center justify-center overflow-hidden bg-checker bg-[length:16px_16px]',
           variant === 'dark' && hasVariants && 'bg-neutral-900',
         )}
       >
@@ -895,11 +893,11 @@ function LogoResultCard({
           <div className="truncate text-xs font-medium" title={item.title}>
             {item.title}
           </div>
-          <div className="truncate text-[10px] text-muted-foreground">{category}</div>
+          <div className="truncate text-10 text-muted-foreground">{category}</div>
         </div>
         <div className="flex items-center gap-1.5">
           {hasVariants ? (
-            <div className="flex overflow-hidden rounded-md border text-[10px]">
+            <div className="flex overflow-hidden rounded-md border text-10">
               <button
                 type="button"
                 onClick={() => setVariant('light')}
@@ -934,7 +932,7 @@ function LogoResultCard({
                 toast.error(err instanceof Error ? err.message : t.asset.toastDownloadFailed);
               }
             }}
-            className="ml-auto h-6 px-2 text-[11px]"
+            className="ml-auto h-6 px-2 text-11"
           >
             {pending ? <Loader2 className="size-3 animate-spin" /> : t.common.add}
           </Button>

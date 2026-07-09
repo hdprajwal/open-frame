@@ -15,7 +15,7 @@ export function Section({ title, children }: { title: string; children: React.Re
 export function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="grid grid-cols-[68px_1fr] items-center gap-3">
-      <Label className="text-[11px] font-normal text-muted-foreground">{label}</Label>
+      <Label className="text-11 font-normal text-muted-foreground">{label}</Label>
       <div className="flex min-w-0 items-center gap-1.5">{children}</div>
     </div>
   );
@@ -37,7 +37,7 @@ export function NumberField({
   suffix?: string;
 }) {
   return (
-    <div className="flex h-7 shrink-0 items-center rounded-[5px] border border-border bg-background pr-1.5 transition-colors focus-within:border-foreground/40 focus-within:ring-2 focus-within:ring-ring/30">
+    <div className="flex h-7 shrink-0 items-center rounded-5 border border-border bg-background pr-1.5 transition-colors focus-within:border-foreground/40 focus-within:ring-2 focus-within:ring-ring/30">
       <input
         type="number"
         value={value}
@@ -48,10 +48,10 @@ export function NumberField({
         min={min}
         max={max}
         step={step}
-        className="nums h-full w-12 bg-transparent px-2 text-right font-mono text-[11px] outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+        className="nums h-full w-12 bg-transparent px-2 text-right font-mono text-11 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
       />
       {suffix && (
-        <span className="font-mono text-[9.5px] uppercase tracking-[0.06em] text-muted-foreground/80">
+        <span className="font-mono text-9.5 uppercase tracking-6 text-muted-foreground/80">
           {suffix}
         </span>
       )}

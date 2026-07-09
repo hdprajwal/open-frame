@@ -45,7 +45,7 @@ export function FolderIconChip({ icon, className }: { icon: FolderIcon; classNam
     return (
       <span
         className={cn(
-          'inline-flex size-5 items-center justify-center text-[15px] leading-none',
+          'inline-flex size-5 items-center justify-center text-15 leading-none',
           className,
         )}
       >
@@ -57,7 +57,7 @@ export function FolderIconChip({ icon, className }: { icon: FolderIcon; classNam
     return (
       <span
         className={cn(
-          'inline-flex size-5 items-center justify-center text-[15px] leading-none',
+          'inline-flex size-5 items-center justify-center text-15 leading-none',
           className,
         )}
       >
@@ -68,7 +68,7 @@ export function FolderIconChip({ icon, className }: { icon: FolderIcon; classNam
   return (
     <span
       className={cn(
-        'inline-block size-3 rounded-[3px] ring-1 ring-foreground/15 shadow-[inset_0_1px_0_oklch(1_0_0/0.18)]',
+        'inline-block size-3 rounded-3 ring-1 ring-foreground/15 shadow-[inset_0_1px_0_oklch(1_0_0/0.18)]',
         className,
       )}
       style={{ background: icon.value }}
@@ -170,7 +170,7 @@ export function FolderItem({
     // biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop target wraps interactive children
     <div
       className={cn(
-        'group relative flex items-center gap-2.5 rounded-[5px] px-2 py-[5px] text-[12.5px] transition-colors',
+        'group relative flex items-center gap-2.5 rounded-5 px-2 py-[5px] text-12.5 transition-colors',
         selected
           ? 'bg-muted text-foreground before:absolute before:inset-y-1.5 before:-left-0.5 before:w-[2px] before:rounded-full before:bg-brand'
           : 'text-foreground/70 hover:bg-muted/60 hover:text-foreground',
@@ -224,7 +224,7 @@ export function FolderItem({
             }
           }}
           maxLength={40}
-          className="min-w-0 flex-1 rounded-[3px] bg-card px-1 text-[12.5px] outline-none ring-1 ring-foreground/20"
+          className="min-w-0 flex-1 rounded-3 bg-card px-1 text-12.5 outline-none ring-1 ring-foreground/20"
         />
       ) : (
         <button type="button" onClick={onSelect} className="min-w-0 flex-1 truncate text-left">

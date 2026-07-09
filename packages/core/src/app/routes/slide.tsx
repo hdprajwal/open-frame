@@ -295,7 +295,7 @@ export function Slide() {
     return (
       <div className="mx-auto max-w-3xl px-8 py-16 text-muted-foreground">
         {showSlideBrowser && (
-          <Link to="/" className="text-[12px] font-medium text-foreground/70 hover:text-foreground">
+          <Link to="/" className="text-12 font-medium text-foreground/70 hover:text-foreground">
             ← {t.common.home}
           </Link>
         )}
@@ -303,7 +303,7 @@ export function Slide() {
         <h2 className="mt-2 font-heading text-xl font-semibold tracking-tight text-foreground">
           {t.common.failedToLoadSlide}
         </h2>
-        <pre className="mt-4 overflow-auto rounded-[6px] border border-border bg-card p-4 text-[11.5px] leading-relaxed whitespace-pre-wrap shadow-edge">
+        <pre className="mt-4 overflow-auto rounded-6 border border-border bg-card p-4 text-11.5 leading-relaxed whitespace-pre-wrap shadow-edge">
           {error}
         </pre>
       </div>
@@ -320,7 +320,7 @@ export function Slide() {
               className="line-loader-bar absolute inset-y-[-0.5px] left-0 w-1/4 bg-foreground"
             />
           </div>
-          <div className="flex flex-wrap items-baseline justify-center gap-x-2 text-[11.5px]">
+          <div className="flex flex-wrap items-baseline justify-center gap-x-2 text-11.5">
             <span className="eyebrow">{t.slide.loadingEyebrow}</span>
             <span className="font-mono">{slideId}</span>
           </div>
@@ -333,7 +333,7 @@ export function Slide() {
     return (
       <div className="mx-auto max-w-3xl px-8 py-16 text-muted-foreground">
         {showSlideBrowser && (
-          <Link to="/" className="text-[12px] font-medium text-foreground/70 hover:text-foreground">
+          <Link to="/" className="text-12 font-medium text-foreground/70 hover:text-foreground">
             ← {t.common.home}
           </Link>
         )}
@@ -341,12 +341,12 @@ export function Slide() {
         <h2 className="mt-2 font-heading text-xl font-semibold tracking-tight text-foreground">
           {t.slide.nothingToShow}
         </h2>
-        <p className="mt-3 text-[13px] leading-relaxed">
-          <code className="rounded-[4px] bg-muted px-1.5 py-0.5 font-mono text-[11.5px]">
+        <p className="mt-3 text-13 leading-relaxed">
+          <code className="rounded-4 bg-muted px-1.5 py-0.5 font-mono text-11.5">
             slides/{slideId}/index.tsx
           </code>
           {t.slide.emptyHintMust}
-          <code className="rounded-[4px] bg-muted px-1.5 py-0.5 font-mono text-[11.5px]">
+          <code className="rounded-4 bg-muted px-1.5 py-0.5 font-mono text-11.5">
             export default
           </code>
           {t.slide.emptyHintSuffix}
@@ -519,13 +519,13 @@ export function Slide() {
           <TooltipTrigger asChild>
             <div
               aria-disabled
-              className="relative flex cursor-help items-center justify-between gap-2 rounded-[5px] px-2 py-1.5 text-[12.5px] opacity-45 select-none [&_svg]:size-3.5 [&_svg]:shrink-0 [&_svg]:opacity-80"
+              className="relative flex cursor-help items-center justify-between gap-2 rounded-5 px-2 py-1.5 text-12.5 opacity-45 select-none [&_svg]:size-3.5 [&_svg]:shrink-0 [&_svg]:opacity-80"
             >
               <span className="flex items-center gap-2">
                 <Presentation />
                 {t.slide.exportAsPptx}
               </span>
-              <span className="rounded-[3px] bg-muted px-1.5 py-0.5 font-mono text-[9.5px] tracking-[0.04em] text-muted-foreground">
+              <span className="rounded-3 bg-muted px-1.5 py-0.5 font-mono text-9.5 tracking-4 text-muted-foreground">
                 {t.slide.comingSoon}
               </span>
             </div>
@@ -684,7 +684,7 @@ export function Slide() {
                   >
                     <Play className="size-3.5 fill-current" />
                     <span className="hidden md:inline">{t.slide.present}</span>
-                    <kbd className="ml-1 hidden rounded-[3px] bg-brand-foreground/15 px-1 font-mono text-[9.5px] tracking-[0.04em] md:inline">
+                    <kbd className="ml-1 hidden rounded-3 bg-brand-foreground/15 px-1 font-mono text-9.5 tracking-4 md:inline">
                       F
                     </kbd>
                   </Button>
@@ -955,7 +955,7 @@ function AgentConnectedBadge() {
         <TooltipTrigger asChild>
           <button
             type="button"
-            className="ml-1 flex shrink-0 cursor-help items-center gap-1.5 rounded-[3px] border border-hairline bg-card px-1.5 py-0.5 text-[10.5px] text-foreground/85 outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
+            className="ml-1 flex shrink-0 cursor-help items-center gap-1.5 rounded-3 border border-hairline bg-card px-1.5 py-0.5 text-10.5 text-foreground/85 outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
             <span aria-hidden className="relative flex size-1.5 items-center justify-center">
               {connected ? (
@@ -1093,7 +1093,7 @@ function InlineTitleEditor({
         <div className="inline-grid max-w-full items-center">
           <span
             aria-hidden
-            className="invisible col-start-1 row-start-1 overflow-hidden whitespace-pre border border-transparent px-2 py-0.5 font-heading text-[13.5px] font-semibold tracking-[-0.01em]"
+            className="invisible col-start-1 row-start-1 overflow-hidden whitespace-pre border border-transparent px-2 py-0.5 font-heading text-13.5 font-semibold -tracking-1"
           >
             {value || ' '}
           </span>
@@ -1117,7 +1117,7 @@ function InlineTitleEditor({
               }
             }}
             maxLength={80}
-            className="col-start-1 row-start-1 w-full min-w-0 rounded-[5px] border border-foreground/30 bg-card px-2 py-0.5 text-center font-heading text-[13.5px] font-semibold tracking-[-0.01em] outline-none"
+            className="col-start-1 row-start-1 w-full min-w-0 rounded-5 border border-foreground/30 bg-card px-2 py-0.5 text-center font-heading text-13.5 font-semibold -tracking-1 outline-none"
           />
         </div>
       </div>
@@ -1127,9 +1127,7 @@ function InlineTitleEditor({
   if (!import.meta.env.DEV) {
     return (
       <div className="flex min-w-0 items-baseline justify-center">
-        <h1 className="truncate font-heading text-[13.5px] font-semibold tracking-[-0.01em]">
-          {title}
-        </h1>
+        <h1 className="truncate font-heading text-13.5 font-semibold -tracking-1">{title}</h1>
       </div>
     );
   }
@@ -1141,13 +1139,11 @@ function InlineTitleEditor({
         onClick={() => setEditing(true)}
         aria-label={t.slide.renameSlide}
         className={cn(
-          'min-w-0 max-w-full cursor-text rounded-[5px] border border-transparent px-2 py-0.5 transition-colors',
+          'min-w-0 max-w-full cursor-text rounded-5 border border-transparent px-2 py-0.5 transition-colors',
           'hover:border-foreground/30 hover:bg-card focus-visible:border-foreground/30 focus-visible:bg-card focus-visible:outline-none',
         )}
       >
-        <h1 className="truncate font-heading text-[13.5px] font-semibold tracking-[-0.01em]">
-          {title}
-        </h1>
+        <h1 className="truncate font-heading text-13.5 font-semibold -tracking-1">{title}</h1>
       </button>
     </div>
   );

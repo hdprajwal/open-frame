@@ -107,7 +107,7 @@ export function PresentControlBar({
 
             <Divider />
 
-            <span className="px-2 font-mono text-[11.5px] tracking-[0.08em] tabular-nums uppercase select-none text-white/85">
+            <span className="px-2 font-mono text-11.5 tracking-8 tabular-nums uppercase select-none text-white/85">
               <span className="text-white">{(index + 1).toString().padStart(2, '0')}</span>
               <span className="text-white/35"> / </span>
               <span>{total.toString().padStart(2, '0')}</span>
@@ -173,7 +173,7 @@ export function PresentControlBar({
               >
                 <ChevronLeft className="size-4" />
               </MobileBarButton>
-              <span className="min-w-[3.5rem] px-1 text-center font-mono text-[11.5px] tabular-nums text-white/80 select-none">
+              <span className="min-w-[3.5rem] px-1 text-center font-mono text-11.5 tabular-nums text-white/80 select-none">
                 <span className="text-white">{index + 1}</span>
                 <span className="px-1 text-white/35">/</span>
                 <span>{total}</span>
@@ -307,7 +307,7 @@ function ElapsedClock({ startedAt }: { startedAt: number }) {
   return (
     <time
       title={t.present.elapsedTime}
-      className="px-2 font-mono text-[11.5px] tracking-[0.08em] tabular-nums uppercase select-none text-white/70"
+      className="px-2 font-mono text-11.5 tracking-8 tabular-nums uppercase select-none text-white/70"
     >
       {m.toString().padStart(2, '0')}:{s.toString().padStart(2, '0')}
     </time>

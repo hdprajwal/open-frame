@@ -53,7 +53,7 @@ export function SidebarFooter() {
   );
 
   return (
-    <div className="px-4 py-3 text-[11px] text-muted-foreground/70 tabular-nums">
+    <div className="px-4 py-3 text-11 text-muted-foreground/70 tabular-nums">
       {update?.latest ? (
         <TooltipProvider delayDuration={200}>
           <Tooltip>
@@ -64,7 +64,7 @@ export function SidebarFooter() {
               alignOffset={-8}
               sideOffset={9}
               collisionPadding={12}
-              className="flex w-[232px] max-w-[calc(100vw-24px)] flex-col gap-2.5 rounded-[8px] border border-background/10 bg-foreground/95 p-2.5 text-[11.5px] leading-4 shadow-[0_12px_32px_oklch(0_0_0/0.28)] backdrop-blur"
+              className="flex w-[232px] max-w-[calc(100vw-24px)] flex-col gap-2.5 rounded-8 border border-background/10 bg-foreground/95 p-2.5 text-11.5 leading-4 shadow-[0_12px_32px_oklch(0_0_0/0.28)] backdrop-blur"
             >
               <span className="pr-1 text-background/92">
                 {format(t.home.updateAvailable, { version: update.latest })}
@@ -73,7 +73,7 @@ export function SidebarFooter() {
                 type="button"
                 size="xs"
                 variant="secondary"
-                className="h-6 w-fit rounded-[5px] border border-background/15 bg-background/8 px-2 text-[11px] text-background shadow-none hover:bg-background/14"
+                className="h-6 w-fit rounded-5 border border-background/15 bg-background/8 px-2 text-11 text-background shadow-none hover:bg-background/14"
                 disabled={isUpdating || updateStatus === 'done'}
                 onClick={updatePackage}
               >
@@ -85,12 +85,12 @@ export function SidebarFooter() {
                 {isUpdating ? t.home.updatingPackage : t.home.updatePackage}
               </Button>
               {updateStatus === 'done' && (
-                <span className="text-[11px] leading-4 text-background/65">
+                <span className="text-11 leading-4 text-background/65">
                   {t.home.updatePackageDone}
                 </span>
               )}
               {updateStatus === 'error' && (
-                <span className="text-[11px] leading-4 text-background/65">
+                <span className="text-11 leading-4 text-background/65">
                   {t.home.updatePackageFailed}
                 </span>
               )}

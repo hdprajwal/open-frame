@@ -61,6 +61,38 @@
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
 
+  /* Value-named tokens: text-N = Npx (font-size only), rounded-N = Npx,
+     tracking-N = 0.0N em — numbers are values, not scale steps. */
+  --text-9\.5: 9.5px;
+  --text-10: 10px;
+  --text-10\.5: 10.5px;
+  --text-11: 11px;
+  --text-11\.5: 11.5px;
+  --text-12: 12px;
+  --text-12\.5: 12.5px;
+  --text-13: 13px;
+  --text-13\.5: 13.5px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-18: 18px;
+  --text-32: 32px;
+  --text-44: 44px;
+
+  --radius-3: 3px;
+  --radius-4: 4px;
+  --radius-5: 5px;
+  --radius-6: 6px;
+  --radius-8: 8px;
+  --radius-10: 10px;
+
+  --tracking-1: 0.01em;
+  --tracking-4: 0.04em;
+  --tracking-6: 0.06em;
+  --tracking-8: 0.08em;
+  --tracking-16: 0.16em;
+
+  --leading-1\.05: 1.05;
+
   --shadow-edge: 0 0 0 0.5px oklch(0 0 0 / 0.06), 0 1px 0 oklch(0 0 0 / 0.025);
   --shadow-floating:
     0 0 0 0.5px oklch(0 0 0 / 0.08), 0 1px 1px oklch(0 0 0 / 0.04),
@@ -176,6 +208,10 @@
   font-variant-numeric: tabular-nums;
 }
 
+@utility bg-checker {
+  background-image: repeating-conic-gradient(var(--color-muted) 0 25%, transparent 0 50%);
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -203,7 +239,7 @@
    * label across the app. Tracked-out mono caps in deep azure.
    */
   .eyebrow {
-    @apply font-mono text-[10px] font-medium uppercase text-brand-deep;
+    @apply font-mono text-10 font-medium uppercase text-brand-deep;
     letter-spacing: 0.08em;
   }
 
@@ -239,7 +275,7 @@
 
   /* Numeric folio-style page count. */
   .folio {
-    @apply nums font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground;
+    @apply nums font-mono text-10 uppercase tracking-16 text-muted-foreground;
   }
 }
 

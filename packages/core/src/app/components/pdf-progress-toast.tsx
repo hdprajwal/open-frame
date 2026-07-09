@@ -16,15 +16,11 @@ export function PdfProgressToast({ progress }: { progress: PdfExportProgress }) 
         : t.pdfToast.done;
 
   return (
-    <div className="flex w-80 items-start gap-3 rounded-[8px] border border-border bg-popover px-3.5 py-3 text-popover-foreground shadow-floating">
+    <div className="flex w-80 items-start gap-3 rounded-8 border border-border bg-popover px-3.5 py-3 text-popover-foreground shadow-floating">
       <Loader2 className="mt-0.5 size-3.5 shrink-0 animate-spin text-brand" />
       <div className="min-w-0 flex-1">
-        <p className="font-heading text-[12.5px] font-semibold tracking-tight">
-          {t.pdfToast.title}
-        </p>
-        <p className="truncate font-mono text-[10.5px] tracking-[0.04em] text-muted-foreground">
-          {text}
-        </p>
+        <p className="font-heading text-12.5 font-semibold tracking-tight">{t.pdfToast.title}</p>
+        <p className="truncate font-mono text-10.5 tracking-4 text-muted-foreground">{text}</p>
         <Progress value={Math.round(progress.percent)} className="mt-2 h-[3px]" />
       </div>
     </div>

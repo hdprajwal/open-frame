@@ -115,7 +115,7 @@ export function OverviewGrid({
       <div className="flex shrink-0 items-center justify-between px-8 pt-6 pb-3">
         <span className={cn('eyebrow', styles.eyebrow)}>{t.present.overviewEyebrow}</span>
         <div className="flex items-center gap-3">
-          <span className={cn('font-mono text-[11px] tabular-nums', styles.eyebrow)}>
+          <span className={cn('font-mono text-11 tabular-nums', styles.eyebrow)}>
             {(focused + 1).toString().padStart(2, '0')} · {pages.length.toString().padStart(2, '0')}
           </span>
           <button
@@ -123,7 +123,7 @@ export function OverviewGrid({
             onClick={onClose}
             aria-label={t.common.close}
             className={cn(
-              'flex size-6 items-center justify-center rounded-[4px] outline-none transition-colors',
+              'flex size-6 items-center justify-center rounded-4 outline-none transition-colors',
               styles.closeButton,
             )}
           >
@@ -224,14 +224,14 @@ function OverviewThumb({
       aria-label={format(t.present.overviewGoToAria, { n: index + 1 })}
       aria-current={isCurrent ? 'true' : undefined}
       className={cn(
-        'group/thumb flex flex-col items-start gap-2 rounded-[6px] p-1.5 outline-none transition-colors',
+        'group/thumb flex flex-col items-start gap-2 rounded-6 p-1.5 outline-none transition-colors',
         isFocused ? styles.thumbFocused : styles.thumbHover,
       )}
     >
       <div
         ref={boxRef}
         className={cn(
-          'relative w-full overflow-hidden rounded-[4px] ring-1 transition-shadow',
+          'relative w-full overflow-hidden rounded-4 ring-1 transition-shadow',
           styles.thumbSurface,
           isFocused ? 'ring-2 ring-[var(--brand,#ef4444)]' : styles.thumbRing,
         )}
@@ -252,7 +252,7 @@ function OverviewThumb({
         {isCurrent && (
           <span
             aria-hidden
-            className="pointer-events-none absolute top-1.5 right-1.5 rounded-[3px] bg-[var(--brand,#ef4444)] px-1.5 py-0.5 font-mono text-[9.5px] tracking-[0.06em] uppercase text-white"
+            className="pointer-events-none absolute top-1.5 right-1.5 rounded-3 bg-[var(--brand,#ef4444)] px-1.5 py-0.5 font-mono text-9.5 tracking-6 uppercase text-white"
           >
             {t.present.nowBadge}
           </span>
@@ -261,7 +261,7 @@ function OverviewThumb({
       <div className="flex h-4 w-full items-center justify-between gap-2">
         <span
           className={cn(
-            'font-mono text-[10.5px] tracking-[0.08em] tabular-nums uppercase',
+            'font-mono text-10.5 tracking-8 tabular-nums uppercase',
             isFocused || isCurrent ? styles.labelActive : styles.labelMuted,
           )}
         >

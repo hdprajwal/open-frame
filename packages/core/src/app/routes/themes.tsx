@@ -13,7 +13,7 @@ export function ThemesGalleryPage() {
       <header className="mb-8 md:mb-12">
         <div className="flex flex-wrap items-center gap-3">
           <FolderIconChip icon={{ type: 'lucide', value: 'palette' }} className="size-7 text-2xl" />
-          <h1 className="font-heading text-[32px] font-semibold leading-[1.05] tracking-[-0.025em] md:text-[44px]">
+          <h1 className="font-heading text-32 font-semibold leading-1.05 tracking-tight md:text-44">
             {t.themes.title}
           </h1>
           <span className="folio ml-1 self-end pb-2">

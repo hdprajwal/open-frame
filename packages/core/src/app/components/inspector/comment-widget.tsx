@@ -53,7 +53,7 @@ export function CommentWidget() {
                     className="flex items-start gap-2 border-b px-3 py-2 last:border-0"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="text-[10px] font-mono text-muted-foreground">
+                      <div className="text-10 font-mono text-muted-foreground">
                         {format(t.inspector.commentLineLabel, { n: c.line })}
                       </div>
                       <div className="mt-0.5 text-xs break-words">{c.note}</div>
@@ -69,7 +69,7 @@ export function CommentWidget() {
                   </li>
                 ))}
               </ul>
-              <div className="border-t px-3 py-2 text-[11px] text-muted-foreground">
+              <div className="border-t px-3 py-2 text-11 text-muted-foreground">
                 {t.inspector.commentsApplyHintPrefix}
                 <code className="rounded bg-muted px-1 py-0.5 font-mono text-foreground">
                   /apply-comments

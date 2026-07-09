@@ -217,7 +217,7 @@ export function ThumbnailRail({
                     onClick={onOverview}
                     aria-label={t.thumbnailRail.overviewAria}
                     className={cn(
-                      'flex size-5 items-center justify-center rounded-[3px] text-muted-foreground/70 outline-none',
+                      'flex size-5 items-center justify-center rounded-3 text-muted-foreground/70 outline-none',
                       'motion-safe:transition-colors hover:bg-muted hover:text-foreground',
                       'focus-visible:ring-1 focus-visible:ring-brand',
                     )}
@@ -266,7 +266,7 @@ export function ThumbnailRail({
 
 function thumbButtonClass(active: boolean): string {
   return cn(
-    'group/thumb flex w-full items-start gap-2.5 rounded-[6px] p-1.5 text-left motion-safe:transition-colors',
+    'group/thumb flex w-full items-start gap-2.5 rounded-6 p-1.5 text-left motion-safe:transition-colors',
     'hover:bg-muted/60',
     active && 'bg-muted',
   );
@@ -374,7 +374,7 @@ function HorizontalVirtualThumbList({
       >
         <span
           className={cn(
-            'font-mono text-[9.5px] font-medium tracking-[0.06em] tabular-nums uppercase',
+            'font-mono text-9.5 font-medium tracking-6 tabular-nums uppercase',
             active ? 'text-brand' : 'text-muted-foreground/70',
           )}
         >
@@ -382,7 +382,7 @@ function HorizontalVirtualThumbList({
         </span>
         <div
           className={cn(
-            'relative shrink-0 overflow-hidden rounded-[4px] border bg-card motion-safe:transition-[border-color,box-shadow]',
+            'relative shrink-0 overflow-hidden rounded-4 border bg-card motion-safe:transition-[border-color,box-shadow]',
             active
               ? 'border-brand shadow-[0_0_0_1px_var(--brand)]'
               : 'border-hairline group-hover/thumb:border-foreground/25',
@@ -613,7 +613,7 @@ function ThumbContents({
       <div className="mt-1.5 flex w-7 shrink-0 flex-col items-end gap-1">
         <span
           className={cn(
-            'font-mono text-[10px] font-medium tracking-[0.06em] tabular-nums uppercase',
+            'font-mono text-10 font-medium tracking-6 tabular-nums uppercase',
             active ? 'text-brand' : 'text-muted-foreground/70',
           )}
         >
@@ -633,7 +633,7 @@ function ThumbContents({
       <div
         ref={boxRef}
         className={cn(
-          'relative shrink-0 overflow-hidden rounded-[4px] border bg-card motion-safe:transition-[border-color,box-shadow]',
+          'relative shrink-0 overflow-hidden rounded-4 border bg-card motion-safe:transition-[border-color,box-shadow]',
           active
             ? 'border-brand shadow-[0_0_0_1px_var(--brand)]'
             : 'border-hairline group-hover/thumb:border-foreground/25',
