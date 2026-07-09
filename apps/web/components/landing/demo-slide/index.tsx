@@ -406,7 +406,7 @@ const Cover: Page = () => (
         }}
       >
         <Eyebrow className="es-fadeUp" style={{ animationDelay: '0.05s' }}>
-          open-slide · getting started
+          open-frame · getting started
         </Eyebrow>
         <div
           className="es-fadeUp"
@@ -499,7 +499,7 @@ const Cover: Page = () => (
 const Init: Page = () => {
   const stream = [
     '',
-    'Created open-slide workspace in /Users/you/my-slide',
+    'Created open-frame workspace in /Users/you/my-slide',
     '',
     'Next steps:',
     '  cd my-slide',
@@ -564,7 +564,7 @@ const Init: Page = () => {
             <div style={{ display: 'flex', gap: 16 }}>
               <span style={{ color: palette.mint }}>$</span>
               <span className="gs-type" style={{ color: palette.text }}>
-                npx @open-slide/cli init my-slide
+                npx @open-frame/cli init my-slide
               </span>
             </div>
             <div style={{ height: 18 }} />
@@ -2325,7 +2325,7 @@ const Apply: Page = () => (
 // ─── Slide 6: Recap ──────────────────────────────────────────────────────────
 const Recap: Page = () => {
   const steps = [
-    { n: '01', title: 'init', caption: 'npx @open-slide/cli init' },
+    { n: '01', title: 'init', caption: 'npx @open-frame/cli init' },
     { n: '02', title: 'prompt', caption: 'create-slide' },
     { n: '03', title: 'edit', caption: 'click → save' },
     { n: '04', title: 'assets', caption: 'drag · drop · svgl' },
@@ -2442,7 +2442,7 @@ const Recap: Page = () => {
             edit <span style={{ color: palette.text }}>slides/&lt;your-slide&gt;/index.tsx</span> —
             HMR does the rest
           </span>
-          <span>open-slide</span>
+          <span>open-frame</span>
         </div>
       </div>
     </div>
@@ -2472,7 +2472,7 @@ const AgentAgnostic: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-slide · 01</Eyebrow>
+          <Eyebrow>why open-frame · 01</Eyebrow>
           <h2
             style={{
               marginTop: 24,
@@ -2505,7 +2505,7 @@ const AgentAgnostic: Page = () => {
               letterSpacing: '-0.01em',
             }}
           >
-            open-slide speaks plain React and a file-convention protocol. Any agent can author and
+            open-frame speaks plain React and a file-convention protocol. Any agent can author and
             edit slides — no lock-in, no bespoke SDK.
           </p>
         </div>
@@ -2796,7 +2796,7 @@ const FreeLayout: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-slide · 02</Eyebrow>
+          <Eyebrow>why open-frame · 02</Eyebrow>
           <h2
             style={{
               marginTop: 24,
@@ -2896,7 +2896,7 @@ const GitTracked: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-slide · 03</Eyebrow>
+          <Eyebrow>why open-frame · 03</Eyebrow>
           <h2
             style={{
               marginTop: 20,
@@ -3083,7 +3083,7 @@ const DeployAnywhere: Page = () => {
         }}
       >
         <div className="es-fadeUp">
-          <Eyebrow>why open-slide · 04</Eyebrow>
+          <Eyebrow>why open-frame · 04</Eyebrow>
           <h2
             style={{
               marginTop: 24,
@@ -3116,7 +3116,7 @@ const DeployAnywhere: Page = () => {
               letterSpacing: '-0.01em',
             }}
           >
-            open-slide builds to plain static assets. Drop them on Vercel, Cloudflare, Zeabur — or
+            open-frame builds to plain static assets. Drop them on Vercel, Cloudflare, Zeabur — or
             any server that serves HTML.
           </p>
         </div>
@@ -3168,7 +3168,7 @@ const DeployAnywhere: Page = () => {
 
 // ─── Slide export ────────────────────────────────────────────────────────────
 export const meta: SlideMeta = {
-  title: 'Getting started with open-slide',
+  title: 'Getting started with open-frame',
   theme: 'dark',
 };
 

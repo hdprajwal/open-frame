@@ -3,28 +3,28 @@
 @import "fumadocs-ui/css/preset.css";
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Brand override — align Fumadocs UI with packages/core's design language.
-   Warm paper + ink palette, vermillion as the single accent. Matches the
-   tokens defined in packages/core/src/app/styles.css so the marketing
-   site, the docs, and the editor share one visual identity.
+   Brand override — pure white background with neutral grays, vermillion
+   as the single accent, shared across the marketing site and the docs.
    ───────────────────────────────────────────────────────────────────── */
 
 @theme {
-  --color-fd-background: oklch(0.985 0.004 75);
-  --color-fd-foreground: oklch(0.2 0.012 60);
-  --color-fd-muted: oklch(0.955 0.008 75);
-  --color-fd-muted-foreground: oklch(0.485 0.012 60);
-  --color-fd-popover: oklch(0.998 0.002 75);
-  --color-fd-popover-foreground: oklch(0.2 0.012 60);
-  --color-fd-card: oklch(1 0 0);
-  --color-fd-card-foreground: oklch(0.2 0.012 60);
-  --color-fd-border: oklch(0.86 0.008 70);
+  --font-sans: var(--font-rubik), sans-serif;
+
+  --color-fd-background: #ffffff;
+  --color-fd-foreground: #292929;
+  --color-fd-muted: #f5f5f5;
+  --color-fd-muted-foreground: #7f7f7f;
+  --color-fd-popover: #ffffff;
+  --color-fd-popover-foreground: #292929;
+  --color-fd-card: #ffffff;
+  --color-fd-card-foreground: #292929;
+  --color-fd-border: #f2f2f2;
   --color-fd-primary: oklch(0.555 0.185 28);
-  --color-fd-primary-foreground: oklch(0.985 0.004 75);
-  --color-fd-secondary: oklch(0.96 0.006 75);
-  --color-fd-secondary-foreground: oklch(0.215 0.012 60);
-  --color-fd-accent: oklch(0.945 0.012 75);
-  --color-fd-accent-foreground: oklch(0.215 0.012 60);
+  --color-fd-primary-foreground: #ffffff;
+  --color-fd-secondary: #f5f5f5;
+  --color-fd-secondary-foreground: #292929;
+  --color-fd-accent: #f5f5f5;
+  --color-fd-accent-foreground: #292929;
   --color-fd-ring: oklch(0.555 0.185 28);
   --color-fd-overlay: oklch(0 0 0 / 0.18);
 }

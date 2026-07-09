@@ -32,11 +32,11 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...
   const page = source.getPage(slug.slice(0, -1));
   if (!page) notFound();
 
-  const [geistRegular, geistMedium, mono, logoBuffer] = await Promise.all([
-    loadGoogleFont('Geist', 400),
-    loadGoogleFont('Geist', 500),
+  const [rubikRegular, rubikMedium, mono, logoBuffer] = await Promise.all([
+    loadGoogleFont('Rubik', 400),
+    loadGoogleFont('Rubik', 500),
     loadGoogleFont('JetBrains Mono', 500),
-    readFile(path.join(process.cwd(), 'public/open-slide.png')),
+    readFile(path.join(process.cwd(), 'public/open-frame.png')),
   ]);
   const logoSrc = `data:image/png;base64,${logoBuffer.toString('base64')}`;
 
@@ -50,8 +50,8 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...
       width: 1200,
       height: 630,
       fonts: [
-        { name: 'Geist', data: geistRegular, weight: 400, style: 'normal' },
-        { name: 'Geist', data: geistMedium, weight: 500, style: 'normal' },
+        { name: 'Rubik', data: rubikRegular, weight: 400, style: 'normal' },
+        { name: 'Rubik', data: rubikMedium, weight: 500, style: 'normal' },
         { name: 'JetBrains Mono', data: mono, weight: 500, style: 'normal' },
       ],
     },
@@ -81,7 +81,7 @@ function Frame({
           // subtle dot grid — mirrors `.specimen` in landing.css
           `radial-gradient(circle at 1px 1px, rgba(26,24,20,0.06) 1px, transparent 0)`,
         backgroundSize: '20px 20px',
-        fontFamily: 'Geist',
+        fontFamily: 'Rubik',
         color: INK,
         padding: '72px 80px',
         position: 'relative',
@@ -200,7 +200,7 @@ function Frame({
           <span>{breadcrumb}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ color: INK }}>open-slide.dev</span>
+          <span style={{ color: INK }}>open-frame.dev</span>
           <span style={{ color: RULE }}>↗</span>
         </div>
       </div>

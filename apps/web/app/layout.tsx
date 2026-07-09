@@ -1,12 +1,14 @@
 import { RootProvider } from 'fumadocs-ui/provider/next';
 import './global.css';
 import type { Metadata, Viewport } from 'next';
-import { Geist, Instrument_Serif, JetBrains_Mono } from 'next/font/google';
+import { JetBrains_Mono, Rubik } from 'next/font/google';
 import { appName, gitConfig, siteUrl } from '@/lib/shared';
 
-const geist = Geist({
-  variable: '--font-geist-sans',
+const rubik = Rubik({
+  variable: '--font-rubik',
   subsets: ['latin'],
+  weight: ['400', '500'],
+  style: ['normal', 'italic'],
   display: 'swap',
 });
 
@@ -16,17 +18,9 @@ const jetbrains = JetBrains_Mono({
   display: 'swap',
 });
 
-const instrument = Instrument_Serif({
-  variable: '--font-instrument-serif',
-  subsets: ['latin'],
-  weight: '400',
-  style: ['normal', 'italic'],
-  display: 'swap',
-});
-
-const title = `${appName} — a slide framework built for agents`;
+const title = `${appName} — the content studio built for agents`;
 const description =
-  'A React-first slide framework authored by AI agents. Each page is arbitrary code on a 1920×1080 canvas — versioned, reviewable, yours.';
+  'Make slides, LinkedIn carousels, story graphics, YouTube thumbnails, OG images, and X post images with React and a coding agent. Every page is code, versioned in your repo.';
 
 export const metadata: Metadata = {
   title: {
@@ -37,16 +31,17 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   applicationName: appName,
   keywords: [
-    'open-slide',
+    'open-frame',
     'slides',
+    'LinkedIn carousel',
+    'YouTube thumbnail',
+    'OG image generator',
     'presentation framework',
     'React slides',
-    'Next.js slides',
     'AI agents',
     'Claude Code',
-    'MDX slides',
     'slides as code',
-    'developer presentations',
+    'content studio',
   ],
   authors: [{ name: gitConfig.user, url: `https://github.com/${gitConfig.user}` }],
   creator: gitConfig.user,
@@ -72,7 +67,7 @@ export const metadata: Metadata = {
         url: '/opengraph-image.png',
         width: 1200,
         height: 630,
-        alt: `${appName} — React-first slide framework for AI agents`,
+        alt: `${appName} — the content studio built for agents`,
       },
     ],
   },
@@ -80,7 +75,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title,
     description,
-    creator: '@1weiho',
     images: ['/opengraph-image.png'],
   },
   robots: {
@@ -102,7 +96,7 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#F7F4EC' },
+    { media: '(prefers-color-scheme: light)', color: '#FFFFFF' },
     { media: '(prefers-color-scheme: dark)', color: '#1A1814' },
   ],
 };
@@ -112,7 +106,7 @@ export default function Layout({ children }: LayoutProps<'/'>) {
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${geist.className} ${geist.variable} ${jetbrains.variable} ${instrument.variable}`}
+      className={`${rubik.className} ${rubik.variable} ${jetbrains.variable}`}
     >
       <body className="flex flex-col min-h-screen">
         <RootProvider>{children}</RootProvider>
