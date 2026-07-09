@@ -18,14 +18,14 @@ export function CopyCommand({ command, size = 'lg' }: { command: string; size?: 
   };
 
   const height = size === 'lg' ? 'h-12' : 'h-10';
-  const pad = size === 'lg' ? 'px-5' : 'px-4';
+  const pad = size === 'lg' ? 'px-6' : 'px-5';
   const text = size === 'lg' ? 'text-[14px] sm:text-[16px]' : 'text-[14px]';
 
   return (
     <button
       type="button"
       onClick={onCopy}
-      className={`group inline-flex items-center gap-3 ${height} ${pad} rounded-[8px] bg-[color:var(--color-surface)] text-[color:var(--color-ink)] font-[family-name:var(--font-mono)] ${text} hover:bg-[color:var(--color-hairline)]/60 transition-colors`}
+      className={`group inline-flex items-center gap-3 ${height} ${pad} rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] text-[color:var(--color-ink)] font-[family-name:var(--font-mono)] ${text} hover:border-[color:var(--color-accent)] transition-colors`}
     >
       <span aria-hidden className="text-[color:var(--color-mute)]">
         $

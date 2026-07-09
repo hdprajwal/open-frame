@@ -36,7 +36,8 @@ export function Formats() {
   return (
     <section id="formats" className="relative">
       <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
-        <h2 className="text-[24px] sm:text-[30px] font-medium leading-[1.2] mb-4">
+        <p className="caption mb-3">Formats</p>
+        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-4">
           One workspace. Every format.
         </h2>
 
@@ -45,8 +46,10 @@ export function Formats() {
           ship visuals that fit every platform.
         </p>
 
-        <div className="rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] p-6 sm:p-8">
-          <Frame aria-hidden className="size-5 text-[color:var(--color-ink)]" />
+        <div className="rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] p-6 sm:p-8 shadow-sm">
+          <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent-deep)]">
+            <Frame aria-hidden className="size-5" />
+          </span>
           <h3 className="mt-3 text-[18px] font-medium leading-[1.56]">Pick a format in seconds</h3>
           <p className="mt-1 max-w-[72ch] text-[16px] leading-[1.5] text-[color:var(--color-body)]">
             Set a format in the deck's meta. Every page in that deck renders, previews, and exports

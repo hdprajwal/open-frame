@@ -1,12 +1,15 @@
 import { CopyCommand } from './copy-command';
+import { FadeGrid } from './fade-grid';
 import { HeroDocsLink } from './hero-docs-link';
 
 export function Hero() {
   return (
-    <section className="relative">
-      <div className="mx-auto max-w-4xl px-5 sm:px-8 pt-16 sm:pt-24 lg:pt-28 pb-12 sm:pb-[88px]">
+    <section className="relative overflow-hidden">
+      <FadeGrid corner="top-right" />
+      <div className="relative mx-auto max-w-4xl px-5 sm:px-8 pt-16 sm:pt-24 lg:pt-28 pb-12 sm:pb-[88px]">
         <div className="flex flex-col items-center text-center gap-6">
-          <h1 className="text-[28px] sm:text-[36px] font-medium leading-[1.11]">
+          <span className="caption">Open source</span>
+          <h1 className="text-balance text-[36px] sm:text-[44px] lg:text-[52px] font-light tracking-tight leading-[1.1]">
             The content studio built for agents.
           </h1>
 

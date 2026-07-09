@@ -14,11 +14,12 @@ export function Inspector() {
   return (
     <section id="inspector" className="relative">
       <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
-        <h2 className="text-[24px] sm:text-[30px] font-medium leading-[1.2] mb-10 sm:mb-14">
+        <p className="caption mb-3">The inspector</p>
+        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-10 sm:mb-14">
           Talk to the agent. Or just tap the canvas.
         </h2>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-[color:var(--color-hairline)] border border-[color:var(--color-hairline)] rounded-[12px] overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-px bg-[color:var(--color-hairline)] border border-[color:var(--color-hairline)] rounded-[12px] overflow-hidden shadow-sm">
           <FeatureCell
             num="01"
             kicker="agent applies"

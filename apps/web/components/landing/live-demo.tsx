@@ -32,12 +32,12 @@ export function LiveDemo() {
 
   return (
     <section id="demo" className="relative" aria-labelledby="demo-heading">
-      <div className="mx-auto max-w-[1080px] px-5 sm:px-8 pt-4 sm:pt-8 pb-12 sm:pb-[88px]">
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-4 sm:pt-8 pb-12 sm:pb-[88px]">
         <h2 id="demo-heading" className="sr-only">
           Live demo
         </h2>
         <div
-          className="relative block w-full overflow-hidden rounded-[12px] border border-[color:var(--color-hairline)] bg-black"
+          className="relative block w-full overflow-hidden rounded-[12px] border border-[color:var(--color-hairline)] bg-black shadow-sm"
           style={{ aspectRatio: '16 / 9' }}
         >
           <InlineSlidePlayer index={index} onIndexChange={setIndex} />
@@ -49,10 +49,13 @@ export function LiveDemo() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => posthog.capture('view_more_demos_clicked')}
-            className="inline-flex items-center gap-2 hover:text-[color:var(--color-ink)] transition-colors"
+            className="group inline-flex items-center gap-2 hover:text-[color:var(--color-ink)] transition-colors"
           >
             Browse the demo workspace
-            <ArrowUpRight aria-hidden className="size-3.5" />
+            <ArrowUpRight
+              aria-hidden
+              className="size-3.5 transition-transform group-hover:translate-x-0.5 motion-reduce:transform-none"
+            />
           </a>
           <span className="flex items-center gap-3">
             <span className="text-[color:var(--color-charcoal)]">

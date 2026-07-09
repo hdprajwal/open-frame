@@ -1,7 +1,7 @@
 /* open-frame landing styles — scoped to .os-landing so they don't bleed
    into the rest of the docs site (which uses fumadocs-ui's defaults).
 
-   Flat documentation system: paper-white canvas, black-on-white chrome,
+   Flat documentation system: paper-white canvas, azure accent chrome,
    three neutral grays, hairline borders. Light only. */
 
 .os-landing {
@@ -14,11 +14,15 @@
   --color-mute: #a3a3a3;
   --color-hairline: #e5e5e5;
   --color-hairline-strong: #d4d4d4;
-  --color-primary: #000000;
+  --color-primary: var(--color-accent);
   --color-on-primary: #ffffff;
 
-  /* Product-mock UI only — mirrors core's --brand token. Site chrome stays black. */
-  --color-brand: oklch(0.555 0.185 28);
+  --color-accent: #0091fd;
+  --color-accent-deep: #0072cc;
+  --color-accent-soft: #e6f3ff;
+
+  /* Product-mock UI only — mirrors core's --brand token. */
+  --color-brand: #0091fd;
 
   --font-display: var(--font-rubik);
   --font-sans: var(--font-rubik);
@@ -35,13 +39,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.os-landing ::selection {
+  background: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  color: var(--color-ink);
+}
+
 .os-landing .caption {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--color-mute);
-  font-weight: 400;
+  color: var(--color-accent-deep);
+  font-weight: 500;
 }
 
 @keyframes os-marquee {
@@ -135,8 +144,8 @@
   opacity: 0.7;
 }
 
-.os-landing :where(a, button, [role="button"]):focus-visible {
-  outline: 2px solid rgba(59, 130, 246, 0.5);
+.os-landing :where(a, button, [role="button"], summary):focus-visible {
+  outline: 2px solid var(--color-accent);
   outline-offset: 3px;
   border-radius: 8px;
 }

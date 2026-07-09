@@ -51,7 +51,8 @@ export function Assets() {
   return (
     <section id="assets" className="relative">
       <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
-        <h2 className="text-[24px] sm:text-[30px] font-medium leading-[1.2] mb-10 sm:mb-14">
+        <p className="caption mb-3">Assets</p>
+        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-10 sm:mb-14">
           Drop in images. Pull in logos.
         </h2>
 
@@ -60,7 +61,7 @@ export function Assets() {
           <AssetManagerMock />
 
           {/* side callouts */}
-          <div className="flex gap-px bg-[color:var(--color-hairline)] border border-[color:var(--color-hairline)] rounded-[12px] overflow-hidden">
+          <div className="flex gap-px bg-[color:var(--color-hairline)] border border-[color:var(--color-hairline)] rounded-[12px] overflow-hidden shadow-sm">
             {callouts.map((c) => (
               <div
                 key={c.eyebrow}
@@ -80,7 +81,7 @@ export function Assets() {
 
 function AssetManagerMock() {
   return (
-    <div className="relative rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] overflow-hidden">
+    <div className="relative rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] overflow-hidden shadow-sm">
       {/* window header */}
       <div className="flex items-center px-4 sm:px-5 h-10 sm:h-11 border-b border-[color:var(--color-hairline)] font-[family-name:var(--font-mono)] text-[12px] text-[color:var(--color-body)]">
         <div className="flex items-center gap-2">

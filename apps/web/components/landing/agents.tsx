@@ -23,6 +23,7 @@ export function Agents() {
     <section id="agents" className="relative overflow-hidden">
       <div className="bg-[color:var(--color-canvas)]">
         <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-10 sm:py-12">
+          <p className="caption mb-3">Agents</p>
           <h2 className="font-[family-name:var(--font-sans)] text-[18px] font-medium leading-[1.56]">
             Bring your own agent. Anything that edits React works.
           </h2>

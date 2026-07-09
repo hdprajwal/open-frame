@@ -37,7 +37,8 @@ export function FAQ() {
   return (
     <section id="faq" className="relative">
       <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
-        <h2 className="text-[24px] sm:text-[30px] font-medium leading-[1.2] mb-8 sm:mb-10">
+        <p className="caption mb-3">FAQ</p>
+        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-8 sm:mb-10">
           Questions & answers
         </h2>
 

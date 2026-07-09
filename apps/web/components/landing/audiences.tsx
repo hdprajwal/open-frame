@@ -60,18 +60,21 @@ export function Audiences() {
   return (
     <section id="audiences" className="relative">
       <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
-        <h2 className="text-[24px] sm:text-[30px] font-medium leading-[1.2] mb-2">
+        <p className="caption mb-3">Use cases</p>
+        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-2">
           Designed for you
         </h2>
         <p className="max-w-[560px] text-[16px] leading-[1.5] text-[color:var(--color-body)] mb-10 sm:mb-14">
           Start from a prompt, or open the demo workspace and make it yours.
         </p>
 
-        <div className="rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] p-6 sm:p-8">
+        <div className="rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] p-6 sm:p-8 shadow-sm">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
             {audiences.map((a) => (
               <div key={a.title}>
-                <a.icon aria-hidden className="size-5 text-[color:var(--color-ink)]" />
+                <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent-deep)]">
+                  <a.icon aria-hidden className="size-5" />
+                </span>
                 <h3 className="mt-3 text-[16px] font-medium leading-[1.5]">{a.title}</h3>
                 <ul className="mt-1.5 flex flex-col gap-1.5">
                   {a.items.map((item) => (
@@ -89,7 +92,7 @@ export function Audiences() {
 
           <Link
             href="/docs"
-            className="mt-10 inline-flex items-center h-9 rounded-[8px] bg-[color:var(--color-primary)] px-5 text-[14px] font-medium text-[color:var(--color-on-primary)] hover:bg-[color:var(--color-ink-deep)] transition-colors"
+            className="mt-10 inline-flex items-center justify-center h-9 rounded-full bg-[color:var(--color-accent)] px-5 text-[color:var(--color-on-primary)] font-[family-name:var(--font-mono)] text-[13px] font-medium uppercase tracking-[-0.02em] transition duration-200 hover:bg-[color:var(--color-accent-deep)] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transform-none"
           >
             Get started
           </Link>

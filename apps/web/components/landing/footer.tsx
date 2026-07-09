@@ -1,9 +1,11 @@
 import Image from 'next/image';
+import { FadeGrid } from './fade-grid';
 
 export function Footer() {
   return (
-    <footer className="border-t border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)]">
-      <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-10 sm:py-14 grid grid-cols-12 gap-x-6 gap-y-10">
+    <footer className="relative overflow-hidden border-t border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)]">
+      <FadeGrid corner="bottom-left" />
+      <div className="relative mx-auto max-w-[1080px] px-5 sm:px-8 py-10 sm:py-14 grid grid-cols-12 gap-x-6 gap-y-10">
         <div className="col-span-12 lg:col-span-4 flex flex-col gap-4">
           <div className="flex items-center gap-3 font-[family-name:var(--font-mono)] text-[13px]">
             <Image
@@ -47,7 +49,7 @@ export function Footer() {
         />
       </div>
 
-      <div className="border-t border-[color:var(--color-hairline)]">
+      <div className="relative border-t border-[color:var(--color-hairline)]">
         <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 text-[12px] text-[color:var(--color-body)]">
           <span>© {new Date().getFullYear()} open-frame · MIT licensed</span>
           <span>

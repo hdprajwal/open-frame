@@ -5,7 +5,7 @@ import posthog from 'posthog-js';
 
 export function Nav() {
   return (
-    <header className="bg-[color:var(--color-canvas)] border-b border-[color:var(--color-hairline)]">
+    <header className="relative bg-[color:var(--color-canvas)]">
       <div className="mx-auto px-5 sm:px-8 lg:px-12 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
           <svg
@@ -57,12 +57,16 @@ export function Nav() {
           </a>
           <Link
             href="/docs"
-            className="inline-flex items-center h-9 rounded-[8px] bg-[color:var(--color-primary)] px-5 text-[color:var(--color-on-primary)] hover:bg-[color:var(--color-ink-deep)] transition-colors"
+            className="inline-flex items-center justify-center h-9 rounded-full bg-[color:var(--color-accent)] px-5 text-[color:var(--color-on-primary)] font-[family-name:var(--font-mono)] text-[13px] font-medium uppercase tracking-[-0.02em] transition duration-200 hover:bg-[color:var(--color-accent-deep)] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transform-none"
           >
             Get started
           </Link>
         </nav>
       </div>
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-[color:var(--color-canvas)] to-transparent"
+      />
     </header>
   );
 }

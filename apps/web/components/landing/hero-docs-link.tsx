@@ -7,7 +7,7 @@ export function HeroDocsLink() {
     <a
       href="/docs"
       onClick={() => posthog.capture('docs_link_clicked', { location: 'hero' })}
-      className="inline-flex items-center h-12 rounded-[8px] bg-[color:var(--color-primary)] px-6 text-[14px] font-medium text-[color:var(--color-on-primary)] hover:bg-[color:var(--color-ink-deep)] transition-colors"
+      className="inline-flex items-center justify-center h-12 rounded-full bg-[color:var(--color-accent)] px-7 text-[color:var(--color-on-primary)] font-[family-name:var(--font-mono)] text-[13px] font-medium uppercase tracking-[-0.02em] transition duration-200 hover:bg-[color:var(--color-accent-deep)] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transform-none"
     >
       Read the docs
     </a>
