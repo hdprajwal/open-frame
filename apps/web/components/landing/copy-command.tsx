@@ -19,28 +19,28 @@ export function CopyCommand({ command, size = 'lg' }: { command: string; size?: 
 
   const height = size === 'lg' ? 'h-12' : 'h-10';
   const pad = size === 'lg' ? 'px-6' : 'px-5';
-  const text = size === 'lg' ? 'text-[14px] sm:text-[16px]' : 'text-[14px]';
+  const text = size === 'lg' ? 'text-14 sm:text-16' : 'text-14';
 
   return (
     <button
       type="button"
       onClick={onCopy}
-      className={`group inline-flex items-center gap-3 ${height} ${pad} rounded-full border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] text-[color:var(--color-ink)] font-[family-name:var(--font-mono)] ${text} hover:border-[color:var(--color-accent)] transition-colors`}
+      className={`group inline-flex items-center gap-3 ${height} ${pad} rounded-full border border-hairline bg-canvas text-ink font-mono ${text} hover:border-accent transition-colors`}
     >
-      <span aria-hidden className="text-[color:var(--color-mute)]">
+      <span aria-hidden className="text-mute">
         $
       </span>
       <span>{command}</span>
       <span
         aria-hidden
-        className="ml-1 inline-flex items-center text-[color:var(--color-body)] group-hover:text-[color:var(--color-ink)] transition-colors"
+        className="ml-1 inline-flex items-center text-body group-hover:text-ink transition-colors"
       >
-        <span className="relative inline-flex h-[14px] w-[14px] items-center justify-center">
+        <span className="relative inline-flex h-3.5 w-3.5 items-center justify-center">
           <CopyGlyph
             className={`absolute inset-0 transition-opacity duration-200 ${copied ? 'opacity-0' : 'opacity-100'}`}
           />
           <CheckGlyph
-            className={`absolute inset-0 text-[color:var(--color-ink)] transition-opacity duration-200 ${copied ? 'opacity-100' : 'opacity-0'}`}
+            className={`absolute inset-0 text-ink transition-opacity duration-200 ${copied ? 'opacity-100' : 'opacity-0'}`}
           />
         </span>
       </span>

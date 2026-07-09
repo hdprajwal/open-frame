@@ -5,7 +5,7 @@ import posthog from 'posthog-js';
 
 export function Nav() {
   return (
-    <header className="relative bg-[color:var(--color-canvas)]">
+    <header className="relative bg-canvas">
       <div className="mx-auto px-5 sm:px-8 lg:px-12 h-14 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-3">
           <svg
@@ -29,20 +29,20 @@ export function Nav() {
               </clipPath>
             </defs>
           </svg>
-          <span className="text-[16px] font-medium">open-frame</span>
+          <span className="text-16 font-thin">Open Frame</span>
         </Link>
 
-        <nav className="flex items-center gap-6 text-[14px] font-medium">
+        <nav className="flex items-center gap-6 text-14 font-medium">
           <Link
             href="/docs"
-            className="hidden md:inline text-[color:var(--color-body)] hover:text-[color:var(--color-ink)] transition-colors"
+            className="hidden md:inline text-body hover:text-ink transition-colors"
           >
             Docs
           </Link>
           <Link
             href="/#demo"
             onClick={() => posthog.capture('nav_external_link_clicked', { label: 'demo' })}
-            className="hidden md:inline text-[color:var(--color-body)] hover:text-[color:var(--color-ink)] transition-colors"
+            className="hidden md:inline text-body hover:text-ink transition-colors"
           >
             Demo
           </Link>
@@ -51,13 +51,13 @@ export function Nav() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => posthog.capture('nav_external_link_clicked', { label: 'github' })}
-            className="hidden md:inline text-[color:var(--color-body)] hover:text-[color:var(--color-ink)] transition-colors"
+            className="hidden md:inline text-body hover:text-ink transition-colors"
           >
             GitHub
           </a>
           <Link
             href="/docs"
-            className="inline-flex items-center justify-center h-9 rounded-full bg-[color:var(--color-accent)] px-5 text-[color:var(--color-on-primary)] font-[family-name:var(--font-mono)] text-[13px] font-medium uppercase tracking-[-0.02em] transition duration-200 hover:bg-[color:var(--color-accent-deep)] hover:shadow-lg hover:-translate-y-0.5 active:scale-[0.98] motion-reduce:transform-none"
+            className="inline-flex items-center justify-center h-9 rounded-full bg-accent px-5 text-on-primary font-mono text-13 font-medium uppercase -tracking-2 transition duration-200 hover:bg-accent-deep hover:shadow-lg hover:-translate-y-0.5 active:scale-98 motion-reduce:transform-none"
           >
             Get started
           </Link>
@@ -65,7 +65,7 @@ export function Nav() {
       </div>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-[color:var(--color-canvas)] to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-canvas to-transparent"
       />
     </header>
   );

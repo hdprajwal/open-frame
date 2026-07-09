@@ -91,7 +91,7 @@ export function InlineSlidePlayer({ index, onIndexChange }: Props) {
 
       <div
         aria-hidden
-        className="pointer-events-none absolute bottom-3 right-3 font-[family-name:var(--font-mono)] text-[12px] tracking-[0.08em] uppercase text-white/80 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-[8px]"
+        className="pointer-events-none absolute bottom-3 right-3 font-mono text-12 tracking-8 uppercase text-white/80 bg-black/60 backdrop-blur-sm px-2 py-1 rounded-8"
       >
         {String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
       </div>

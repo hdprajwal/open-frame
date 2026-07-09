@@ -26,10 +26,7 @@ const eyebrow: CSSProperties = {
 function Cover() {
   return (
     <div style={{ ...fill, background: ink, color: paper, justifyContent: 'space-between' }}>
-      <span style={{ ...eyebrow, color: accent }}>
-        {/* @slide-comment id="c-ea632cdd" ts="2026-07-09T16:55:02.839Z" text="eyJub3RlIjoiQWRkIHBhZ2UgbnVtYmVyIHRvIHRoZSBzbGlkZXMgb24gdGhlIHRvcCByaWdodCJ9" */}
-        Carousel · 1080²
-      </span>
+      <span style={{ ...eyebrow, color: accent }}>Carousel · 1080²</span>
       <h1
         style={{
           margin: 0,

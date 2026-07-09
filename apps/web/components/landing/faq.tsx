@@ -36,29 +36,23 @@ export const faqs: QA[] = [
 export function FAQ() {
   return (
     <section id="faq" className="relative">
-      <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16 lg:py-22">
         <p className="caption mb-3">FAQ</p>
-        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-8 sm:mb-10">
+        <h2 className="text-28 sm:text-34 font-light tracking-tight leading-1.15 mb-8 sm:mb-10">
           Questions & answers
         </h2>
 
-        <div className=" border-b border-[color:var(--color-hairline)]">
+        <div className=" border-b border-hairline">
           {faqs.map((item, idx) => (
-            <details
-              key={item.q}
-              open={idx === 0}
-              className="group border-t border-[color:var(--color-hairline)]"
-            >
+            <details key={item.q} open={idx === 0} className="group border-t border-hairline">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 [&::-webkit-details-marker]:hidden">
-                <span className="text-[18px] font-medium leading-[1.56]">{item.q}</span>
+                <span className="text-18 font-medium leading-1.56">{item.q}</span>
                 <ChevronDown
                   aria-hidden
-                  className="size-4 shrink-0 text-[color:var(--color-body)] transition-transform group-open:rotate-180"
+                  className="size-4 shrink-0 text-body transition-transform group-open:rotate-180"
                 />
               </summary>
-              <p className="pb-5 text-[16px] leading-[1.5] text-[color:var(--color-body)]">
-                {item.a}
-              </p>
+              <p className="pb-5 text-16 leading-normal text-body">{item.a}</p>
             </details>
           ))}
         </div>

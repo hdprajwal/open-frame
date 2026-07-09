@@ -1,4 +1,4 @@
-export const appName = 'open-frame';
+export const appName = 'Open Frame';
 export const siteUrl = 'https://open-frame.dev';
 export const docsRoute = '/docs';
 export const docsImageRoute = '/og/docs';

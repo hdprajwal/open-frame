@@ -35,23 +35,23 @@ const CYCLE_MS = 2400;
 export function Formats() {
   return (
     <section id="formats" className="relative">
-      <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16 lg:py-22">
         <p className="caption mb-3">Formats</p>
-        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-4">
+        <h2 className="text-28 sm:text-34 font-light tracking-tight leading-1.15 mb-4">
           One workspace. Every format.
         </h2>
 
-        <p className="max-w-[560px] text-[16px] leading-[1.5] text-[color:var(--color-body)] mb-10 sm:mb-14">
+        <p className="max-w-560 text-16 leading-normal text-body mb-10 sm:mb-14">
           Seven presets and a custom canvas, all from the same workspace. It couldn't be easier to
           ship visuals that fit every platform.
         </p>
 
-        <div className="rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] p-6 sm:p-8 shadow-sm">
-          <span className="inline-flex size-9 items-center justify-center rounded-[10px] bg-[color:var(--color-accent-soft)] text-[color:var(--color-accent-deep)]">
+        <div className="rounded-12 border border-hairline bg-canvas p-6 sm:p-8 shadow-sm">
+          <span className="inline-flex size-9 items-center justify-center rounded-10 bg-accent-soft text-accent-deep">
             <Frame aria-hidden className="size-5" />
           </span>
-          <h3 className="mt-3 text-[18px] font-medium leading-[1.56]">Pick a format in seconds</h3>
-          <p className="mt-1 max-w-[72ch] text-[16px] leading-[1.5] text-[color:var(--color-body)]">
+          <h3 className="mt-3 text-18 font-medium leading-1.56">Pick a format in seconds</h3>
+          <p className="mt-1 max-w-[72ch] text-16 leading-normal text-body">
             Set a format in the deck's meta. Every page in that deck renders, previews, and exports
             at that size — swap the format and the whole deck follows.
           </p>
@@ -64,19 +64,17 @@ export function Formats() {
             <li key={f.name}>
               <span
                 aria-hidden
-                className={`block rounded-[2px] border ${
-                  f.custom
-                    ? 'border-dashed border-[color:var(--color-mute)]'
-                    : 'border-[color:var(--color-ink)]'
+                className={`block rounded-2 border ${
+                  f.custom ? 'border-dashed border-mute' : 'border-ink'
                 }`}
                 style={{
                   aspectRatio: `${f.w} / ${f.h}`,
                   ...(f.h > f.w ? { height: 20 } : { width: 24 }),
                 }}
               />
-              <p className="mt-3 text-[14px] leading-[1.43]">
-                <span className="font-medium text-[color:var(--color-ink)]">{f.name}.</span>{' '}
-                <span className="text-[color:var(--color-body)]">{f.use}</span>
+              <p className="mt-3 text-14 leading-1.43">
+                <span className="font-medium text-ink">{f.name}.</span>{' '}
+                <span className="text-body">{f.use}</span>
               </p>
             </li>
           ))}
@@ -108,25 +106,23 @@ function FormatStage() {
   const { width, height } = canvasSize(f);
 
   return (
-    <div className="mt-8 flex h-[280px] sm:h-[320px] items-center justify-center rounded-[8px] bg-[color:var(--color-surface)]">
+    <div className="mt-8 flex h-70 sm:h-80 items-center justify-center rounded-8 bg-surface">
       <div
-        className={`flex max-w-full flex-col items-center justify-center gap-1 rounded-[4px] border bg-[color:var(--color-canvas)] transition-all duration-700 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${
-          f.custom
-            ? 'border-dashed border-[color:var(--color-mute)]'
-            : 'border-[color:var(--color-hairline-strong)]'
+        className={`flex max-w-full flex-col items-center justify-center gap-1 rounded-4 border bg-canvas transition-all duration-700 [transition-timing-function:cubic-bezier(0.2,0.7,0.2,1)] ${
+          f.custom ? 'border-dashed border-mute' : 'border-hairline-strong'
         }`}
         style={{ width, height }}
       >
         <span
           key={`name-${i}`}
-          className="text-[14px] sm:text-[16px] font-medium text-[color:var(--color-ink)]"
+          className="text-14 sm:text-16 font-medium text-ink"
           style={{ animation: 'textReveal 500ms cubic-bezier(0.2,0.7,0.2,1) both' }}
         >
           {f.name}
         </span>
         <span
           key={`size-${i}`}
-          className="font-[family-name:var(--font-mono)] text-[11px] sm:text-[12px] text-[color:var(--color-mute)]"
+          className="font-mono text-11 sm:text-12 text-mute"
           style={{ animation: 'textReveal 500ms 80ms cubic-bezier(0.2,0.7,0.2,1) both' }}
         >
           {f.size}

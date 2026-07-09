@@ -5,25 +5,8 @@
    three neutral grays, hairline borders. Light only. */
 
 .os-landing {
-  --color-canvas: #ffffff;
-  --color-surface: #fafafa;
-  --color-ink: #000000;
-  --color-ink-deep: #090909;
-  --color-charcoal: #525252;
-  --color-body: #737373;
-  --color-mute: #a3a3a3;
-  --color-hairline: #e5e5e5;
-  --color-hairline-strong: #d4d4d4;
-  --color-primary: var(--color-accent);
-  --color-on-primary: #ffffff;
-
-  --color-accent: #0091fd;
-  --color-accent-deep: #0072cc;
-  --color-accent-soft: #e6f3ff;
-
-  /* Product-mock UI only — mirrors core's --brand token. */
-  --color-brand: #0091fd;
-
+  /* Palette lives in global.css's @theme so Tailwind generates
+     text-ink / bg-canvas / border-hairline utilities from it. */
   --font-display: var(--font-rubik);
   --font-sans: var(--font-rubik);
   --font-mono: var(--font-jetbrains-mono);

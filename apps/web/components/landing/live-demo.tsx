@@ -32,24 +32,24 @@ export function LiveDemo() {
 
   return (
     <section id="demo" className="relative" aria-labelledby="demo-heading">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8 pt-4 sm:pt-8 pb-12 sm:pb-[88px]">
+      <div className="mx-auto max-w-350 px-5 sm:px-8 pt-4 sm:pt-8 pb-12 sm:pb-22">
         <h2 id="demo-heading" className="sr-only">
           Live demo
         </h2>
         <div
-          className="relative block w-full overflow-hidden rounded-[12px] border border-[color:var(--color-hairline)] bg-black shadow-sm"
+          className="relative block w-full overflow-hidden rounded-12 border border-hairline bg-black shadow-sm"
           style={{ aspectRatio: '16 / 9' }}
         >
           <InlineSlidePlayer index={index} onIndexChange={setIndex} />
         </div>
 
-        <div className="mt-6 flex items-center justify-between font-[family-name:var(--font-mono)] text-[12px] tracking-[0.08em] uppercase text-[color:var(--color-body)]">
+        <div className="mt-6 flex items-center justify-between font-mono text-12 tracking-8 uppercase text-body">
           <a
             href="https://github.com/hdprajwal/open-frame/tree/main/apps/demo"
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => posthog.capture('view_more_demos_clicked')}
-            className="group inline-flex items-center gap-2 hover:text-[color:var(--color-ink)] transition-colors"
+            className="group inline-flex items-center gap-2 hover:text-ink transition-colors"
           >
             Browse the demo workspace
             <ArrowUpRight
@@ -58,7 +58,7 @@ export function LiveDemo() {
             />
           </a>
           <span className="flex items-center gap-3">
-            <span className="text-[color:var(--color-charcoal)]">
+            <span className="text-charcoal">
               {String(index + 1).padStart(2, '0')} / {String(count).padStart(2, '0')}
             </span>
             <button
@@ -66,7 +66,7 @@ export function LiveDemo() {
               onClick={handlePrev}
               disabled={atStart}
               aria-label="Previous slide"
-              className="px-1.5 py-0.5 text-[color:var(--color-charcoal)] hover:text-[color:var(--color-ink)] transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-[color:var(--color-charcoal)]"
+              className="px-1.5 py-0.5 text-charcoal hover:text-ink transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-charcoal"
             >
               <ArrowLeft aria-hidden className="size-4" />
             </button>
@@ -75,7 +75,7 @@ export function LiveDemo() {
               onClick={handleNext}
               disabled={atEnd}
               aria-label="Next slide"
-              className="px-1.5 py-0.5 text-[color:var(--color-charcoal)] hover:text-[color:var(--color-ink)] transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-[color:var(--color-charcoal)]"
+              className="px-1.5 py-0.5 text-charcoal hover:text-ink transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-charcoal"
             >
               <ArrowRight aria-hidden className="size-4" />
             </button>

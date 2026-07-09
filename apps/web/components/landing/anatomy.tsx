@@ -67,15 +67,15 @@ export function Anatomy() {
 
   return (
     <section id="anatomy" className="relative">
-      <div className="mx-auto max-w-[1080px] px-5 sm:px-8 py-12 sm:py-16 lg:py-[88px]">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8 py-12 sm:py-16 lg:py-22">
         <p className="caption mb-3">Pages as code</p>
-        <h2 className="text-[28px] sm:text-[34px] font-light tracking-tight leading-[1.15] mb-10 sm:mb-14">
+        <h2 className="text-28 sm:text-34 font-light tracking-tight leading-1.15 mb-10 sm:mb-14">
           A page is a file. Just React, nothing else.
         </h2>
 
-        <div className="relative rounded-[12px] border border-[color:var(--color-hairline)] bg-[color:var(--color-canvas)] overflow-hidden shadow-sm">
+        <div className="relative rounded-12 border border-hairline bg-canvas overflow-hidden shadow-sm">
           {/* window header */}
-          <div className="flex items-center justify-between px-4 sm:px-5 h-10 sm:h-11 border-b border-[color:var(--color-hairline)] font-[family-name:var(--font-mono)] text-[12px] text-[color:var(--color-body)]">
+          <div className="flex items-center justify-between px-4 sm:px-5 h-10 sm:h-11 border-b border-hairline font-mono text-12 text-body">
             <div className="flex items-center gap-3">
               <span
                 className="h-2.5 w-2.5 rounded-full transition-colors duration-500"
@@ -83,7 +83,7 @@ export function Anatomy() {
               />
               <span>slides/hello/index.tsx</span>
             </div>
-            <span className="flex items-center gap-2 tracking-[0.08em] uppercase">
+            <span className="flex items-center gap-2 tracking-8 uppercase">
               <span
                 className="h-1.5 w-1.5 rounded-full transition-colors duration-500"
                 style={{ background: v.accent }}
@@ -94,14 +94,14 @@ export function Anatomy() {
 
           {/* split view: code left, preview right */}
           <div className="grid grid-cols-1 lg:grid-cols-2">
-            <pre className="p-4 sm:p-6 text-[12px] sm:text-[13.5px] leading-[1.65] sm:leading-[1.75] overflow-x-auto font-[family-name:var(--font-mono)] border-b lg:border-b-0 lg:border-r border-[color:var(--color-hairline)]">
+            <pre className="p-4 sm:p-6 text-12 sm:text-13.5 leading-1.65 sm:leading-1.75 overflow-x-auto font-mono border-b lg:border-b-0 lg:border-r border-hairline">
               <code>
                 {lines.map((line, idx) => {
                   const changing = CHANGING_LINES.has(idx);
                   return (
                     <div
                       key={changing ? `${idx}-${i}` : idx}
-                      className={`-mx-2 px-2 rounded-[3px] ${changing ? 'code-pulse' : ''}`}
+                      className={`-mx-2 px-2 rounded-3 ${changing ? 'code-pulse' : ''}`}
                       // highlight output is escaped + whitelisted spans — safe markup
                       dangerouslySetInnerHTML={{
                         __html: highlight(line) || '&nbsp;',
@@ -112,9 +112,9 @@ export function Anatomy() {
               </code>
             </pre>
 
-            <div className="flex items-center justify-center bg-[color:var(--color-surface)] p-4 sm:p-6">
+            <div className="flex items-center justify-center bg-surface p-4 sm:p-6">
               <div
-                className="relative w-full rounded-[4px] overflow-hidden border border-[color:var(--color-hairline)]"
+                className="relative w-full rounded-4 overflow-hidden border border-hairline"
                 style={{ aspectRatio: '16 / 9', containerType: 'inline-size' }}
               >
                 <SlidePreview variant={v} index={i} />
@@ -150,7 +150,7 @@ function SlidePreview({ variant, index }: { variant: Variant; index: number }) {
       {/* subtle grid */}
       <div
         aria-hidden
-        className="absolute inset-0 pointer-events-none opacity-[0.06]"
+        className="absolute inset-0 pointer-events-none opacity-6"
         style={{
           backgroundImage:
             'linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px)',
