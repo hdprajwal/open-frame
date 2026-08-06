@@ -2,4 +2,4 @@
 "@open-frame/core": minor
 ---
 
-Flash frames an agent just edited on the canvas and the home grid, with an optional follow mode that jumps to the edited frame.
+Flash the page an agent just edited on the canvas, the thumbnail rail, and the home grid, and follow the edit to that page.

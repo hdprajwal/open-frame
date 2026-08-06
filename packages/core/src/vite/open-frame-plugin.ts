@@ -4,6 +4,7 @@ import path from 'node:path';
 import fg from 'fast-glob';
 import { loadConfigFromFile, normalizePath, type Plugin, type ViteDevServer } from 'vite';
 import type { OpenFrameConfig } from '../config.ts';
+import { changedPageIndices } from '../editing/page-diff.ts';
 import { selfWrites } from '../files/self-writes.ts';
 
 export type { OpenFrameConfig };
@@ -50,17 +51,17 @@ function resolved(id: string): string {
 
 // Unreadable files fail closed: a change we cannot hash is reported as our
 // own, because a false external-edit signal is worse than a missed one.
-async function isExternalEdit(
+async function classifyEdit(
   file: string,
   read: () => string | Promise<string>,
-): Promise<boolean> {
+): Promise<{ external: boolean; contents: string | null }> {
   let contents: string;
   try {
     contents = await read();
   } catch {
-    return false;
+    return { external: false, contents: null };
   }
-  return !selfWrites.matches(file, contents);
+  return { external: !selfWrites.matches(file, contents), contents };
 }
 
 async function findFrames(userCwd: string, framesDir: string): Promise<string[]> {
@@ -207,6 +208,18 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
     if (!/^index\.(tsx|jsx|ts|js)$/.test(parts[1])) return null;
     return parts[0];
   };
+  // Last contents seen for each frame entry, so an external edit can be
+  // narrowed to the page it touched. Seeded at startup; without an entry the
+  // edit still reports, just without a page.
+  const lastFrameSource = new Map<string, string>();
+  const seedFrameSources = async () => {
+    for (const file of await findFrames(userCwd, framesDir)) {
+      try {
+        lastFrameSource.set(file, await fs.readFile(file, 'utf8'));
+      } catch {}
+    }
+  };
+
   let frameChangeTimer: ReturnType<typeof setTimeout> | null = null;
   const pendingFrameChanges = new Set<string>();
   const queueFrameChanged = (server: ViteDevServer, id: string) => {
@@ -266,17 +279,25 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
     async handleHotUpdate(ctx) {
       const frameId = frameIdForEntry(ctx.file);
       if (!frameId) return;
-      if (await isExternalEdit(ctx.file, ctx.read)) {
+      const { external, contents } = await classifyEdit(ctx.file, ctx.read);
+      if (external) {
+        const previous = lastFrameSource.get(ctx.file);
+        const changed =
+          previous !== undefined && contents !== null
+            ? changedPageIndices(previous, contents)
+            : null;
         ctx.server.ws.send({
           type: 'custom',
           event: 'open-frame:external-edit',
-          data: { frameId, file: ctx.file },
+          data: { frameId, file: ctx.file, pageIndex: changed?.length ? changed[0] : null },
         });
       }
+      if (contents !== null) lastFrameSource.set(ctx.file, contents);
       queueFrameChanged(ctx.server, frameId);
       return [];
     },
     configureServer(server) {
+      void seedFrameSources();
       const isFrameEntry = (p: string) => frameIdForEntry(p) !== null;
 
       let reloadTimer: ReturnType<typeof setTimeout> | null = null;

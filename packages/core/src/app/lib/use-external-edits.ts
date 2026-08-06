@@ -3,6 +3,9 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 export type ExternalEdit = {
   frameId: string;
   file: string;
+  // The page the edit landed on, or null when the dev server couldn't narrow
+  // it down — an unparseable file, or a change outside any page component.
+  pageIndex: number | null;
   at: number;
   // Bumped on every delivery, including a replay of an edit that landed while
   // the tab was hidden. Consumers key their flash on it so the same edit can
@@ -30,11 +33,19 @@ function publish(edit: ExternalEdit) {
   for (const listener of listeners) listener();
 }
 
-function parseExternalEdit(data: unknown): { frameId: string; file: string } | null {
+function parseExternalEdit(data: unknown): Omit<ExternalEdit, 'at' | 'revision'> | null {
   if (!data || typeof data !== 'object') return null;
-  const { frameId, file } = data as { frameId?: unknown; file?: unknown };
+  const { frameId, file, pageIndex } = data as {
+    frameId?: unknown;
+    file?: unknown;
+    pageIndex?: unknown;
+  };
   if (typeof frameId !== 'string' || !frameId) return null;
-  return { frameId, file: typeof file === 'string' ? file : '' };
+  return {
+    frameId,
+    file: typeof file === 'string' ? file : '',
+    pageIndex: typeof pageIndex === 'number' && pageIndex >= 0 ? pageIndex : null,
+  };
 }
 
 function replayIfMissedWhileHidden() {
@@ -85,26 +96,34 @@ export function useExternalEdits(): ExternalEditSnapshot {
 
 const FLASH_MS = 1800;
 
-/**
- * Returns the revision of the edit currently worth flashing for `frameId`, or
- * null. Render the flash element with the revision as its `key` so a second
- * edit restarts the animation instead of riding out the first one.
- */
-export function useFrameEditFlash(frameId: string): number | null {
-  const { byFrame } = useExternalEdits();
-  const edit = frameId ? byFrame.get(frameId) : undefined;
-  const editRevision = edit?.revision ?? 0;
+function useFlashTimer(revision: number): number | null {
   const [flashing, setFlashing] = useState(0);
 
   useEffect(() => {
-    if (!editRevision) {
+    if (!revision) {
       setFlashing(0);
       return;
     }
-    setFlashing(editRevision);
+    setFlashing(revision);
     const timer = setTimeout(() => setFlashing(0), FLASH_MS);
     return () => clearTimeout(timer);
-  }, [editRevision]);
+  }, [revision]);
 
   return flashing || null;
+}
+
+/**
+ * Returns the revision of the edit currently worth flashing, or null. Render
+ * the flash element with the revision as its `key` so a second edit restarts
+ * the animation instead of riding out the first one.
+ */
+export function useFrameEditFlash(frameId: string): number | null {
+  const { byFrame } = useExternalEdits();
+  return useFlashTimer(frameId ? (byFrame.get(frameId)?.revision ?? 0) : 0);
+}
+
+export function usePageEditFlash(frameId: string, pageIndex: number): number | null {
+  const { byFrame } = useExternalEdits();
+  const edit = frameId ? byFrame.get(frameId) : undefined;
+  return useFlashTimer(edit && edit.pageIndex === pageIndex ? edit.revision : 0);
 }

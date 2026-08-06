@@ -16,18 +16,33 @@ function fakeServer(sent: SentMessage[]): ViteDevServer {
   } as unknown as ViteDevServer;
 }
 
-async function triggerHotUpdate(file: string, read: () => Promise<string>): Promise<SentMessage[]> {
-  const sent: SentMessage[] = [];
+// One updater per plugin instance, so a test can replay successive edits to
+// the same file against the source the plugin remembers from the last one.
+function makeHotUpdater() {
   const plugin = openFramePlugin({ userCwd: USER_CWD, config: {}, coreVersion: '0.0.0' });
   const handle = plugin.handleHotUpdate as (ctx: HmrContext) => Promise<unknown>;
-  await handle({
-    file,
-    server: fakeServer(sent),
-    read,
-    modules: [],
-    timestamp: Date.now(),
-  } as unknown as HmrContext);
-  return sent;
+  return async (file: string, read: () => Promise<string>): Promise<SentMessage[]> => {
+    const sent: SentMessage[] = [];
+    await handle({
+      file,
+      server: fakeServer(sent),
+      read,
+      modules: [],
+      timestamp: Date.now(),
+    } as unknown as HmrContext);
+    return sent;
+  };
+}
+
+async function triggerHotUpdate(file: string, read: () => Promise<string>): Promise<SentMessage[]> {
+  return await makeHotUpdater()(file, read);
+}
+
+function frameSource(names: string[], bodies: string[]): string {
+  const pages = names.map(
+    (name, i) => `function ${name}() {\n  return <div>${bodies[i]}</div>;\n}`,
+  );
+  return `${pages.join('\n\n')}\n\nexport default [${names.join(', ')}];\n`;
 }
 
 function reads(contents: string): () => Promise<string> {
@@ -50,9 +65,41 @@ describe('openFramePlugin handleHotUpdate', () => {
       {
         type: 'custom',
         event: 'open-frame:external-edit',
-        data: { frameId: 'intro', file: FRAME_FILE },
+        data: { frameId: 'intro', file: FRAME_FILE, pageIndex: null },
       },
     ]);
+  });
+
+  it('names the page an edit landed on once it has seen the file before', async () => {
+    const hot = makeHotUpdater();
+    const before = frameSource(['Cover', 'Idea', 'Close'], ['a', 'b', 'c']);
+    const after = frameSource(['Cover', 'Idea', 'Close'], ['a', 'b changed', 'c']);
+
+    const first = await hot(FRAME_FILE, reads(before));
+    expect(externalEdits(first)[0]?.data).toMatchObject({ pageIndex: null });
+
+    const second = await hot(FRAME_FILE, reads(after));
+    expect(externalEdits(second)[0]?.data).toMatchObject({ pageIndex: 1 });
+  });
+
+  it('names an inserted page rather than the pages it shifted', async () => {
+    const hot = makeHotUpdater();
+    await hot(FRAME_FILE, reads(frameSource(['Cover', 'Close'], ['a', 'c'])));
+
+    const sent = await hot(
+      FRAME_FILE,
+      reads(frameSource(['Cover', 'Pace', 'Close'], ['a', 'b', 'c'])),
+    );
+    expect(externalEdits(sent)[0]?.data).toMatchObject({ pageIndex: 1 });
+  });
+
+  it('leaves the page unnamed when the change is outside any page', async () => {
+    const hot = makeHotUpdater();
+    const before = frameSource(['Cover', 'Close'], ['a', 'c']);
+    await hot(FRAME_FILE, reads(before));
+
+    const sent = await hot(FRAME_FILE, reads(`const unrelated = 1;\n${before}`));
+    expect(externalEdits(sent)[0]?.data).toMatchObject({ pageIndex: null });
   });
 
   it('stays quiet for a change matching a recent own write', async () => {

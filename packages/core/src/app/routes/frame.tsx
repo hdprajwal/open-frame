@@ -127,28 +127,40 @@ export function Frame() {
     });
   }, [frameId, index, pageCount, frame, view]);
 
-  // Follow mode jumps to whatever the agent just touched, but never while you
-  // are presenting — losing your place mid-talk is worse than missing an edit.
-  useEffect(() => {
-    if (!followEdits || !latestEdit || playMode) return;
-    if (latestEdit.frameId === frameId) return;
-    navigate(`/f/${encodeURIComponent(latestEdit.frameId)}`);
-  }, [followEdits, latestEdit, playMode, frameId, navigate]);
-
-  const goTo = useCallback(
+  // Unclamped, because an edit that adds a page lands here before the reloaded
+  // module has grown — clamping would strand you on the old last page.
+  const setPageParam = useCallback(
     (i: number) => {
-      const clamped = Math.max(0, Math.min(pageCount - 1, i));
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          next.set('p', String(clamped + 1));
+          next.set('p', String(i + 1));
           return next;
         },
         { replace: true },
       );
     },
-    [pageCount, setSearchParams],
+    [setSearchParams],
   );
+
+  const goTo = useCallback(
+    (i: number) => {
+      setPageParam(Math.max(0, Math.min(pageCount - 1, i)));
+    },
+    [pageCount, setPageParam],
+  );
+
+  // Follow mode jumps to whatever the agent just touched, but never while you
+  // are presenting — losing your place mid-talk is worse than missing an edit.
+  useEffect(() => {
+    if (!followEdits || !latestEdit || playMode) return;
+    if (latestEdit.frameId !== frameId) {
+      const page = latestEdit.pageIndex === null ? '' : `?p=${latestEdit.pageIndex + 1}`;
+      navigate(`/f/${encodeURIComponent(latestEdit.frameId)}${page}`);
+      return;
+    }
+    if (latestEdit.pageIndex !== null) setPageParam(latestEdit.pageIndex);
+  }, [followEdits, latestEdit, playMode, frameId, navigate, setPageParam]);
 
   const reorderPage = useCallback(
     async (from: number, to: number) => {
