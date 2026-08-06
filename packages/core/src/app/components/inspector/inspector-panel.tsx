@@ -28,6 +28,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Toggle } from '@/components/ui/toggle';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { type BorderRadius, parseBorderRadius } from '@/lib/inspector/border-radius';
 import { findSlideSource } from '@/lib/inspector/fiber';
 import type { EditOp } from '@/lib/inspector/use-editor';
 import { useAgentSocketConnected } from '@/lib/use-agent-socket';
@@ -46,7 +47,7 @@ type ElementSnapshot = {
   lineHeight: number | null;
   letterSpacing: number;
   text: string | null;
-  borderRadius: number;
+  borderRadius: BorderRadius;
   imageSrc: string | null;
   placeholder: { hint: string; width?: number; height?: number } | null;
 };
@@ -804,27 +805,42 @@ function BorderRadiusField({
   apply: (ops: EditOp[]) => void;
 }) {
   const t = useLocale();
+  const radius = snapshot.borderRadius;
   const set = (n: number) => {
     const px = Math.max(0, Math.round(n));
     apply([{ kind: 'set-style', key: 'borderRadius', value: px === 0 ? null : `${px}px` }]);
   };
+  if (radius.kind === 'custom') {
+    return (
+      <Field label={t.inspector.radiusLabel}>
+        <span
+          className="min-w-0 flex-1 truncate font-mono text-11 text-muted-foreground"
+          title={radius.value}
+        >
+          {radius.value}
+        </span>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => apply([{ kind: 'set-style', key: 'borderRadius', value: '0px' }])}
+        >
+          {t.inspector.radiusUsePx}
+        </Button>
+      </Field>
+    );
+  }
   return (
     <Field label={t.inspector.radiusLabel}>
       <Slider
         min={0}
         max={120}
         step={1}
-        value={[snapshot.borderRadius]}
-        onValueChange={([n]) => set(n ?? snapshot.borderRadius)}
+        value={[radius.px]}
+        onValueChange={([n]) => set(n ?? radius.px)}
         className="flex-1"
       />
-      <NumberField
-        value={Math.round(snapshot.borderRadius)}
-        onChange={set}
-        min={0}
-        max={500}
-        suffix="px"
-      />
+      <NumberField value={Math.round(radius.px)} onChange={set} min={0} max={500} suffix="px" />
     </Field>
   );
 }
@@ -1019,7 +1035,12 @@ function readSnapshot(el: HTMLElement): ElementSnapshot {
     lineHeight: parseLineHeight(cs.lineHeight, parseFloat(cs.fontSize) || 16),
     letterSpacing: parseLetterSpacing(cs.letterSpacing),
     text,
-    borderRadius: parseBorderRadius(cs.borderTopLeftRadius),
+    borderRadius: parseBorderRadius([
+      cs.borderTopLeftRadius,
+      cs.borderTopRightRadius,
+      cs.borderBottomRightRadius,
+      cs.borderBottomLeftRadius,
+    ]),
     imageSrc,
     placeholder,
   };
@@ -1127,14 +1148,6 @@ function parseLineHeight(value: string, fontSize: number): number | null {
   const n = parseFloat(value);
   if (!Number.isFinite(n) || n === 0) return null;
   return round2(n / fontSize);
-}
-
-// Percentage radii (`50%` for a circle) can't round-trip through a px
-// field, so report 0 and let an explicit edit replace them.
-function parseBorderRadius(value: string): number {
-  if (!value.endsWith('px')) return 0;
-  const n = parseFloat(value);
-  return Number.isFinite(n) && n > 0 ? round2(n) : 0;
 }
 
 function parseLetterSpacing(value: string): number {

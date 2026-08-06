@@ -232,6 +232,7 @@ export const zhCN: Locale = {
     cropApply: '应用',
     cropResetAria: '重置裁剪',
     radiusLabel: '圆角',
+    radiusUsePx: '改用 px',
     agentWatching: 'Agent 正在关注',
     agentWatchingTooltip: '选取的元素会即时同步给 agent。',
     agentNotWatching: 'Agent 没在关注',

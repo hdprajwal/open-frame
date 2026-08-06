@@ -232,6 +232,7 @@ export const zhTW: Locale = {
     cropApply: '套用',
     cropResetAria: '重設裁切',
     radiusLabel: '圓角',
+    radiusUsePx: '改用 px',
     agentWatching: 'Agent 正在關注',
     agentWatchingTooltip: '選取的元素會即時同步給 agent。',
     agentNotWatching: 'Agent 沒在關注',
