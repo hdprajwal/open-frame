@@ -1,10 +1,10 @@
 ---
-title: open-slide dev
+title: open-frame dev
 description: Run the dev server with hot reload, inspector, and assets panel.
 ---
 
 ```npm
-open-slide dev
+open-frame dev
 # or, via the generated script
 npm run dev
 ```
@@ -31,18 +31,18 @@ files — saving an `index.tsx` updates the canvas without losing slide state.
 | `--open`              | off             | Open the browser on start.                                        |
 | `--no-skills-check`   | off             | Skip the built-in skills drift check.                             |
 
-The skills check also obeys the `OPEN_SLIDE_SKIP_SKILLS_CHECK=1`
+The skills check also obeys the `OPEN_FRAME_SKIP_SKILLS_CHECK=1`
 environment variable — useful in CI or container builds where stdin
 isn't a TTY.
 
 ## Configuration
 
-Override the port (and a few other knobs) in `open-slide.config.ts`:
+Override the port (and a few other knobs) in `open-frame.config.ts`:
 
-```ts title="open-slide.config.ts"
-import type { OpenSlideConfig } from '@open-slide/core';
+```ts title="open-frame.config.ts"
+import type { OpenFrameConfig } from '@open-frame/core';
 
-const config: OpenSlideConfig = {
+const config: OpenFrameConfig = {
   port: 5174,
   slidesDir: 'slides',
 };

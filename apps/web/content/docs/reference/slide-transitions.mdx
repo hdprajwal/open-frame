@@ -8,7 +8,7 @@ is **no default** — pages snap unless you declare a `SlideTransition`. Snap-sw
 is a perfectly tasteful default; only opt in when motion adds something.
 
 ```tsx title="slides/q2-launch/index.tsx"
-import type { Page, SlideTransition } from '@open-slide/core';
+import type { Page, SlideTransition } from '@open-frame/core';
 
 const Cover: Page = () => <section>…</section>;
 const Body:  Page = () => <section>…</section>;
@@ -130,7 +130,7 @@ has a literal direction (a horizontal advance, a chapter sweep).
 <Callout type="warn">
   This feature is currently unstable and subject to change. It is not
   recommended for production. Try it out and share your feedback on
-  [GitHub](https://github.com/1weiho/open-slide/issues).
+  [GitHub](https://github.com/hdprajwal/open-frame/issues).
 </Callout>
 
 For Keynote-style "Magic Move" continuity, wrap the same visual object on two
@@ -143,7 +143,7 @@ import {
   unstable_SharedElement as SharedElement,
   type Page,
   type SlideTransition,
-} from '@open-slide/core';
+} from '@open-frame/core';
 
 const Logo = ({ x, y, size }: { x: number; y: number; size: number }) => (
   <SharedElement id="logo">

@@ -3,7 +3,7 @@ title: Page
 description: The component contract for one 1920 × 1080 slide page.
 ---
 
-`Page` is the base primitive in open-slide. A deck is just an ordered array of
+`Page` is the base primitive in open-frame. A deck is just an ordered array of
 zero-prop React components, and each component is one page in the runtime,
 presenter view, overview grid, thumbnails, and exports.
 
@@ -14,7 +14,7 @@ import {
   type Page,
   type SlideMeta,
   useSlidePageNumber,
-} from '@open-slide/core';
+} from '@open-frame/core';
 
 const Cover: Page = () => {
   const { current, total } = useSlidePageNumber();
@@ -79,7 +79,7 @@ guard browser-only side effects when a page also needs to export cleanly.
 different animation than the module-level default.
 
 ```tsx
-import type { Page, SlideTransition } from '@open-slide/core';
+import type { Page, SlideTransition } from '@open-frame/core';
 
 const Cover: Page = () => <section>…</section>;
 

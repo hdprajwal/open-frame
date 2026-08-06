@@ -4,7 +4,7 @@ description: The shape the runtime expects from each slides/<id>/index.tsx.
 ---
 
 ```tsx title="slides/<id>/index.tsx"
-import type { Page, SlideMeta } from '@open-slide/core';
+import type { Page, SlideMeta } from '@open-frame/core';
 
 const Cover: Page = () => <div>{/* ... */}</div>;
 
@@ -59,7 +59,7 @@ itself. See [SlideTransition](/docs/reference/slide-transitions) for the full
 schema and a tasteful family of defaults.
 
 ```ts
-import type { SlideTransition } from '@open-slide/core';
+import type { SlideTransition } from '@open-frame/core';
 
 export const transition: SlideTransition = {
   duration: 200,
@@ -68,7 +68,7 @@ export const transition: SlideTransition = {
 };
 ```
 
-## Imports from `@open-slide/core`
+## Imports from `@open-frame/core`
 
 ```ts
 import {
@@ -76,7 +76,7 @@ import {
   CANVAS_HEIGHT,       // 1080
   ImagePlaceholder,    // sized empty placeholder — see /docs/reference/image-placeholder
   unstable_SharedElement, // match an element across pages — see /docs/reference/slide-transitions
-} from '@open-slide/core';
+} from '@open-frame/core';
 import type {
   unstable_SharedElementProps,
   Page,
@@ -86,5 +86,5 @@ import type {
   SharedElementTransition,
   TransitionPhase,
   ImagePlaceholderProps,
-} from '@open-slide/core';
+} from '@open-frame/core';
 ```
