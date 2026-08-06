@@ -6,7 +6,11 @@ export type ExternalEdit = {
   // The page the edit landed on, or null when the dev server couldn't narrow
   // it down — an unparseable file, or a change outside any page component.
   pageIndex: number | null;
+  // When the edit landed. Presence reads this, so a replay must not move it.
   at: number;
+  // When this revision reached the client — refreshed on replay. Flashes are
+  // gated on this so a component mounting later doesn't replay a stale edit.
+  deliveredAt: number;
   // Bumped on every delivery, including a replay of an edit that landed while
   // the tab was hidden. Consumers key their flash on it so the same edit can
   // animate twice.
@@ -33,7 +37,9 @@ function publish(edit: ExternalEdit) {
   for (const listener of listeners) listener();
 }
 
-function parseExternalEdit(data: unknown): Omit<ExternalEdit, 'at' | 'revision'> | null {
+function parseExternalEdit(
+  data: unknown,
+): Omit<ExternalEdit, 'at' | 'deliveredAt' | 'revision'> | null {
   if (!data || typeof data !== 'object') return null;
   const { frameId, file, pageIndex } = data as {
     frameId?: unknown;
@@ -53,7 +59,7 @@ function replayIfMissedWhileHidden() {
   if (!latest || hiddenSince === null) return;
   if (latest.at < hiddenSince) return;
   revision += 1;
-  publish({ ...latest, revision });
+  publish({ ...latest, deliveredAt: Date.now(), revision });
 }
 
 function start() {
@@ -64,7 +70,8 @@ function start() {
     const parsed = parseExternalEdit(data);
     if (!parsed) return;
     revision += 1;
-    publish({ ...parsed, at: Date.now(), revision });
+    const now = Date.now();
+    publish({ ...parsed, at: now, deliveredAt: now, revision });
   });
 
   if (typeof document === 'undefined') return;
@@ -96,18 +103,25 @@ export function useExternalEdits(): ExternalEditSnapshot {
 
 const FLASH_MS = 1800;
 
-function useFlashTimer(revision: number): number | null {
+function useFlashTimer(edit: ExternalEdit | undefined): number | null {
+  const revision = edit?.revision ?? 0;
+  const deliveredAt = edit?.deliveredAt ?? 0;
   const [flashing, setFlashing] = useState(0);
 
+  // Stored edits never expire, and a mounting component can't tell "this just
+  // arrived" from "this was already here" — so the remaining lifetime decides,
+  // not the revision alone. Without this, revisiting a frame minutes later
+  // would flash an edit that has long since gone stale.
   useEffect(() => {
-    if (!revision) {
+    const remaining = revision ? FLASH_MS - (Date.now() - deliveredAt) : 0;
+    if (remaining <= 0) {
       setFlashing(0);
       return;
     }
     setFlashing(revision);
-    const timer = setTimeout(() => setFlashing(0), FLASH_MS);
+    const timer = setTimeout(() => setFlashing(0), remaining);
     return () => clearTimeout(timer);
-  }, [revision]);
+  }, [revision, deliveredAt]);
 
   return flashing || null;
 }
@@ -119,11 +133,11 @@ function useFlashTimer(revision: number): number | null {
  */
 export function useFrameEditFlash(frameId: string): number | null {
   const { byFrame } = useExternalEdits();
-  return useFlashTimer(frameId ? (byFrame.get(frameId)?.revision ?? 0) : 0);
+  return useFlashTimer(frameId ? byFrame.get(frameId) : undefined);
 }
 
 export function usePageEditFlash(frameId: string, pageIndex: number): number | null {
   const { byFrame } = useExternalEdits();
   const edit = frameId ? byFrame.get(frameId) : undefined;
-  return useFlashTimer(edit && edit.pageIndex === pageIndex ? edit.revision : 0);
+  return useFlashTimer(edit?.pageIndex === pageIndex ? edit : undefined);
 }

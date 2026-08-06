@@ -18,7 +18,10 @@ function blankControlChars(value: string): string {
 }
 
 export function sanitizeAgentName(raw: string): string | null {
-  const name = blankControlChars(raw).replace(/\s+/g, ' ').trim().slice(0, MAX_NAME_LENGTH).trim();
+  const collapsed = blankControlChars(raw).replace(/\s+/g, ' ').trim();
+  // Truncate by code point — slicing UTF-16 units can cut an emoji in half and
+  // leave a lone surrogate to be rendered as UI text.
+  const name = Array.from(collapsed).slice(0, MAX_NAME_LENGTH).join('').trim();
   return name || null;
 }
 

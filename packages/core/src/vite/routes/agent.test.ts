@@ -19,4 +19,10 @@ describe('sanitizeAgentName', () => {
     const name = sanitizeAgentName(`${'a'.repeat(39)} bbbb`);
     expect(name).toBe('a'.repeat(39));
   });
+
+  it('truncates on a code-point boundary rather than splitting a surrogate pair', () => {
+    const name = sanitizeAgentName(`${'a'.repeat(39)}😀bbbb`);
+    expect(name).toBe(`${'a'.repeat(39)}😀`);
+    expect(Array.from(name ?? '')).toHaveLength(40);
+  });
 });

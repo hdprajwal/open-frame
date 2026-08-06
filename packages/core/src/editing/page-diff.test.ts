@@ -61,6 +61,34 @@ describe('changedPageIndices', () => {
     expect(changedPageIndices(base, next)).toEqual([0, 2]);
   });
 
+  // These use bodies that don't echo their own component name — see the
+  // over-blanking note on PageSource.shape.
+  const named = (name: string, body: string) =>
+    `function ${name}() {\n  return <div>${body}</div>;\n}`;
+
+  it('reports nothing when a page is renamed and moved but its content is untouched', () => {
+    const before = frame([named('Cover', 'a'), named('Idea', 'b')], ['Cover', 'Idea']);
+    const after = frame([named('Cover', 'a'), named('Thought', 'b')], ['Thought', 'Cover']);
+    expect(changedPageIndices(before, after)).toEqual([]);
+  });
+
+  it('still reports a duplicated page, whose content appears one more time than before', () => {
+    const before = frame([named('Cover', 'a'), named('Idea', 'b')], ['Cover', 'Idea']);
+    const after = frame(
+      [named('Cover', 'a'), named('CoverCopy', 'a'), named('Idea', 'b')],
+      ['Cover', 'CoverCopy', 'Idea'],
+    );
+    expect(changedPageIndices(before, after)).toEqual([1]);
+  });
+
+  it('falls back to reporting a change when a rename over-blanks the page text', () => {
+    const next = frame(
+      [cover, close, idea.replace('function Idea()', 'function Thought()')],
+      ['Cover', 'Close', 'Thought'],
+    );
+    expect(changedPageIndices(base, next)).toEqual([2]);
+  });
+
   it('returns null when either side is unreadable', () => {
     expect(changedPageIndices(base, 'export default [() => <div/>];')).toBeNull();
   });
