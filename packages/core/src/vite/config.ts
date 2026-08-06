@@ -8,6 +8,7 @@ import { apiPlugin } from './api-plugin.ts';
 import { currentPlugin } from './current-plugin.ts';
 import { designPlugin } from './design-plugin.ts';
 import { locTagsPlugin } from './loc-tags-plugin.ts';
+import { mcpPlugin } from './mcp-plugin.ts';
 import { notesPlugin } from './notes-plugin.ts';
 import { loadUserConfig, type OpenFrameConfig, openFramePlugin } from './open-frame-plugin.ts';
 import { themesPlugin } from './themes-plugin.ts';
@@ -64,6 +65,7 @@ export async function createViteConfig(opts: CreateViteConfigOptions): Promise<I
       themesPlugin({ userCwd, config }),
       designPlugin({ userCwd }),
       apiPlugin({ userCwd, slidesDir, assetsDir, coreVersion: CORE_VERSION }),
+      mcpPlugin({ userCwd, slidesDir, assetsDir, coreVersion: CORE_VERSION }),
       notesPlugin({ userCwd, slidesDir }),
       currentPlugin({ userCwd, slidesDir }),
     ],
