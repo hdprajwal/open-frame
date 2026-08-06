@@ -3,7 +3,7 @@ import type { ViteDevServer } from 'vite';
 
 export type McpToolContext = {
   userCwd: string;
-  slidesDir: string;
+  framesDir: string;
   assetsDir: string;
   coreVersion: string;
   server: ViteDevServer;

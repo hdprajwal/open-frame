@@ -1,20 +1,20 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { Plugin, ViteDevServer } from 'vite';
-import { SLIDE_ID_RE } from '../editing/slide-ops.ts';
+import { FRAME_ID_RE } from '../editing/frame-ops.ts';
 
 const TEXT_SNIPPET_MAX = 120;
 
 export type CurrentPluginOptions = {
   userCwd: string;
-  slidesDir?: string;
+  framesDir?: string;
 };
 
 type IncomingPayload = {
-  slideId?: unknown;
+  frameId?: unknown;
   pageIndex?: unknown;
   totalPages?: unknown;
-  slideTitle?: unknown;
+  frameTitle?: unknown;
   view?: unknown;
   selection?: unknown;
 };
@@ -34,12 +34,12 @@ type Selection = {
 };
 
 type Cached = {
-  slideId: string;
+  frameId: string;
   pageIndex: number;
   pageNumber: number;
   totalPages: number;
-  slideTitle: string;
-  view: 'slides' | 'assets';
+  frameTitle: string;
+  view: 'frames' | 'assets';
   pagePath: string;
   selection: Selection | null;
 };
@@ -65,7 +65,7 @@ function parseSelection(raw: unknown): Selection | null {
 
 export function currentPlugin(opts: CurrentPluginOptions): Plugin {
   const userCwd = opts.userCwd;
-  const slidesDir = opts.slidesDir ?? 'slides';
+  const framesDir = opts.framesDir ?? 'frames';
   const outDir = path.join(userCwd, 'node_modules', '.open-frame');
   const outFile = path.join(outDir, 'current.json');
   const tmpFile = `${outFile}.tmp`;
@@ -80,18 +80,18 @@ export function currentPlugin(opts: CurrentPluginOptions): Plugin {
         const next: Cached = cached
           ? { ...cached }
           : {
-              slideId: '',
+              frameId: '',
               pageIndex: 0,
               pageNumber: 1,
               totalPages: 1,
-              slideTitle: '',
-              view: 'slides',
+              frameTitle: '',
+              view: 'frames',
               pagePath: '',
               selection: null,
             };
 
-        if (typeof raw?.slideId === 'string') {
-          if (!SLIDE_ID_RE.test(raw.slideId)) return;
+        if (typeof raw?.frameId === 'string') {
+          if (!FRAME_ID_RE.test(raw.frameId)) return;
 
           const totalPages =
             typeof raw.totalPages === 'number' &&
@@ -104,19 +104,19 @@ export function currentPlugin(opts: CurrentPluginOptions): Plugin {
               ? Math.floor(raw.pageIndex)
               : 0;
           const pageIndex = Math.max(0, Math.min(totalPages - 1, rawIndex));
-          const slideTitle = typeof raw.slideTitle === 'string' ? raw.slideTitle : raw.slideId;
-          const view = raw.view === 'assets' ? 'assets' : 'slides';
-          const pagePath = path.join(slidesDir, raw.slideId, 'index.tsx').split(path.sep).join('/');
+          const frameTitle = typeof raw.frameTitle === 'string' ? raw.frameTitle : raw.frameId;
+          const view = raw.view === 'assets' ? 'assets' : 'frames';
+          const pagePath = path.join(framesDir, raw.frameId, 'index.tsx').split(path.sep).join('/');
 
-          if (cached?.slideId !== raw.slideId || cached?.pageIndex !== pageIndex) {
+          if (cached?.frameId !== raw.frameId || cached?.pageIndex !== pageIndex) {
             next.selection = null;
           }
 
-          next.slideId = raw.slideId;
+          next.frameId = raw.frameId;
           next.pageIndex = pageIndex;
           next.pageNumber = pageIndex + 1;
           next.totalPages = totalPages;
-          next.slideTitle = slideTitle;
+          next.frameTitle = frameTitle;
           next.view = view;
           next.pagePath = pagePath;
         }
@@ -125,7 +125,7 @@ export function currentPlugin(opts: CurrentPluginOptions): Plugin {
           next.selection = parseSelection(raw.selection);
         }
 
-        if (!next.slideId) return;
+        if (!next.frameId) return;
 
         cached = next;
 

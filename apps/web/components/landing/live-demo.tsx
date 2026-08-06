@@ -3,11 +3,11 @@
 import { ArrowLeft, ArrowRight, ArrowUpRight } from 'lucide-react';
 import posthog from 'posthog-js';
 import { useState } from 'react';
-import { InlineSlidePlayer, inlineSlideCount } from './inline-slide-player';
+import { InlineFramePlayer, inlineFrameCount } from './inline-frame-player';
 
 export function LiveDemo() {
   const [index, setIndex] = useState(0);
-  const count = inlineSlideCount;
+  const count = inlineFrameCount;
   const clamp = (i: number) => Math.max(0, Math.min(count - 1, i));
   const atStart = index === 0;
   const atEnd = index === count - 1;
@@ -15,18 +15,18 @@ export function LiveDemo() {
   const handlePrev = () => {
     const next = clamp(index - 1);
     setIndex(next);
-    posthog.capture('demo_slide_navigated', {
+    posthog.capture('demo_frame_navigated', {
       direction: 'prev',
-      slide_index: next,
+      frame_index: next,
     });
   };
 
   const handleNext = () => {
     const next = clamp(index + 1);
     setIndex(next);
-    posthog.capture('demo_slide_navigated', {
+    posthog.capture('demo_frame_navigated', {
       direction: 'next',
-      slide_index: next,
+      frame_index: next,
     });
   };
 
@@ -40,7 +40,7 @@ export function LiveDemo() {
           className="relative block w-full overflow-hidden rounded-12 border border-hairline bg-black shadow-sm"
           style={{ aspectRatio: '16 / 9' }}
         >
-          <InlineSlidePlayer index={index} onIndexChange={setIndex} />
+          <InlineFramePlayer index={index} onIndexChange={setIndex} />
         </div>
 
         <div className="mt-6 flex items-center justify-between font-mono text-12 tracking-8 uppercase text-body">
@@ -65,7 +65,7 @@ export function LiveDemo() {
               type="button"
               onClick={handlePrev}
               disabled={atStart}
-              aria-label="Previous slide"
+              aria-label="Previous frame"
               className="px-1.5 py-0.5 text-charcoal hover:text-ink transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-charcoal"
             >
               <ArrowLeft aria-hidden className="size-4" />
@@ -74,7 +74,7 @@ export function LiveDemo() {
               type="button"
               onClick={handleNext}
               disabled={atEnd}
-              aria-label="Next slide"
+              aria-label="Next frame"
               className="px-1.5 py-0.5 text-charcoal hover:text-ink transition disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:text-charcoal"
             >
               <ArrowRight aria-hidden className="size-4" />

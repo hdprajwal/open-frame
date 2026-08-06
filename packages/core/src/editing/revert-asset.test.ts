@@ -158,7 +158,7 @@ describe('applyRevertAsset', () => {
 
   it('adds a separate value import when the only @open-frame/core import is type-only', () => {
     const src = [
-      "import type { DesignSystem, Page, SlideMeta } from '@open-frame/core';",
+      "import type { DesignSystem, Page, FrameMeta } from '@open-frame/core';",
       "import hero from './assets/hero.png';",
       'export default [() => (',
       "  <img src={hero} alt='x' style={{ objectFit: 'cover' }} />",
@@ -168,7 +168,7 @@ describe('applyRevertAsset', () => {
     const r = applyRevertAsset(src, './assets/hero.png');
     if (!r.ok) throw new Error(`expected ok, got ${r.error}`);
     expect(r.source).toMatch(
-      /import type \{ DesignSystem, Page, SlideMeta \} from '@open-frame\/core';/,
+      /import type \{ DesignSystem, Page, FrameMeta \} from '@open-frame\/core';/,
     );
     expect(r.source).toContain("import { ImagePlaceholder } from '@open-frame/core';");
   });

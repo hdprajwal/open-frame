@@ -41,7 +41,7 @@ export async function GET(_req: Request, { params }: RouteContext<'/og/docs/[...
   const logoSrc = `data:image/png;base64,${logoBuffer.toString('base64')}`;
 
   const title = page.data.title;
-  const description = page.data.description ?? 'A slide framework built for agents.';
+  const description = page.data.description ?? 'A multi-format content studio built for agents.';
   const breadcrumb = ['docs', ...page.slugs].join(' / ');
 
   return new ImageResponse(

@@ -31,7 +31,7 @@ const steps: Step[] = [
     body: 'Your agent drafts pages as React components, in whatever format you pick.',
     code: {
       prompt: '›',
-      line: '/create-slide a launch carousel',
+      line: '/create-frame a launch carousel',
       tail: <AgentRow />,
     },
   },

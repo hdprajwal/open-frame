@@ -8,33 +8,33 @@ export type NoteSaveStatus =
 
 const DEBOUNCE_MS = 600;
 
-type Target = { slideId: string; index: number };
+type Target = { frameId: string; index: number };
 
-// HMR is suppressed for our writes, so the cached slide module's `notes`
+// HMR is suppressed for our writes, so the cached frame module's `notes`
 // stays stale across navigation. Cache last-saved text per target so
-// switching slides and back doesn't surface the old value.
+// switching frames and back doesn't surface the old value.
 const sessionCache = new Map<string, string>();
-const cacheKey = (slideId: string, index: number) => `${slideId}:${index}`;
+const cacheKey = (frameId: string, index: number) => `${frameId}:${index}`;
 
 // Remap the per-target cache after a reorder. `order[i]` is the original
 // page index that lands at new position `i`, matching the contract used by
-// the `/__slides/:id/reorder` endpoint.
-export function remapNotesSessionCacheAfterReorder(slideId: string, order: number[]): void {
+// the `/__frames/:id/reorder` endpoint.
+export function remapNotesSessionCacheAfterReorder(frameId: string, order: number[]): void {
   const prev = new Map<number, string>();
   for (let i = 0; i < order.length; i++) {
-    const cached = sessionCache.get(cacheKey(slideId, i));
+    const cached = sessionCache.get(cacheKey(frameId, i));
     if (cached !== undefined) prev.set(i, cached);
-    sessionCache.delete(cacheKey(slideId, i));
+    sessionCache.delete(cacheKey(frameId, i));
   }
   for (let newIdx = 0; newIdx < order.length; newIdx++) {
     const oldIdx = order[newIdx];
     const text = prev.get(oldIdx);
-    if (text !== undefined) sessionCache.set(cacheKey(slideId, newIdx), text);
+    if (text !== undefined) sessionCache.set(cacheKey(frameId, newIdx), text);
   }
 }
 
-export function useNotes(slideId: string, index: number, initial: string | undefined) {
-  const initialText = sessionCache.get(cacheKey(slideId, index)) ?? initial ?? '';
+export function useNotes(frameId: string, index: number, initial: string | undefined) {
+  const initialText = sessionCache.get(cacheKey(frameId, index)) ?? initial ?? '';
   const [value, setValueState] = useState(initialText);
   const [status, setStatus] = useState<NoteSaveStatus>({ kind: 'idle' });
 
@@ -42,7 +42,7 @@ export function useNotes(slideId: string, index: number, initial: string | undef
   const dirtyRef = useRef(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const inflightRef = useRef<AbortController | null>(null);
-  const targetRef = useRef<Target>({ slideId, index });
+  const targetRef = useRef<Target>({ frameId, index });
   const valueRef = useRef(value);
   valueRef.current = value;
 
@@ -62,12 +62,12 @@ export function useNotes(slideId: string, index: number, initial: string | undef
       const res = await fetch('/__notes', {
         method: 'PUT',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ slideId: target.slideId, index: target.index, text }),
+        body: JSON.stringify({ frameId: target.frameId, index: target.index, text }),
         signal: ctl.signal,
       });
       const body = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(body.error ?? `PUT /__notes → ${res.status}`);
-      sessionCache.set(cacheKey(target.slideId, target.index), text);
+      sessionCache.set(cacheKey(target.frameId, target.index), text);
       if (inflightRef.current !== ctl) return;
       lastSavedRef.current = text;
       dirtyRef.current = false;
@@ -87,23 +87,23 @@ export function useNotes(slideId: string, index: number, initial: string | undef
     await persist(target, valueRef.current);
   }, [cancelTimer, persist]);
 
-  // When the (slideId, index) target changes, flush pending edits for the
+  // When the (frameId, index) target changes, flush pending edits for the
   // previous target before adopting the new initial text.
   useEffect(() => {
     const prev = targetRef.current;
-    const targetChanged = prev.slideId !== slideId || prev.index !== index;
+    const targetChanged = prev.frameId !== frameId || prev.index !== index;
     if (targetChanged && dirtyRef.current) {
       cancelTimer();
       const pending = valueRef.current;
       if (lastSavedRef.current !== pending) void persist(prev, pending);
     }
-    targetRef.current = { slideId, index };
+    targetRef.current = { frameId, index };
     cancelTimer();
     setValueState(initialText);
     lastSavedRef.current = initialText;
     dirtyRef.current = false;
     setStatus({ kind: 'idle' });
-  }, [slideId, index, initialText, persist, cancelTimer]);
+  }, [frameId, index, initialText, persist, cancelTimer]);
 
   useEffect(() => {
     return () => {

@@ -10,14 +10,14 @@ import {
 } from '../../editing/comments.ts';
 import { writeTrackedFile } from '../../files/self-writes.ts';
 import { validateMutationRequest } from '../../http/request-guard.ts';
-import { type ApiContext, json, readBody, resolveSlideEntryPath } from './context.ts';
+import { type ApiContext, json, readBody, resolveFrameEntryPath } from './context.ts';
 
-// GET    /__comments        list markers for ?slideId=…
-// POST   /__comments/add    add marker { slideId, line, column?, text, hint? }
+// GET    /__comments        list markers for ?frameId=…
+// POST   /__comments/add    add marker { frameId, line, column?, text, hint? }
 // DELETE /__comments/:id    remove marker
 
 type AddCommentBody = {
-  slideId?: string;
+  frameId?: string;
   line?: number;
   column?: number;
   text?: string;
@@ -31,14 +31,14 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
 
     try {
       if (method === 'GET' && url.pathname === '/') {
-        const slideId = url.searchParams.get('slideId') ?? '';
-        const file = resolveSlideEntryPath(ctx, slideId);
-        if (!file) return json(res, 400, { error: 'invalid slideId' });
+        const frameId = url.searchParams.get('frameId') ?? '';
+        const file = resolveFrameEntryPath(ctx, frameId);
+        if (!file) return json(res, 400, { error: 'invalid frameId' });
         let source: string;
         try {
           source = await fs.readFile(file, 'utf8');
         } catch {
-          return json(res, 404, { error: 'slide not found' });
+          return json(res, 404, { error: 'frame not found' });
         }
         return json(res, 200, { comments: parseMarkers(source) });
       }
@@ -49,9 +49,9 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
           return json(res, requestCheck.status, { error: requestCheck.error });
         }
         const body = (await readBody(req)) as AddCommentBody;
-        const slideId = body.slideId ?? '';
-        const file = resolveSlideEntryPath(ctx, slideId);
-        if (!file) return json(res, 400, { error: 'invalid slideId' });
+        const frameId = body.frameId ?? '';
+        const file = resolveFrameEntryPath(ctx, frameId);
+        if (!file) return json(res, 400, { error: 'invalid frameId' });
         if (!body.line || body.line < 1) return json(res, 400, { error: 'invalid line' });
         if (!body.text || typeof body.text !== 'string') {
           return json(res, 400, { error: 'missing text' });
@@ -61,7 +61,7 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
         try {
           source = await fs.readFile(file, 'utf8');
         } catch {
-          return json(res, 404, { error: 'slide not found' });
+          return json(res, 404, { error: 'frame not found' });
         }
 
         const plan = findInsertion(source, body.line, body.column);
@@ -76,7 +76,7 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
         const id = newCommentId();
         const ts = new Date().toISOString();
         const payload = b64urlEncode(JSON.stringify({ note: body.text, hint: body.hint }));
-        const marker = `\n${plan.indent}{/* @slide-comment id="${id}" ts="${ts}" text="${payload}" */}`;
+        const marker = `\n${plan.indent}{/* @frame-comment id="${id}" ts="${ts}" text="${payload}" */}`;
 
         const next = source.slice(0, plan.offset) + marker + source.slice(plan.offset);
         await writeTrackedFile(file, next);
@@ -91,15 +91,15 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
         }
         const id = url.pathname.slice(1);
         if (!/^c-[a-f0-9]+$/.test(id)) return json(res, 400, { error: 'invalid id' });
-        const slideId = url.searchParams.get('slideId') ?? '';
-        const file = resolveSlideEntryPath(ctx, slideId);
-        if (!file) return json(res, 400, { error: 'invalid slideId' });
+        const frameId = url.searchParams.get('frameId') ?? '';
+        const file = resolveFrameEntryPath(ctx, frameId);
+        if (!file) return json(res, 400, { error: 'invalid frameId' });
 
         let source: string;
         try {
           source = await fs.readFile(file, 'utf8');
         } catch {
-          return json(res, 404, { error: 'slide not found' });
+          return json(res, 404, { error: 'frame not found' });
         }
 
         const lines = source.split('\n');

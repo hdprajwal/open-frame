@@ -1,4 +1,4 @@
-import { type DesignSystem, type Page, useSlidePageNumber } from '@open-frame/core';
+import { type DesignSystem, type Page, useFramePageNumber } from '@open-frame/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#faf7f2', text: '#2a2a2e', accent: '#fc4c02' },
@@ -265,7 +265,7 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 );
 
 const Footer = ({ src }: { src?: React.ReactNode }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{

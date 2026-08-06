@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { FORMAT_PRESETS, type FormatPreset, resolveCanvas } from './formats.ts';
-import type { SlideMeta } from './sdk.ts';
+import type { FrameMeta } from './sdk.ts';
 
 describe('FORMAT_PRESETS', () => {
   const expected: Record<FormatPreset, { width: number; height: number }> = {
@@ -15,7 +15,7 @@ describe('FORMAT_PRESETS', () => {
 
   for (const [preset, size] of Object.entries(expected)) {
     it(`resolves ${preset} to ${size.width}x${size.height}`, () => {
-      const meta: SlideMeta = { format: preset as FormatPreset };
+      const meta: FrameMeta = { format: preset as FormatPreset };
       expect(resolveCanvas(meta)).toEqual(size);
     });
   }
@@ -33,14 +33,14 @@ describe('resolveCanvas defaults', () => {
 
 describe('resolveCanvas precedence', () => {
   it('prefers meta.canvas over meta.format when both are set', () => {
-    const meta: SlideMeta = { format: 'carousel', canvas: { width: 640, height: 480 } };
+    const meta: FrameMeta = { format: 'carousel', canvas: { width: 640, height: 480 } };
     expect(resolveCanvas(meta)).toEqual({ width: 640, height: 480 });
   });
 });
 
 describe('resolveCanvas error handling', () => {
   it('throws on an unknown format naming the bad value and listing valid presets', () => {
-    const meta = { format: 'bogus' } as unknown as SlideMeta;
+    const meta = { format: 'bogus' } as unknown as FrameMeta;
     expect(() => resolveCanvas(meta)).toThrowError(/bogus/);
     try {
       resolveCanvas(meta);
@@ -62,9 +62,9 @@ describe('resolveCanvas error handling', () => {
     }
   });
 
-  it('names the slide id in the unknown-format error when provided', () => {
-    const meta = { format: 'bogus' } as unknown as SlideMeta;
-    expect(() => resolveCanvas(meta, 'my-slide')).toThrowError(/my-slide/);
+  it('names the frame id in the unknown-format error when provided', () => {
+    const meta = { format: 'bogus' } as unknown as FrameMeta;
+    expect(() => resolveCanvas(meta, 'my-frame')).toThrowError(/my-frame/);
   });
 
   it.each([
@@ -76,12 +76,12 @@ describe('resolveCanvas error handling', () => {
     ['zero height', { width: 1920, height: 0 }],
     ['negative height', { width: 1920, height: -1 }],
   ])('throws on invalid canvas dims: %s', (_label, canvas) => {
-    const meta: SlideMeta = { canvas };
-    expect(() => resolveCanvas(meta, 'bad-canvas-slide')).toThrowError(/bad-canvas-slide/);
+    const meta: FrameMeta = { canvas };
+    expect(() => resolveCanvas(meta, 'bad-canvas-frame')).toThrowError(/bad-canvas-frame/);
   });
 
-  it('names the slide id in the invalid-canvas error when provided', () => {
-    const meta: SlideMeta = { canvas: { width: 0, height: 0 } };
+  it('names the frame id in the invalid-canvas error when provided', () => {
+    const meta: FrameMeta = { canvas: { width: 0, height: 0 } };
     expect(() => resolveCanvas(meta, 'zero-canvas')).toThrowError(/zero-canvas/);
   });
 });

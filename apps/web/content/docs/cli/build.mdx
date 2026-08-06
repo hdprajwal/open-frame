@@ -9,7 +9,7 @@ open-frame build
 npm run build
 ```
 
-Builds every deck under `slides/` into a self-contained static site at
+Builds every deck under `frames/` into a self-contained static site at
 `dist/`. The output has no server requirement — drop it on any static host.
 
 ## Flags
@@ -31,13 +31,13 @@ dist/
 ## Trimming the public surface
 
 If the build is for a public share rather than internal review, you can hide
-the slide browser and on-canvas UI in `open-frame.config.ts`:
+the frame browser and on-canvas UI in `open-frame.config.ts`:
 
 ```ts
 const config: OpenFrameConfig = {
   build: {
-    showSlideBrowser: false,
-    showSlideUi: false,
+    showFrameBrowser: false,
+    showFrameUi: false,
     allowHtmlDownload: false,
   },
 };
@@ -54,7 +54,7 @@ against the deployed path:
 
 ```ts
 const config: OpenFrameConfig = {
-  base: '/my-slides/',
+  base: '/my-frames/',
 };
 ```
 

@@ -4,10 +4,10 @@ import * as t from '@babel/types';
 import type { Plugin, ViteDevServer } from 'vite';
 import { writeTrackedFile } from '../files/self-writes.ts';
 import { validateMutationRequest } from '../http/request-guard.ts';
-import { json, readBody, resolveSlidePath } from './routes/context.ts';
+import { json, readBody, resolveFramePath } from './routes/context.ts';
 
 type NotesBody = {
-  slideId?: string;
+  frameId?: string;
   index?: number;
   text?: string;
 };
@@ -153,13 +153,13 @@ export function applyNotesEdit(source: string, index: number, text: string): App
 
 export type NotesPluginOptions = {
   userCwd: string;
-  slidesDir?: string;
+  framesDir?: string;
 };
 
 export function notesPlugin(opts: NotesPluginOptions): Plugin {
   const userCwd = opts.userCwd;
-  const slidesDir = opts.slidesDir ?? 'slides';
-  // Suppress HMR for our own writes — RFR bails on the slide's mixed exports
+  const framesDir = opts.framesDir ?? 'frames';
+  // Suppress HMR for our own writes — RFR bails on the frame's mixed exports
   // and remounts the tree, stealing textarea focus mid-typing.
   const recentWrites = new Map<string, number>();
   const RECENT_WRITE_WINDOW_MS = 1500;
@@ -185,9 +185,9 @@ export function notesPlugin(opts: NotesPluginOptions): Plugin {
 
         try {
           const body = (await readBody(req)) as NotesBody;
-          const slideId = body.slideId ?? '';
-          const file = resolveSlidePath(userCwd, slidesDir, slideId);
-          if (!file) return json(res, 400, { error: 'invalid slideId' });
+          const frameId = body.frameId ?? '';
+          const file = resolveFramePath(userCwd, framesDir, frameId);
+          if (!file) return json(res, 400, { error: 'invalid frameId' });
           if (typeof body.index !== 'number') return json(res, 400, { error: 'missing index' });
           if (typeof body.text !== 'string') return json(res, 400, { error: 'missing text' });
 
@@ -195,7 +195,7 @@ export function notesPlugin(opts: NotesPluginOptions): Plugin {
           try {
             source = await fs.readFile(file, 'utf8');
           } catch {
-            return json(res, 404, { error: 'slide not found' });
+            return json(res, 404, { error: 'frame not found' });
           }
 
           const result = applyNotesEdit(source, body.index, body.text);

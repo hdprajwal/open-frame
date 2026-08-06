@@ -11,14 +11,14 @@ export type {
 export { cssVarsToString, defaultDesign, designToCssVars } from './app/lib/design.ts';
 export type { CanvasSize, FormatPreset } from './app/lib/formats.ts';
 export { FORMAT_PRESETS, resolveCanvas } from './app/lib/formats.ts';
-export { useSlidePageNumber } from './app/lib/page-context.tsx';
-export type { Page, SlideMeta, SlideModule } from './app/lib/sdk.ts';
+export { useFramePageNumber } from './app/lib/page-context.tsx';
+export type { FrameMeta, FrameModule, Page } from './app/lib/sdk.ts';
 export { CANVAS_HEIGHT, CANVAS_WIDTH } from './app/lib/sdk.ts';
 export type { StepProps, StepsProps } from './app/lib/step-context.tsx';
 export { Step, Steps } from './app/lib/step-context.tsx';
 export type {
+  FrameTransition,
   SharedElementTransition,
-  SlideTransition,
   TransitionPhase,
 } from './app/lib/transition.ts';
 export type { OpenFrameConfig } from './config.ts';

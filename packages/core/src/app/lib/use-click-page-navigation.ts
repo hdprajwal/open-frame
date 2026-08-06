@@ -1,10 +1,10 @@
 import { type RefObject, useEffect } from 'react';
 
-// Clicks that land on (or inside) these never navigate — interactive slide
-// content keeps its click, and present chrome is excluded via data-osd-chrome.
-// Authors can opt any element out with a data-osd-interactive attribute.
+// Clicks that land on (or inside) these never navigate — interactive frame
+// content keeps its click, and present chrome is excluded via data-of-chrome.
+// Authors can opt any element out with a data-of-interactive attribute.
 const NAV_PASSTHROUGH =
-  'a, button, input, textarea, select, label, summary, iframe, video, audio, embed, object, [role="button"], [role="link"], [contenteditable="true"], [data-osd-interactive], [data-osd-chrome]';
+  'a, button, input, textarea, select, label, summary, iframe, video, audio, embed, object, [role="button"], [role="link"], [contenteditable="true"], [data-of-interactive], [data-of-chrome]';
 
 type UseClickPageNavigationOptions<T extends HTMLElement> = {
   ref: RefObject<T>;

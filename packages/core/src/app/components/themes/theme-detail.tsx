@@ -5,11 +5,11 @@ import { Button } from '@/components/ui/button';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import { resolveCanvas } from '../../lib/formats';
-import { SlidePageProvider } from '../../lib/page-context';
-import type { SlideModule } from '../../lib/sdk';
-import { loadSlide, slidesByTheme } from '../../lib/slides';
+import { framesByTheme, loadFrame } from '../../lib/frames';
+import { FramePageProvider } from '../../lib/page-context';
+import type { FrameModule } from '../../lib/sdk';
 import { loadThemeDemo, type ThemeDemoModule, themes } from '../../lib/themes';
-import { SlideCanvas } from '../slide-canvas';
+import { FrameCanvas } from '../frame-canvas';
 
 export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () => void }) {
   const t = useLocale();
@@ -34,7 +34,7 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
 
   const pages = demo?.default ?? [];
   const totalPages = pages.length;
-  const usedBySlideIds = useMemo(() => (theme ? slidesByTheme(theme.id) : []), [theme]);
+  const usedByFrameIds = useMemo(() => (theme ? framesByTheme(theme.id) : []), [theme]);
 
   const promptRef = useRef<HTMLPreElement>(null);
   const [promptExpanded, setPromptExpanded] = useState(false);
@@ -107,11 +107,11 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
                   {t.common.loading}
                 </div>
               ) : Current ? (
-                <SlideCanvas flat freezeMotion design={demo.design}>
-                  <SlidePageProvider index={pageIndex} total={totalPages}>
+                <FrameCanvas flat freezeMotion design={demo.design}>
+                  <FramePageProvider index={pageIndex} total={totalPages}>
                     <Current />
-                  </SlidePageProvider>
-                </SlideCanvas>
+                  </FramePageProvider>
+                </FrameCanvas>
               ) : null}
             </div>
 
@@ -183,19 +183,19 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
         <aside className="flex min-w-0 flex-col gap-4">
           <div className="flex flex-wrap items-baseline gap-3">
             <span className="eyebrow">{t.themes.usedBy}</span>
-            {usedBySlideIds.length > 0 ? (
-              <span className="folio">{usedBySlideIds.length.toString().padStart(2, '0')}</span>
+            {usedByFrameIds.length > 0 ? (
+              <span className="folio">{usedByFrameIds.length.toString().padStart(2, '0')}</span>
             ) : null}
           </div>
-          {usedBySlideIds.length === 0 ? (
+          {usedByFrameIds.length === 0 ? (
             <p className="text-12.5 leading-relaxed text-muted-foreground">
               {t.themes.usedByEmpty}
             </p>
           ) : (
             <ul className="flex flex-col gap-5">
-              {usedBySlideIds.map((id) => (
+              {usedByFrameIds.map((id) => (
                 <li key={id}>
-                  <ThemeSlideCard id={id} />
+                  <ThemeFrameCard id={id} />
                 </li>
               ))}
             </ul>
@@ -206,15 +206,15 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
   );
 }
 
-function ThemeSlideCard({ id }: { id: string }) {
+function ThemeFrameCard({ id }: { id: string }) {
   const t = useLocale();
-  const [slide, setSlide] = useState<SlideModule | null>(null);
+  const [frame, setFrame] = useState<FrameModule | null>(null);
 
   useEffect(() => {
     let cancelled = false;
-    loadSlide(id)
+    loadFrame(id)
       .then((mod) => {
-        if (!cancelled) setSlide(mod);
+        if (!cancelled) setFrame(mod);
       })
       .catch(() => {});
     return () => {
@@ -222,24 +222,24 @@ function ThemeSlideCard({ id }: { id: string }) {
     };
   }, [id]);
 
-  const FirstPage = slide?.default[0];
-  const displayTitle = slide?.meta?.title ?? id;
+  const FirstPage = frame?.default[0];
+  const displayTitle = frame?.meta?.title ?? id;
 
   return (
-    <Link to={`/s/${id}`} className="group block focus-visible:outline-none">
+    <Link to={`/f/${id}`} className="group block focus-visible:outline-none">
       <div className="relative aspect-video overflow-hidden rounded-6 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
         {FirstPage ? (
           <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
-            <SlideCanvas
+            <FrameCanvas
               flat
               freezeMotion
-              design={slide?.design}
-              canvas={resolveCanvas(slide?.meta)}
+              design={frame?.design}
+              canvas={resolveCanvas(frame?.meta)}
             >
-              <SlidePageProvider index={0} total={slide?.default.length ?? 1}>
+              <FramePageProvider index={0} total={frame?.default.length ?? 1}>
                 <FirstPage />
-              </SlidePageProvider>
-            </SlideCanvas>
+              </FramePageProvider>
+            </FrameCanvas>
           </div>
         ) : (
           <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">

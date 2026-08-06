@@ -2,18 +2,18 @@ import { createElement } from 'react';
 import { createRoot } from 'react-dom/client';
 import { designToCssVars } from './design';
 import { downloadBlob } from './download';
-import { SlidePageProvider } from './page-context';
-import type { SlideModule } from './sdk';
+import { FramePageProvider } from './page-context';
+import type { FrameModule } from './sdk';
 
 type AssetEntry = { name: string; bytes: Uint8Array };
 
 const ASSET_EXT_RE =
   /\.(?:png|jpe?g|gif|svg|webp|avif|mp4|webm|mov|woff2?|ttf|otf|mp3|wav|ogg)(?:\?[^#]*)?(?:#.*)?$/i;
 
-export async function exportSlideAsHtml(slide: SlideModule, slideId: string): Promise<void> {
-  const pages = slide.default ?? [];
+export async function exportFrameAsHtml(frame: FrameModule, frameId: string): Promise<void> {
+  const pages = frame.default ?? [];
   if (pages.length === 0) return;
-  const title = slide.meta?.title ?? slideId;
+  const title = frame.meta?.title ?? frameId;
 
   const pagesHtml = await renderPagesToHtml(pages);
   const bundledCss = collectCss();
@@ -47,29 +47,29 @@ export async function exportSlideAsHtml(slide: SlideModule, slideId: string): Pr
     pagesHtml: rewrittenPages,
     bundledCss: rewrittenCss,
     externalLinks,
-    design: slide.design,
+    design: frame.design,
   });
 
   const htmlBytes = new TextEncoder().encode(html);
 
   if (assets.size === 0) {
-    downloadBlob(new Blob([htmlBytes as BlobPart], { type: 'text/html' }), `${slideId}.html`);
+    downloadBlob(new Blob([htmlBytes as BlobPart], { type: 'text/html' }), `${frameId}.html`);
     return;
   }
 
   const { zipSync } = await import('fflate');
   const zipTree: Record<string, Uint8Array | Record<string, Uint8Array>> = {
-    [`${slideId}.html`]: htmlBytes,
+    [`${frameId}.html`]: htmlBytes,
     assets: {},
   };
   for (const { name, bytes } of assets.values()) {
     (zipTree.assets as Record<string, Uint8Array>)[name] = bytes;
   }
   const zipped = zipSync(zipTree as Parameters<typeof zipSync>[0]);
-  downloadBlob(new Blob([zipped as BlobPart], { type: 'application/zip' }), `${slideId}.zip`);
+  downloadBlob(new Blob([zipped as BlobPart], { type: 'application/zip' }), `${frameId}.zip`);
 }
 
-async function renderPagesToHtml(pages: NonNullable<SlideModule['default']>): Promise<string[]> {
+async function renderPagesToHtml(pages: NonNullable<FrameModule['default']>): Promise<string[]> {
   const container = document.createElement('div');
   container.setAttribute('aria-hidden', 'true');
   Object.assign(container.style, {
@@ -93,7 +93,7 @@ async function renderPagesToHtml(pages: NonNullable<SlideModule['default']>): Pr
       container.appendChild(host);
       const root = createRoot(host);
       root.render(
-        createElement(SlidePageProvider, { index: i, total: pages.length }, createElement(Page)),
+        createElement(FramePageProvider, { index: i, total: pages.length }, createElement(Page)),
       );
       await nextPaint();
       await nextPaint();
@@ -237,7 +237,7 @@ function buildHtml(opts: {
   pagesHtml: string[];
   bundledCss: string;
   externalLinks: string;
-  design: SlideModule['design'];
+  design: FrameModule['design'];
 }): string {
   const pagesMarkup = opts.pagesHtml
     .map(
@@ -269,7 +269,7 @@ html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-f
 <style>${opts.bundledCss}</style>
 </head>
 <body>
-<div class="os-stage"><div class="os-frame" id="os-frame" data-osd-canvas${frameStyle ? ` style="${escapeAttr(frameStyle)}"` : ''}>${pagesMarkup}</div></div>
+<div class="os-stage"><div class="os-frame" id="os-frame" data-of-canvas${frameStyle ? ` style="${escapeAttr(frameStyle)}"` : ''}>${pagesMarkup}</div></div>
 <div class="os-counter"><span id="os-cur">1</span> / <span id="os-total">${opts.pagesHtml.length}</span></div>
 <script>
 (function () {

@@ -12,7 +12,7 @@ import { createMcpServer } from './server.ts';
 function makeContext(): McpToolContext {
   return {
     userCwd: '/tmp/deck',
-    slidesDir: 'slides',
+    framesDir: 'frames',
     assetsDir: 'assets',
     coreVersion: '1.2.3',
     server: {} as ViteDevServer,

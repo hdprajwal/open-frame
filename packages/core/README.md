@@ -1,6 +1,6 @@
 # @open-frame/core
 
-Runtime and CLI for [open-frame](https://github.com/hdprajwal/open-frame) — a React-based slide framework where you write slides and the framework handles the Vite/React stack, layout, navigation, hot reload, and fullscreen play mode.
+Runtime and CLI for [open-frame](https://github.com/hdprajwal/open-frame) — a React-based multi-format content framework where you write frames and the framework handles the Vite/React stack, layout, navigation, hot reload, and fullscreen play mode.
 
 ## Install
 
@@ -12,8 +12,8 @@ Most users get this installed automatically by running `npx @open-frame/cli init
 
 ## What's inside
 
-- **Runtime** — home page, slide viewer, thumbnail rail, keyboard navigation, and fullscreen presenter mode. Every slide renders into a fixed **1920×1080** canvas; the framework scales it.
-- **Vite plugin** — discovers `slides/<id>/index.{tsx,jsx,ts,js}`, exposes them via virtual modules, and reloads when slides are added or removed.
+- **Runtime** — home page, frame viewer, thumbnail rail, keyboard navigation, and fullscreen presenter mode. Every frame renders into a fixed **1920×1080** canvas; the framework scales it.
+- **Vite plugin** — discovers `frames/<id>/index.{tsx,jsx,ts,js}`, exposes them via virtual modules, and reloads when frames are added or removed.
 - **CLI** — `open-frame dev | build | preview` so workspaces never need to touch Vite, React, or tsconfig directly.
 
 ## CLI
@@ -34,7 +34,7 @@ Create `open-frame.config.ts` in the workspace root (all fields optional):
 import type { OpenFrameConfig } from '@open-frame/core';
 
 const openFrameConfig: OpenFrameConfig = {
-  slidesDir: 'slides',
+  framesDir: 'frames',
   port: 5173,
 };
 
@@ -47,15 +47,15 @@ Set `base` to deploy the built site under a sub-directory (intranet folders, Git
 
 ```ts
 const openFrameConfig: OpenFrameConfig = {
-  base: '/my-slides/',
+  base: '/my-frames/',
 };
 ```
 
 The value is passed straight to Vite's `base` and to React Router's `basename`, so client-side navigation matches the deployed path.
 
-## Authoring slides
+## Authoring frames
 
-Slides live under `slides/<kebab-case-id>/index.tsx` and default-export an array of `Page` components:
+Frames live under `frames/<kebab-case-id>/index.tsx` and default-export an array of `Page` components:
 
 ```tsx
 import type { Page } from '@open-frame/core';
@@ -80,9 +80,9 @@ import {
   CANVAS_HEIGHT,  // 1080
   unstable_SharedElement, // match or fade objects across pages for shared element transitions
   type Page,
-  type SlideMeta,
-  type SlideModule,
-  type SlideTransition,
+  type FrameMeta,
+  type FrameModule,
+  type FrameTransition,
   type OpenFrameConfig,
 } from '@open-frame/core';
 ```

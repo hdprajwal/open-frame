@@ -6,7 +6,7 @@ mode: light
 
 # Lab Notebook
 
-A technical builder's notebook page for square (1:1) LinkedIn carousels. The whole slide is a sheet of notebook paper: a warm off-white **paper** sheet or a dark **ink** sheet, carrying a faint **ruled / grid / dotted** texture, with content set in Caveat handwriting and a single Strava orange for the marks that matter — checkmarks, underlines, stars, arrows, the one emphasized word. Two registers live together: printed chrome (IBM Plex Mono tabs and labels, an Inter Tight option) reads like the binding and tab dividers; everything written reads like it was scrawled in by hand. Derived from the "Lab notebook card" component (Notes / Ideas / Experiments tabs over ruled paper).
+A technical builder's notebook page for square (1:1) LinkedIn carousels. The whole frame is a sheet of notebook paper: a warm off-white **paper** sheet or a dark **ink** sheet, carrying a faint **ruled / grid / dotted** texture, with content set in Caveat handwriting and a single Strava orange for the marks that matter — checkmarks, underlines, stars, arrows, the one emphasized word. Two registers live together: printed chrome (IBM Plex Mono tabs and labels, an Inter Tight option) reads like the binding and tab dividers; everything written reads like it was scrawled in by hand. Derived from the "Lab notebook card" component (Notes / Ideas / Experiments tabs over ruled paper).
 
 ## Variants and paper styles
 
@@ -57,7 +57,7 @@ These are wired at runtime as `--nb-fg` / `--nb-muted` / `--nb-edge` / `--nb-acc
 
 ## Fixed components
 
-Paste-ready. Copy verbatim into a slide that uses this theme. They share these consts and the `Sheet` wrapper, which sets the `--nb-*` vars per variant.
+Paste-ready. Copy verbatim into a frame that uses this theme. They share these consts and the `Sheet` wrapper, which sets the `--nb-*` vars per variant.
 
 ```tsx
 const hand = '"Caveat", cursive';
@@ -174,13 +174,13 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 
 ### Footer
 
-Mono src on the left, a handwritten page stamp on the right. Pull the page number from `useSlidePageNumber()` — never hardcode it.
+Mono src on the left, a handwritten page stamp on the right. Pull the page number from `useFramePageNumber()` — never hardcode it.
 
 ```tsx
-import { useSlidePageNumber } from '@open-frame/core';
+import { useFramePageNumber } from '@open-frame/core';
 
 const Footer = ({ src }: { src?: React.ReactNode }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto' }}>
       <div style={{ fontFamily: mono, fontSize: 20, color: 'var(--nb-muted)', letterSpacing: '0.04em' }}>
@@ -194,7 +194,7 @@ const Footer = ({ src }: { src?: React.ReactNode }) => {
 
 ## Motion
 
-- Philosophy: **static.** A still notebook page exported to PNG — no transitions, no keyframes. The hand-drawn marks already imply motion; let them sit. (If presenting live, the deck-wide `RISE` from `slide-authoring` is the only acceptable addition.)
+- Philosophy: **static.** A still notebook page exported to PNG — no transitions, no keyframes. The hand-drawn marks already imply motion; let them sit. (If presenting live, the deck-wide `RISE` from `frame-authoring` is the only acceptable addition.)
 
 ## Aesthetic
 

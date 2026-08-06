@@ -16,7 +16,7 @@ export type OpenFramePluginOptions = {
 
 const CONFIG_FILE = 'open-frame.config.ts';
 
-const SLIDES_VMOD = 'virtual:open-frame/slides';
+const FRAMES_VMOD = 'virtual:open-frame/frames';
 const CONFIG_VMOD = 'virtual:open-frame/config';
 const FOLDERS_VMOD = 'virtual:open-frame/folders';
 
@@ -63,8 +63,8 @@ async function isExternalEdit(
   return !selfWrites.matches(file, contents);
 }
 
-async function findSlides(userCwd: string, slidesDir: string): Promise<string[]> {
-  const abs = path.resolve(userCwd, slidesDir);
+async function findFrames(userCwd: string, framesDir: string): Promise<string[]> {
+  const abs = path.resolve(userCwd, framesDir);
   if (!existsSync(abs)) return [];
   const hits = await fg('*/index.{tsx,jsx,ts,js}', {
     cwd: abs,
@@ -74,8 +74,8 @@ async function findSlides(userCwd: string, slidesDir: string): Promise<string[]>
   return hits.sort();
 }
 
-function toId(absFile: string, slidesRoot: string): string {
-  const rel = path.relative(slidesRoot, absFile);
+function toId(absFile: string, framesRoot: string): string {
+  const rel = path.relative(framesRoot, absFile);
   return rel.split(path.sep)[0];
 }
 
@@ -115,7 +115,7 @@ function extractMeta(src: string): ExtractedMeta {
   };
 }
 
-async function readSlideMeta(abs: string): Promise<ExtractedMeta> {
+async function readFrameMeta(abs: string): Promise<ExtractedMeta> {
   try {
     const src = await fs.readFile(abs, 'utf8');
     return extractMeta(src);
@@ -130,16 +130,16 @@ function parseCreatedAtMs(iso: string | null): number | null {
   return Number.isFinite(ms) ? ms : null;
 }
 
-async function generateSlidesModule(
+async function generateFramesModule(
   files: string[],
-  slidesRoot: string,
+  framesRoot: string,
   isDev: boolean,
 ): Promise<string> {
   const entries = await Promise.all(
     files.map(async (abs) => {
-      const id = toId(abs, slidesRoot);
+      const id = toId(abs, framesRoot);
       const importPath = isDev ? `@fs/${normalizePath(abs).replace(/^\/+/, '')}` : abs;
-      const meta = await readSlideMeta(abs);
+      const meta = await readFrameMeta(abs);
       return { id, importPath, theme: meta.theme, createdAt: parseCreatedAtMs(meta.createdAt) };
     }),
   );
@@ -156,13 +156,13 @@ async function generateSlidesModule(
   const importTokens = JSON.stringify(Object.fromEntries(entries.map((e) => [e.id, 0])));
   const devRuntime = isDev
     ? `
-const slideImportTokens = ${importTokens};
+const frameImportTokens = ${importTokens};
 if (import.meta.hot) {
-  import.meta.hot.on('open-frame:slide-changed', (data) => {
-    const ids = Array.isArray(data?.slideIds) ? data.slideIds : data?.slideId ? [data.slideId] : [];
+  import.meta.hot.on('open-frame:frame-changed', (data) => {
+    const ids = Array.isArray(data?.frameIds) ? data.frameIds : data?.frameId ? [data.frameId] : [];
     const token = Date.now();
     for (const id of ids) {
-      if (Object.prototype.hasOwnProperty.call(slideImportTokens, id)) slideImportTokens[id] = token;
+      if (Object.prototype.hasOwnProperty.call(frameImportTokens, id)) frameImportTokens[id] = token;
     }
   });
 }
@@ -171,22 +171,22 @@ if (import.meta.hot) {
   const cases = entries
     .map((e) => {
       const importExpr = isDev
-        ? `import(/* @vite-ignore */ import.meta.env.BASE_URL + ${JSON.stringify(`${e.importPath}?t=`)} + slideImportTokens[${JSON.stringify(e.id)}])`
+        ? `import(/* @vite-ignore */ import.meta.env.BASE_URL + ${JSON.stringify(`${e.importPath}?t=`)} + frameImportTokens[${JSON.stringify(e.id)}])`
         : `import(${JSON.stringify(e.importPath)})`;
       return `    case ${JSON.stringify(e.id)}: return ${importExpr};`;
     })
     .join('\n');
 
-  return `// virtual:open-frame/slides — generated
-export const slideIds = ${ids};
-export const slideThemes = ${themesJson};
-export const slideCreatedAt = ${createdAtJson};
+  return `// virtual:open-frame/frames — generated
+export const frameIds = ${ids};
+export const frameThemes = ${themesJson};
+export const frameCreatedAt = ${createdAtJson};
 ${devRuntime}
 
-export async function loadSlide(id) {
+export async function loadFrame(id) {
   switch (id) {
 ${cases}
-    default: throw new Error('Slide not found: ' + id);
+    default: throw new Error('Frame not found: ' + id);
   }
 }
 `;
@@ -194,34 +194,34 @@ ${cases}
 
 export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
   const { userCwd, config, coreVersion } = opts;
-  const slidesDir = config.slidesDir ?? 'slides';
-  const slidesRoot = path.resolve(userCwd, slidesDir);
-  const foldersManifestPath = path.join(slidesRoot, '.folders.json');
+  const framesDir = config.framesDir ?? 'frames';
+  const framesRoot = path.resolve(userCwd, framesDir);
+  const foldersManifestPath = path.join(framesRoot, '.folders.json');
 
   let isDev = false;
-  const slideIdForEntry = (p: string): string | null => {
-    const rel = path.relative(slidesRoot, p);
+  const frameIdForEntry = (p: string): string | null => {
+    const rel = path.relative(framesRoot, p);
     if (rel.startsWith('..') || path.isAbsolute(rel)) return null;
     const parts = rel.split(path.sep);
     if (parts.length !== 2) return null;
     if (!/^index\.(tsx|jsx|ts|js)$/.test(parts[1])) return null;
     return parts[0];
   };
-  let slideChangeTimer: ReturnType<typeof setTimeout> | null = null;
-  const pendingSlideChanges = new Set<string>();
-  const queueSlideChanged = (server: ViteDevServer, id: string) => {
-    pendingSlideChanges.add(id);
-    if (slideChangeTimer) clearTimeout(slideChangeTimer);
-    slideChangeTimer = setTimeout(() => {
-      slideChangeTimer = null;
-      const mod = server.moduleGraph.getModuleById(resolved(SLIDES_VMOD));
+  let frameChangeTimer: ReturnType<typeof setTimeout> | null = null;
+  const pendingFrameChanges = new Set<string>();
+  const queueFrameChanged = (server: ViteDevServer, id: string) => {
+    pendingFrameChanges.add(id);
+    if (frameChangeTimer) clearTimeout(frameChangeTimer);
+    frameChangeTimer = setTimeout(() => {
+      frameChangeTimer = null;
+      const mod = server.moduleGraph.getModuleById(resolved(FRAMES_VMOD));
       if (mod) server.moduleGraph.invalidateModule(mod);
-      const slideIds = Array.from(pendingSlideChanges);
-      pendingSlideChanges.clear();
+      const frameIds = Array.from(pendingFrameChanges);
+      pendingFrameChanges.clear();
       server.ws.send({
         type: 'custom',
-        event: 'open-frame:slide-changed',
-        data: { slideIds },
+        event: 'open-frame:frame-changed',
+        data: { frameIds },
       });
     }, 100);
   };
@@ -235,23 +235,23 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
       };
     },
     resolveId(id) {
-      if (id === SLIDES_VMOD) return resolved(SLIDES_VMOD);
+      if (id === FRAMES_VMOD) return resolved(FRAMES_VMOD);
       if (id === CONFIG_VMOD) return resolved(CONFIG_VMOD);
       if (id === FOLDERS_VMOD) return resolved(FOLDERS_VMOD);
       return null;
     },
     async load(id) {
-      if (id === resolved(SLIDES_VMOD)) {
-        const files = await findSlides(userCwd, slidesDir);
-        return await generateSlidesModule(files, slidesRoot, isDev);
+      if (id === resolved(FRAMES_VMOD)) {
+        const files = await findFrames(userCwd, framesDir);
+        return await generateFramesModule(files, framesRoot, isDev);
       }
       if (id === resolved(CONFIG_VMOD)) {
         const userBuild = config.build ?? {};
         const buildResolved = isDev
-          ? { showSlideBrowser: true, showSlideUi: true, allowHtmlDownload: true }
+          ? { showFrameBrowser: true, showFrameUi: true, allowHtmlDownload: true }
           : {
-              showSlideBrowser: userBuild.showSlideBrowser ?? true,
-              showSlideUi: userBuild.showSlideUi ?? true,
+              showFrameBrowser: userBuild.showFrameBrowser ?? true,
+              showFrameUi: userBuild.showFrameUi ?? true,
               allowHtmlDownload: userBuild.allowHtmlDownload ?? true,
             };
         const resolvedConfig = { ...config, build: buildResolved, version: coreVersion };
@@ -264,41 +264,41 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
       return null;
     },
     async handleHotUpdate(ctx) {
-      const slideId = slideIdForEntry(ctx.file);
-      if (!slideId) return;
+      const frameId = frameIdForEntry(ctx.file);
+      if (!frameId) return;
       if (await isExternalEdit(ctx.file, ctx.read)) {
         ctx.server.ws.send({
           type: 'custom',
           event: 'open-frame:external-edit',
-          data: { slideId, file: ctx.file },
+          data: { frameId, file: ctx.file },
         });
       }
-      queueSlideChanged(ctx.server, slideId);
+      queueFrameChanged(ctx.server, frameId);
       return [];
     },
     configureServer(server) {
-      const isSlideEntry = (p: string) => slideIdForEntry(p) !== null;
+      const isFrameEntry = (p: string) => frameIdForEntry(p) !== null;
 
       let reloadTimer: ReturnType<typeof setTimeout> | null = null;
       const reload = () => {
         if (reloadTimer) clearTimeout(reloadTimer);
         reloadTimer = setTimeout(() => {
           reloadTimer = null;
-          const mod = server.moduleGraph.getModuleById(resolved(SLIDES_VMOD));
+          const mod = server.moduleGraph.getModuleById(resolved(FRAMES_VMOD));
           if (mod) server.moduleGraph.invalidateModule(mod);
           server.ws.send({ type: 'full-reload' });
         }, 150);
       };
       // Vite's `root` is the core app dir, so chokidar doesn't watch the
-      // user's slides folder by default. Add it explicitly — and pass the
+      // user's frames folder by default. Add it explicitly — and pass the
       // directory itself, since Vite sets `disableGlobbing: true` and would
       // otherwise treat a glob pattern as a literal path.
-      if (existsSync(slidesRoot)) server.watcher.add(slidesRoot);
+      if (existsSync(framesRoot)) server.watcher.add(framesRoot);
       server.watcher.on('add', (p) => {
-        if (isSlideEntry(p)) reload();
+        if (isFrameEntry(p)) reload();
       });
       server.watcher.on('unlink', (p) => {
-        if (isSlideEntry(p)) reload();
+        if (isFrameEntry(p)) reload();
       });
 
       let foldersTimer: ReturnType<typeof setTimeout> | null = null;

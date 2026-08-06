@@ -63,10 +63,10 @@ const Title = ({ children }: { children: React.ReactNode }) => (
 ### Footer
 
 ```tsx
-import { useSlidePageNumber } from '@open-frame/core';
+import { useFramePageNumber } from '@open-frame/core';
 
 const Footer = ({ path = '/docs' }: { path?: string }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{

@@ -42,8 +42,8 @@ export function Sidebar({
   onRename: (id: string, name: string) => void;
   onChangeIcon: (id: string, icon: FolderIcon) => void;
   onDelete: (id: string) => void;
-  onDropToFolder: (folderId: string, slideId: string) => void;
-  onDropToDraft: (slideId: string) => void;
+  onDropToFolder: (folderId: string, frameId: string) => void;
+  onDropToDraft: (frameId: string) => void;
   onReorder: (ids: string[]) => void;
 }) {
   const [dragId, setDragId] = useState<string | null>(null);
@@ -138,21 +138,21 @@ export function Sidebar({
           count={countFor(null)}
           selected={selectedId === DRAFT_ID}
           onSelect={() => onSelect(DRAFT_ID)}
-          onDropSlide={onDropToDraft}
+          onDropFrame={onDropToDraft}
         />
         <FolderItem
           row={{ kind: 'themes' }}
           count={themesCount}
           selected={selectedId === THEMES_ID}
           onSelect={() => onSelect(THEMES_ID)}
-          onDropSlide={() => {}}
+          onDropFrame={() => {}}
         />
         <FolderItem
           row={{ kind: 'assets' }}
           count={assetsCount}
           selected={selectedId === ASSETS_ID}
           onSelect={() => onSelect(ASSETS_ID)}
-          onDropSlide={() => {}}
+          onDropFrame={() => {}}
         />
       </div>
 
@@ -224,7 +224,7 @@ export function Sidebar({
                 count={countFor(folder.id)}
                 selected={selectedId === folder.id}
                 onSelect={() => onSelect(folder.id)}
-                onDropSlide={(slideId) => onDropToFolder(folder.id, slideId)}
+                onDropFrame={(frameId) => onDropToFolder(folder.id, frameId)}
               />
             </div>
           );

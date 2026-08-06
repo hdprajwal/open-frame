@@ -27,7 +27,7 @@ export function Inspector() {
             body={
               <>
                 Click any block, leave a note. The inspector pins it as a{' '}
-                <span className="font-mono text-ink">@slide-comment</span> marker in your source.
+                <span className="font-mono text-ink">@frame-comment</span> marker in your source.
                 Run <span className="font-mono text-ink">/apply-comments</span> — the agent edits
                 exactly what you flagged and clears the marker.
               </>

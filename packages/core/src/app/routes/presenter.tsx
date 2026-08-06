@@ -4,19 +4,19 @@ import { useParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
+import { FrameCanvas } from '../components/frame-canvas';
 import {
   type PresenterState,
   usePresenterChannel,
 } from '../components/present/use-presenter-channel';
-import { SlideCanvas } from '../components/slide-canvas';
 import { resolveCanvas } from '../lib/formats';
-import { SlidePageProvider } from '../lib/page-context';
+import { FramePageProvider } from '../lib/page-context';
 import { type StepController, StepHost } from '../lib/step-context';
-import { useSlideModule } from '../lib/use-slide-module';
+import { useFrameModule } from '../lib/use-frame-module';
 
 export function Presenter() {
-  const { slideId = '' } = useParams();
-  const { slide, error } = useSlideModule(slideId);
+  const { frameId = '' } = useParams();
+  const { frame, error } = useFrameModule(frameId);
 
   // Presenter view is a passive mirror of the projection window. It only
   // tracks the index it last heard about; navigation buttons send commands
@@ -29,7 +29,7 @@ export function Presenter() {
   const requestedRef = useRef(false);
   const t = useLocale();
 
-  const channel = usePresenterChannel(slideId, (msg) => {
+  const channel = usePresenterChannel(frameId, (msg) => {
     if (msg.type === 'state') {
       setState(msg.state);
       setHasProjection(true);
@@ -87,7 +87,7 @@ export function Presenter() {
       <div className="dark grid h-dvh place-items-center bg-background p-8 text-foreground">
         <div className="max-w-md text-center">
           <span className="eyebrow text-destructive/80">{t.common.loadFailed}</span>
-          <h2 className="mt-2 font-heading text-xl font-semibold">{t.common.failedToLoadSlide}</h2>
+          <h2 className="mt-2 font-heading text-xl font-semibold">{t.common.failedToLoadFrame}</h2>
           <pre className="mt-4 overflow-auto rounded-6 border border-border bg-card p-4 text-left text-11.5 whitespace-pre-wrap shadow-edge">
             {error}
           </pre>
@@ -96,7 +96,7 @@ export function Presenter() {
     );
   }
 
-  if (!slide) {
+  if (!frame) {
     return (
       <div className="dark grid h-dvh place-items-center bg-background text-muted-foreground">
         <div className="flex flex-col items-center gap-4">
@@ -106,25 +106,25 @@ export function Presenter() {
               className="line-loader-bar absolute inset-y-[-0.5px] left-0 w-1/4 bg-foreground"
             />
           </div>
-          <div className="text-11.5">{format(t.presenter.loadingSlide, { slideId })}</div>
+          <div className="text-11.5">{format(t.presenter.loadingFrame, { frameId })}</div>
         </div>
       </div>
     );
   }
 
-  const pages = slide.default;
-  const canvas = resolveCanvas(slide.meta, slideId);
+  const pages = frame.default;
+  const canvas = resolveCanvas(frame.meta, frameId);
   const total = pages.length;
   const index = Math.max(0, Math.min(total - 1, state?.index ?? 0));
-  const note = slide.notes?.[index];
+  const note = frame.notes?.[index];
   const blackout = state?.blackout ?? null;
   const startedAt = state?.startedAt ?? localStart;
   const stepIndex = Math.max(0, state?.stepIndex ?? 0);
   const stepCount = Math.max(0, state?.stepCount ?? 0);
 
   const stepsRemaining = stepIndex < stepCount;
-  const hasNextSlide = index < total - 1;
-  const hasNext = stepsRemaining || hasNextSlide;
+  const hasNextFrame = index < total - 1;
+  const hasNext = stepsRemaining || hasNextFrame;
   const nextPageIndex = stepsRemaining ? index : Math.min(total - 1, index + 1);
   const nextRevealed = stepsRemaining ? stepIndex + 1 : 0;
 
@@ -137,7 +137,7 @@ export function Presenter() {
         index={index}
         total={total}
         startedAt={startedAt}
-        slideTitle={slide.meta?.title ?? slideId}
+        frameTitle={frame.meta?.title ?? frameId}
         connected={hasProjection}
       />
 
@@ -146,13 +146,13 @@ export function Presenter() {
         <section className="flex min-h-0 flex-col gap-3">
           <SectionLabel>{t.presenter.nowShowing}</SectionLabel>
           <div className="relative min-h-0 flex-1 overflow-hidden rounded-8 bg-black ring-1 ring-border">
-            <SlideCanvas flat design={slide.design} canvas={canvas}>
-              <SlidePageProvider index={index} total={total}>
+            <FrameCanvas flat design={frame.design} canvas={canvas}>
+              <FramePageProvider index={index} total={total}>
                 <PreviewStepHost revealed={stepIndex}>
                   <CurrentPage />
                 </PreviewStepHost>
-              </SlidePageProvider>
-            </SlideCanvas>
+              </FramePageProvider>
+            </FrameCanvas>
             {blackout && (
               <div
                 aria-hidden
@@ -170,19 +170,19 @@ export function Presenter() {
         {/* Next + notes */}
         <aside className="flex min-h-0 flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <SectionLabel>{hasNext ? t.presenter.upNext : t.presenter.lastSlide}</SectionLabel>
+            <SectionLabel>{hasNext ? t.presenter.upNext : t.presenter.lastFrame}</SectionLabel>
             <div
               className="relative w-full overflow-hidden rounded-8 bg-black ring-1 ring-border"
               style={{ aspectRatio: `${canvas.width}/${canvas.height}` }}
             >
               {NextPage ? (
-                <SlideCanvas flat freezeMotion design={slide.design} canvas={canvas}>
-                  <SlidePageProvider index={nextPageIndex} total={total}>
+                <FrameCanvas flat freezeMotion design={frame.design} canvas={canvas}>
+                  <FramePageProvider index={nextPageIndex} total={total}>
                     <PreviewStepHost revealed={nextRevealed}>
                       <NextPage />
                     </PreviewStepHost>
-                  </SlidePageProvider>
-                </SlideCanvas>
+                  </FramePageProvider>
+                </FrameCanvas>
               ) : (
                 <div className="grid h-full place-items-center text-11.5 text-muted-foreground">
                   {t.presenter.endOfDeck}
@@ -229,13 +229,13 @@ function PresenterTopBar({
   index,
   total,
   startedAt,
-  slideTitle,
+  frameTitle,
   connected,
 }: {
   index: number;
   total: number;
   startedAt: number;
-  slideTitle: string;
+  frameTitle: string;
   connected: boolean;
 }) {
   const t = useLocale();
@@ -244,7 +244,7 @@ function PresenterTopBar({
       <div className="flex items-baseline gap-3">
         <span className="eyebrow text-white/45">{t.presenter.eyebrow}</span>
         <span className="truncate font-heading text-14 font-semibold tracking-tight">
-          {slideTitle}
+          {frameTitle}
         </span>
         {!connected && (
           <span className="rounded-3 border border-amber-300/30 bg-amber-300/10 px-1.5 py-0.5 font-mono text-10 tracking-6 uppercase text-amber-200/85">

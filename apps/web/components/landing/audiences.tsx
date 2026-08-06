@@ -30,8 +30,8 @@ const audiences: Audience[] = [
     icon: GitBranch,
     title: 'Developers',
     items: [
-      'Decks versioned in your repo',
-      'Slides reviewed in pull requests',
+      'Frames versioned in your repo',
+      'Frames reviewed in pull requests',
       'Themes shared as components',
     ],
   },

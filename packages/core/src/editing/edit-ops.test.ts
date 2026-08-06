@@ -40,7 +40,7 @@ describe('applyEdit / set-style', () => {
       '  <h1>',
       '    Claude',
       '    <br />',
-      "    <em style={{ color: 'var(--osd-accent)' }}>Code.</em>",
+      "    <em style={{ color: 'var(--of-accent)' }}>Code.</em>",
       '  </h1>',
       '</div>',
       ')];',
@@ -232,7 +232,7 @@ describe('applyEdit / set-text', () => {
   it('falls back to prevText for multiline content edits with a stale source location', () => {
     const src = [
       'const fill = {',
-      "  color: 'var(--osd-text)',",
+      "  color: 'var(--of-text)',",
       '};',
       'export default [() => (',
       '<section style={fill}>',
@@ -254,7 +254,7 @@ describe('applyEdit / set-text', () => {
       '<h2>',
       '  Not autocomplete.',
       '  <br />',
-      "  An <em style={{ color: 'var(--osd-accent)' }}>agent</em> that does the work.",
+      "  An <em style={{ color: 'var(--of-accent)' }}>agent</em> that does the work.",
       '</h2>',
       ')];',
       '',
@@ -305,7 +305,7 @@ describe('applyEdit / set-text', () => {
       '<h2>',
       '  Not autocomplete.',
       '  <br />',
-      "  An <em style={{ color: 'var(--osd-accent)' }}>agent</em> that does the work.",
+      "  An <em style={{ color: 'var(--of-accent)' }}>agent</em> that does the work.",
       '</h2>',
       ')];',
       '',
@@ -434,7 +434,7 @@ describe('applyEdit / set-text', () => {
       '<h1>',
       "  <span style={{ fontStyle: 'italic' }}>Claude</span>",
       '  <br />',
-      "  <em style={{ color: 'var(--osd-accent)' }}>Code.</em>",
+      "  <em style={{ color: 'var(--of-accent)' }}>Code.</em>",
       '</h1>',
       ')];',
       '',
@@ -459,7 +459,7 @@ describe('applyEdit / set-text', () => {
       '<h1>',
       '  Claude',
       '  <br />',
-      "  <em style={{ color: 'var(--osd-accent)' }}>Code.</em>",
+      "  <em style={{ color: 'var(--of-accent)' }}>Code.</em>",
       '</h1>',
       ')];',
       '',
@@ -485,7 +485,7 @@ describe('applyEdit / set-text', () => {
       '  <h1>',
       '    Claude',
       '    <br />',
-      "    <em style={{ color: 'var(--osd-accent)' }}>Code.</em>",
+      "    <em style={{ color: 'var(--of-accent)' }}>Code.</em>",
       '  </h1>',
       '</div>',
       ')];',
@@ -571,7 +571,7 @@ describe('applyEdit / set-text', () => {
       '<h2>',
       '  Not autocomplete.',
       '  <br />',
-      "  An <em style={{ color: 'var(--osd-accent)' }}>agent</em> that does the work.",
+      "  An <em style={{ color: 'var(--of-accent)' }}>agent</em> that does the work.",
       '</h2>',
       ')];',
       '',
@@ -584,7 +584,7 @@ describe('applyEdit / set-text', () => {
       },
     ]);
     if (!r.ok) throw new Error(`expected ok, got ${r.error}`);
-    expect(r.source).toContain("<em style={{ color: 'var(--osd-accent)' }}>agent</em>");
+    expect(r.source).toContain("<em style={{ color: 'var(--of-accent)' }}>agent</em>");
     expect(r.source).toContain('that does the real work.');
     expect(r.source).toContain('<br />');
   });
@@ -595,7 +595,7 @@ describe('applyEdit / set-text', () => {
       '<h2>',
       '  Not autocomplete.',
       '  <br />',
-      "  An <em style={{ color: 'var(--osd-accent)' }}>agent</em> that does the work.",
+      "  An <em style={{ color: 'var(--of-accent)' }}>agent</em> that does the work.",
       '</h2>',
       ')];',
       '',
@@ -610,7 +610,7 @@ describe('applyEdit / set-text', () => {
     if (!r.ok) throw new Error(`expected ok, got ${r.error}`);
     expect(r.source).not.toContain('<br />');
     expect(r.source).toContain("{' '}");
-    expect(r.source).toContain("<em style={{ color: 'var(--osd-accent)' }}>agent</em>");
+    expect(r.source).toContain("<em style={{ color: 'var(--of-accent)' }}>agent</em>");
   });
 
   it('matches visible rich text when a string literal has whitespace before a line break', () => {

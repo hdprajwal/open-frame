@@ -46,7 +46,7 @@ A high-contrast carousel identity for square (1:1) LinkedIn posts: pure black ba
 
 ## Fixed components
 
-Paste-ready. Copy verbatim into a slide that uses this theme. They assume `--osd-*` vars from a `design` const (`bg #000000`, `text #ffffff`, `accent #c9f224`) plus the `mono` and `muted`/`dim` consts above.
+Paste-ready. Copy verbatim into a frame that uses this theme. They assume `--of-*` vars from a `design` const (`bg #000000`, `text #ffffff`, `accent #c9f224`) plus the `mono` and `muted`/`dim` consts above.
 
 ### Badge
 
@@ -55,8 +55,8 @@ const mono = '"JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace';
 
 const Badge = () => (
   <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2, opacity: 0.55 }}>
-    <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 700, fontSize: 22, color: 'var(--osd-text)' }}>Prajwal</span>
-    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--osd-accent)' }}>hdprajwal</span>
+    <span style={{ fontFamily: 'var(--of-font-display)', fontWeight: 700, fontSize: 22, color: 'var(--of-text)' }}>Prajwal</span>
+    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--of-accent)' }}>hdprajwal</span>
   </div>
 );
 ```
@@ -68,8 +68,8 @@ Text-only by design: name over handle, no avatar, held at low opacity so it read
 ```tsx
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <div style={{
-    fontFamily: 'var(--osd-font-display)', fontStyle: 'italic', fontWeight: 700,
-    fontSize: 30, color: 'var(--osd-accent)', marginBottom: 18,
+    fontFamily: 'var(--of-font-display)', fontStyle: 'italic', fontWeight: 700,
+    fontSize: 30, color: 'var(--of-accent)', marginBottom: 18,
   }}>
     {children}
   </div>
@@ -81,25 +81,25 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 ```tsx
 const Title = ({ children, size = 84 }: { children: React.ReactNode; size?: number }) => (
   <h1 style={{
-    fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: size,
-    lineHeight: 1.02, letterSpacing: '-0.035em', margin: 0, color: 'var(--osd-text)',
+    fontFamily: 'var(--of-font-display)', fontWeight: 900, fontSize: size,
+    lineHeight: 1.02, letterSpacing: '-0.035em', margin: 0, color: 'var(--of-text)',
   }}>
     {children}
   </h1>
 );
 
 const Hl = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: 'var(--osd-accent)' }}>{children}</span>
+  <span style={{ color: 'var(--of-accent)' }}>{children}</span>
 );
 // usage: <Title>The workflow <Hl>stops at one line</Hl></Title>
 ```
 
 ### Footer
 
-Pull the page number from `useSlidePageNumber()` — never hardcode it. Pass `end` to swap the arrow (SWIPE pill on the cover, Bookmark on the closer).
+Pull the page number from `useFramePageNumber()` — never hardcode it. Pass `end` to swap the arrow (SWIPE pill on the cover, Bookmark on the closer).
 
 ```tsx
-import { useSlidePageNumber } from '@open-frame/core';
+import { useFramePageNumber } from '@open-frame/core';
 
 const Arrow = () => (
   <svg width="64" height="22" viewBox="0 0 64 22" fill="none">
@@ -108,10 +108,10 @@ const Arrow = () => (
 );
 
 const Footer = ({ end }: { end?: React.ReactNode }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
-      <span style={{ fontFamily: mono, fontSize: 20, fontWeight: 700, color: 'var(--osd-accent)', letterSpacing: '0.04em' }}>
+      <span style={{ fontFamily: mono, fontSize: 20, fontWeight: 700, color: 'var(--of-accent)', letterSpacing: '0.04em' }}>
         {String(current).padStart(2, '0')} / {String(total).padStart(2, '0')}
       </span>
       {end ?? <Arrow />}
@@ -126,8 +126,8 @@ const Footer = ({ end }: { end?: React.ReactNode }) => {
 const SwipePill = () => (
   <div style={{
     display: 'inline-flex', alignItems: 'center', gap: 14,
-    background: 'var(--osd-accent)', color: '#000', borderRadius: 100, padding: '12px 26px',
-    fontFamily: 'var(--osd-font-display)', fontWeight: 800, fontSize: 20, letterSpacing: '0.04em',
+    background: 'var(--of-accent)', color: '#000', borderRadius: 100, padding: '12px 26px',
+    fontFamily: 'var(--of-font-display)', fontWeight: 800, fontSize: 20, letterSpacing: '0.04em',
   }}>
     SWIPE
     <svg width="40" height="16" viewBox="0 0 40 16" fill="none">
@@ -145,7 +145,7 @@ const Bookmark = () => (
 
 ### Content blocks (optional)
 
-The richer building blocks for a "build in public" carousel — all on the dark surface, lime/amber for state. Use these when a slide needs more than type. Assumes the `surface` (`#202020`), `hairline` (`#3a3a3a`), `muted`, `dim`, `amber` (`#f0a92f`) and `mono` consts above.
+The richer building blocks for a "build in public" carousel — all on the dark surface, lime/amber for state. Use these when a frame needs more than type. Assumes the `surface` (`#202020`), `hairline` (`#3a3a3a`), `muted`, `dim`, `amber` (`#f0a92f`) and `mono` consts above.
 
 ```tsx
 // Chat bubble — user is lime-on-black, agent is dark surface.
@@ -153,7 +153,7 @@ const Bubble = ({ from, children }: { from: 'user' | 'agent'; children: React.Re
   <div style={{
     maxWidth: '82%', padding: '20px 26px', fontSize: 25, lineHeight: 1.4,
     alignSelf: from === 'user' ? 'flex-end' : 'flex-start',
-    background: from === 'user' ? 'var(--osd-accent)' : '#202020',
+    background: from === 'user' ? 'var(--of-accent)' : '#202020',
     color: from === 'user' ? '#000' : '#e6e6e6',
     border: from === 'user' ? 'none' : '1px solid #3a3a3a',
     borderRadius: 18,
@@ -168,7 +168,7 @@ const TrackRow = ({ label, state, tag }: { label: string; state: StepState; tag?
   <div style={{ display: 'grid', gridTemplateColumns: '34px 1fr auto', alignItems: 'center', gap: 20, padding: '16px 24px', background: '#202020', border: '1px solid #3a3a3a', borderRadius: 12 }}>
     <span style={{
       width: 20, height: 20, borderRadius: '50%', justifySelf: 'center',
-      background: state === 'done' ? 'var(--osd-accent)' : state === 'active' ? '#f0a92f' : 'transparent',
+      background: state === 'done' ? 'var(--of-accent)' : state === 'active' ? '#f0a92f' : 'transparent',
       border: state === 'pending' ? '3px solid #5a5a5a' : 'none',
       boxShadow: state === 'active' ? '0 0 0 5px rgba(240,169,47,0.2)' : 'none',
       boxSizing: 'border-box',
@@ -188,9 +188,9 @@ const CodeBlock = ({ children }: { children: React.ReactNode }) => (
 // Numbered reason — lime mono index, white head, muted sub.
 const Reason = ({ num, head, sub }: { num: string; head: React.ReactNode; sub: string }) => (
   <div style={{ display: 'flex', alignItems: 'flex-start', gap: 22 }}>
-    <div style={{ fontFamily: mono, fontSize: 24, fontWeight: 700, color: 'var(--osd-accent)', flexShrink: 0, marginTop: 4 }}>{num}</div>
+    <div style={{ fontFamily: mono, fontSize: 24, fontWeight: 700, color: 'var(--of-accent)', flexShrink: 0, marginTop: 4 }}>{num}</div>
     <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <div style={{ fontFamily: 'var(--osd-font-display)', fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.08 }}>{head}</div>
+      <div style={{ fontFamily: 'var(--of-font-display)', fontSize: 32, fontWeight: 900, color: '#fff', letterSpacing: '-0.02em', lineHeight: 1.08 }}>{head}</div>
       <div style={{ fontSize: 22, color: '#9a9a9a', lineHeight: 1.4 }}>{sub}</div>
     </div>
   </div>
@@ -199,27 +199,27 @@ const Reason = ({ num, head, sub }: { num: string; head: React.ReactNode; sub: s
 // Callout card — dark surface, lime left bar + lime number.
 const Callout = ({ value, children }: { value: string; children: React.ReactNode }) => (
   <div style={{ display: 'flex', alignItems: 'center', gap: 20, background: '#202020', border: '1px solid #3a3a3a', borderLeft: '4px solid #c9f224', borderRadius: 14, padding: '22px 28px' }}>
-    <span style={{ fontFamily: mono, fontSize: 34, fontWeight: 700, color: 'var(--osd-accent)', flexShrink: 0 }}>{value}</span>
+    <span style={{ fontFamily: mono, fontSize: 34, fontWeight: 700, color: 'var(--of-accent)', flexShrink: 0 }}>{value}</span>
     <span style={{ fontSize: 22, color: '#9a9a9a', lineHeight: 1.35 }}>{children}</span>
   </div>
 );
 ```
 
-When a slide carries one of these blocks, drop the headline to ~52 px so the block has vertical room (the 84 px headline is for type-only pages).
+When a frame carries one of these blocks, drop the headline to ~52 px so the block has vertical room (the 84 px headline is for type-only pages).
 
 ## Motion
 
-- Philosophy: **static.** This is a still carousel exported to PNG — no transitions, no keyframes. (If presenting live, the deck-wide `RISE` from `slide-authoring` is the only acceptable addition.)
+- Philosophy: **static.** This is a still carousel exported to PNG — no transitions, no keyframes. (If presenting live, the deck-wide `RISE` from `frame-authoring` is the only acceptable addition.)
 
 ## Aesthetic
 
-Bold, brash, high-contrast social-first. Pure black with a single electric lime, fat grotesque headlines that fill the upper-left, and short punchy body lines. One idea per slide, one accent highlight per headline, generous black negative space. References: modern LinkedIn "build in public" carousels and sports/streetwear typography. Avoid: gradients, drop shadows (except the single amber active-state glow), rounded photo frames, more than one accent color, centered text, decorative emoji, any second hue competing with the lime, and — most commonly missed — **near-black surfaces that vanish into the canvas** (see the Contrast rule under Palette: panels live at `#202020`, never `#141414` or darker, always with a `#3a3a3a` border).
+Bold, brash, high-contrast social-first. Pure black with a single electric lime, fat grotesque headlines that fill the upper-left, and short punchy body lines. One idea per frame, one accent highlight per headline, generous black negative space. References: modern LinkedIn "build in public" carousels and sports/streetwear typography. Avoid: gradients, drop shadows (except the single amber active-state glow), rounded photo frames, more than one accent color, centered text, decorative emoji, any second hue competing with the lime, and — most commonly missed — **near-black surfaces that vanish into the canvas** (see the Contrast rule under Palette: panels live at `#202020`, never `#141414` or darker, always with a `#3a3a3a` border).
 
 ## Example usage
 
 ```tsx
 const Content: Page = () => (
-  <div style={{ width: '100%', height: '100%', background: 'var(--osd-bg)', color: 'var(--osd-text)', display: 'flex', flexDirection: 'column', padding: 88, boxSizing: 'border-box', fontFamily: 'var(--osd-font-body)' }}>
+  <div style={{ width: '100%', height: '100%', background: 'var(--of-bg)', color: 'var(--of-text)', display: 'flex', flexDirection: 'column', padding: 88, boxSizing: 'border-box', fontFamily: 'var(--of-font-body)' }}>
     <Badge />
     <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>
       <Eyebrow>Step 2:</Eyebrow>

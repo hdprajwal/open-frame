@@ -3,9 +3,9 @@ import { sanitizeDirName } from './init.ts';
 
 describe('sanitizeDirName', () => {
   it('leaves safe names untouched', () => {
-    expect(sanitizeDirName('my-slides')).toBe('my-slides');
+    expect(sanitizeDirName('my-frames')).toBe('my-frames');
     expect(sanitizeDirName('decks/2026-q2')).toBe('decks/2026-q2');
-    expect(sanitizeDirName('Open_Slide.workspace')).toBe('Open_Slide.workspace');
+    expect(sanitizeDirName('Open_Frame.workspace')).toBe('Open_Frame.workspace');
   });
 
   it('preserves "." and ".."', () => {
@@ -34,9 +34,9 @@ describe('sanitizeDirName', () => {
     expect(sanitizeDirName('!!!hi!!!')).toBe('hi');
   });
 
-  it('falls back to "my-slides" when nothing usable remains', () => {
-    expect(sanitizeDirName('!!!')).toBe('my-slides');
-    expect(sanitizeDirName('   ')).toBe('my-slides');
+  it('falls back to "my-frames" when nothing usable remains', () => {
+    expect(sanitizeDirName('!!!')).toBe('my-frames');
+    expect(sanitizeDirName('   ')).toBe('my-frames');
   });
 
   it('keeps path separators intact', () => {
@@ -45,7 +45,7 @@ describe('sanitizeDirName', () => {
 
   it('is idempotent', () => {
     const cases = [
-      'future of open slide and how can i help',
+      'future of open frame and how can i help',
       "my deck's notes",
       'decks/my new deck',
       '!!!hi!!!',
@@ -70,21 +70,21 @@ describe('sanitizeDirName', () => {
   });
 
   it('preserves non-ASCII letters and digits', () => {
-    expect(sanitizeDirName('投影片')).toBe('投影片');
-    expect(sanitizeDirName('スライド')).toBe('スライド');
+    expect(sanitizeDirName('畫框')).toBe('畫框');
+    expect(sanitizeDirName('フレーム')).toBe('フレーム');
     expect(sanitizeDirName('café')).toBe('café');
-    expect(sanitizeDirName('我的 投影片')).toBe('我的-投影片');
+    expect(sanitizeDirName('我的 畫框')).toBe('我的-畫框');
   });
 
   it('preserves Windows backslash separators', () => {
-    expect(sanitizeDirName('slides\\q2')).toBe('slides\\q2');
+    expect(sanitizeDirName('frames\\q2')).toBe('frames\\q2');
     expect(sanitizeDirName('decks\\my new deck')).toBe('decks\\my-new-deck');
     expect(sanitizeDirName('a-\\-b')).toBe('a\\b');
   });
 
   it('falls back when sanitization would produce a root-like path', () => {
-    expect(sanitizeDirName('!!!/!!!')).toBe('my-slides');
-    expect(sanitizeDirName('!!!\\!!!')).toBe('my-slides');
-    expect(sanitizeDirName('//')).toBe('my-slides');
+    expect(sanitizeDirName('!!!/!!!')).toBe('my-frames');
+    expect(sanitizeDirName('!!!\\!!!')).toBe('my-frames');
+    expect(sanitizeDirName('//')).toBe('my-frames');
   });
 });

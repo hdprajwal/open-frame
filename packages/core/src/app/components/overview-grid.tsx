@@ -5,10 +5,10 @@ import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
 import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
-import { SlidePageProvider } from '../lib/page-context';
+import { FramePageProvider } from '../lib/page-context';
 import type { Page } from '../lib/sdk';
-import type { SlideTransition } from '../lib/transition';
-import { SlideCanvas } from './slide-canvas';
+import type { FrameTransition } from '../lib/transition';
+import { FrameCanvas } from './frame-canvas';
 
 const THUMB_W = 320;
 
@@ -22,7 +22,7 @@ type Props = {
   onClose: () => void;
   onSelect: (index: number) => void;
   variant?: OverviewVariant;
-  moduleTransition?: SlideTransition;
+  moduleTransition?: FrameTransition;
   tooltipContainer?: HTMLElement | null;
   canvas?: CanvasSize;
 };
@@ -198,7 +198,7 @@ function OverviewThumb({
   styles: OverviewStyles;
   canvas: CanvasSize;
   thumbHeight: number;
-  moduleTransition?: SlideTransition;
+  moduleTransition?: FrameTransition;
   tooltipContainer?: HTMLElement | null;
   onFocus: () => void;
   onSelect: () => void;
@@ -211,7 +211,7 @@ function OverviewThumb({
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: re-detect when the page at this slot changes
   useEffect(() => {
-    setHasSteps(boxRef.current?.querySelector('[data-osd-step]') != null);
+    setHasSteps(boxRef.current?.querySelector('[data-of-step]') != null);
   }, [PageComp]);
 
   return (
@@ -237,7 +237,7 @@ function OverviewThumb({
         )}
         style={{ height: thumbHeight }}
       >
-        <SlideCanvas
+        <FrameCanvas
           scale={THUMB_W / canvas.width}
           center={false}
           flat
@@ -245,10 +245,10 @@ function OverviewThumb({
           design={design}
           canvas={canvas}
         >
-          <SlidePageProvider index={index} total={total}>
+          <FramePageProvider index={index} total={total}>
             <PageComp />
-          </SlidePageProvider>
-        </SlideCanvas>
+          </FramePageProvider>
+        </FrameCanvas>
         {isCurrent && (
           <span
             aria-hidden

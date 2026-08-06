@@ -22,7 +22,7 @@ provided and doesn't exist, it's created.
 | `--use-bun`               | auto-detected | Install with bun.                                                        |
 | `--no-install`            | off           | Skip dependency installation. You'll have to run `install` yourself.     |
 | `--no-git`                | off           | Skip `git init` and the initial commit.                                  |
-| `--locale <code>`         | prompted      | Slide UI language. One of `en`, `zh-TW`, `zh-CN`, `ja`.                  |
+| `--locale <code>`         | prompted      | Frame UI language. One of `en`, `zh-TW`, `zh-CN`, `ja`.                  |
 
 When no `--use-*` flag is passed, the scaffolder reads
 `npm_config_user_agent` (set by your launcher) to pick `pnpm`, `yarn`, or
@@ -38,10 +38,10 @@ to `en`.
 ## What it generates
 
 ```text
-my-deck/
-├── slides/
+my-frames/
+├── frames/
 │   └── getting-started/
-│       └── index.tsx       # starter slide
+│       └── index.tsx       # starter frame
 ├── themes/                 # empty
 ├── open-frame.config.ts    # framework config
 ├── CLAUDE.md               # mirrors AGENTS.md
@@ -54,10 +54,10 @@ my-deck/
 ## After init
 
 ```npm
-cd my-deck
+cd my-frames
 npm install
 npm run dev
 ```
 
-The dev server boots, opens the slide browser, and you're ready for your
+The dev server boots, opens the frame browser, and you're ready for your
 agent to take over.

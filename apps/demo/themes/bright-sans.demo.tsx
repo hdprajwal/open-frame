@@ -1,4 +1,4 @@
-import { type Page, useSlidePageNumber } from '@open-frame/core';
+import { type Page, useFramePageNumber } from '@open-frame/core';
 import type { ReactNode } from 'react';
 
 const styles = `
@@ -28,7 +28,7 @@ const Footer = ({
   dotColor?: string;
   label?: string;
 }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{

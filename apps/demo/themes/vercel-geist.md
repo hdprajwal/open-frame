@@ -28,9 +28,9 @@ A monochrome base plus a semantic signal spectrum. The base carries the layout; 
 | amber       | `#f5a623` | warnings, optional category                               |
 | purple      | `#7928ca` | extra category, gradient stop                             |
 
-`--osd-accent` is set to **pink `#ff0080`** (the headline emphasis color). The blue `#0070f3` is the secondary accent used inside code (function tokens) and primary chips. Keep both in the per-slide `design` const / local `palette` object.
+`--of-accent` is set to **pink `#ff0080`** (the headline emphasis color). The blue `#0070f3` is the secondary accent used inside code (function tokens) and primary chips. Keep both in the per-frame `design` const / local `palette` object.
 
-**Contrast rule (do not skip).** The canvas is pure white, so panels must be a shade *darker* to exist: `surface #fafafa` and `surfaceAlt #f5f5f5`, always with the `#eaeaea` hairline border — a borderless near-white card on white reads as nothing. Body copy is `muted #666666`, never lighter, or it greys out. Signal colors are **semantic, not decorative**: pink = dynamic, cyan = static, blue = function, green = string. Never paint a headline or paragraph fully in a signal color — emphasize one span (e.g. one pink word) and leave the rest black. At most one or two signal colors visible per slide; reaching for a third usually means the slide is doing too much.
+**Contrast rule (do not skip).** The canvas is pure white, so panels must be a shade *darker* to exist: `surface #fafafa` and `surfaceAlt #f5f5f5`, always with the `#eaeaea` hairline border — a borderless near-white card on white reads as nothing. Body copy is `muted #666666`, never lighter, or it greys out. Signal colors are **semantic, not decorative**: pink = dynamic, cyan = static, blue = function, green = string. Never paint a headline or paragraph fully in a signal color — emphasize one span (e.g. one pink word) and leave the rest black. At most one or two signal colors visible per frame; reaching for a third usually means the frame is doing too much.
 
 ## Typography
 
@@ -55,7 +55,7 @@ A monochrome base plus a semantic signal spectrum. The base carries the layout; 
 
 ## Fixed components
 
-Paste-ready. They assume `--osd-*` vars from the `design` const (`bg #ffffff`, `text #000000`, `accent #ff0080`, the Geist fonts, `radius 12`, `size-hero 176`, `size-body 28`) plus the `palette` object and `fontMono` const below. The logo is inlined as the Vercel triangle so the bundle stays self-contained.
+Paste-ready. They assume `--of-*` vars from the `design` const (`bg #ffffff`, `text #000000`, `accent #ff0080`, the Geist fonts, `radius 12`, `size-hero 176`, `size-body 28`) plus the `palette` object and `fontMono` const below. The logo is inlined as the Vercel triangle so the bundle stays self-contained.
 
 ```tsx
 const palette = {
@@ -67,7 +67,7 @@ const fontMono = "'Geist Mono', 'SF Mono', Menlo, Consolas, monospace";
 
 const fill = {
   width: '100%', height: '100%',
-  background: 'var(--osd-bg)', color: 'var(--osd-text)', fontFamily: 'var(--osd-font-body)',
+  background: 'var(--of-bg)', color: 'var(--of-text)', fontFamily: 'var(--of-font-body)',
   position: 'relative' as const, overflow: 'hidden' as const, boxSizing: 'border-box' as const,
 };
 ```
@@ -93,7 +93,7 @@ const Style = () => (
 
 ```tsx
 const Logo = ({ size = 28 }: { size?: number }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: size * 0.5, color: 'var(--osd-text)' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: size * 0.5, color: 'var(--of-text)' }}>
     <svg width={size * 0.95} height={size * 0.82} viewBox="0 0 76 65" style={{ display: 'block' }} aria-hidden>
       <path d="M37.53 0 75.06 65H0z" fill="currentColor" />
     </svg>
@@ -117,13 +117,13 @@ const Eyebrow = ({ index, label }: { index: string; label: string }) => (
 
 ### Footer
 
-Pull the page number from `useSlidePageNumber()` — never hardcode it.
+Pull the page number from `useFramePageNumber()` — never hardcode it.
 
 ```tsx
-import { useSlidePageNumber } from '@open-frame/core';
+import { useFramePageNumber } from '@open-frame/core';
 
 const Footer = ({ label = "Next.js · partial pre-rendering & 'use cache'" }: { label?: string }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div style={{ position: 'absolute', bottom: 56, left: 120, right: 120, display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 20, fontFamily: fontMono, color: palette.subtle, borderTop: `1px solid ${palette.border}`, paddingTop: 22 }}>
       <span style={{ display: 'inline-flex', alignItems: 'center', gap: 10 }}>
@@ -142,7 +142,7 @@ const Footer = ({ label = "Next.js · partial pre-rendering & 'use cache'" }: { 
 import type { ReactNode } from 'react';
 
 const Code = ({ children, fontSize = 20 }: { children: ReactNode; fontSize?: number }) => (
-  <pre style={{ margin: 0, padding: 24, background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: 'var(--osd-radius)', fontFamily: fontMono, fontSize, lineHeight: 1.45, color: palette.text, overflow: 'hidden', whiteSpace: 'pre' }}>
+  <pre style={{ margin: 0, padding: 24, background: palette.surface, border: `1px solid ${palette.border}`, borderRadius: 'var(--of-radius)', fontFamily: fontMono, fontSize, lineHeight: 1.45, color: palette.text, overflow: 'hidden', whiteSpace: 'pre' }}>
     {children}
   </pre>
 );
@@ -168,20 +168,20 @@ const GradientBar = () => (
 
 ## Aesthetic
 
-Clean, technical, confident — the Vercel docs look. A white page, black Geist headlines tracked tight, a disciplined gray scale for structure, and a saturated signal spectrum used only to carry meaning (pink dynamic, cyan static, blue functions, green strings). Monospace does all the chrome — eyebrows, footer, code, even a directive promoted to a headline. Motion is present but never loud: things rise into place and settle. References: Vercel.com, Next.js docs, Geist design system, Linear changelogs. Avoid: off-white or tinted backgrounds (stay pure `#ffffff`), drop shadows (use the `#eaeaea` hairline instead), gradients except the single cover accent bar, a signal color used decoratively, more than two signal hues per slide, rounded "friendly" everything (corners are 10–20, restrained), and any serif or handwritten type.
+Clean, technical, confident — the Vercel docs look. A white page, black Geist headlines tracked tight, a disciplined gray scale for structure, and a saturated signal spectrum used only to carry meaning (pink dynamic, cyan static, blue functions, green strings). Monospace does all the chrome — eyebrows, footer, code, even a directive promoted to a headline. Motion is present but never loud: things rise into place and settle. References: Vercel.com, Next.js docs, Geist design system, Linear changelogs. Avoid: off-white or tinted backgrounds (stay pure `#ffffff`), drop shadows (use the `#eaeaea` hairline instead), gradients except the single cover accent bar, a signal color used decoratively, more than two signal hues per frame, rounded "friendly" everything (corners are 10–20, restrained), and any serif or handwritten type.
 
 ## Example usage
 
 ```tsx
 const Cover: Page = () => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div style={{ ...fill, padding: '0 120px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
       <Style />
       <div style={{ position: 'absolute', top: 72, left: 120 }}><Logo size={28} /></div>
       <div style={{ animation: 'ppr-fade-up 0.9s cubic-bezier(0.2,0.8,0.2,1) both' }}>
         <div style={{ fontSize: 28, fontFamily: fontMono, color: palette.muted, marginBottom: 32 }}>rendering, reimagined.</div>
-        <h1 style={{ fontSize: 'var(--osd-size-hero)', fontWeight: 700, margin: 0, lineHeight: 0.92, letterSpacing: '-0.045em' }}>
+        <h1 style={{ fontSize: 'var(--of-size-hero)', fontWeight: 700, margin: 0, lineHeight: 0.92, letterSpacing: '-0.045em' }}>
           Partial<br />Pre-Rendering
         </h1>
       </div>

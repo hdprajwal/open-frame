@@ -45,10 +45,10 @@ export type CreateViteConfigOptions = {
 export async function createViteConfig(opts: CreateViteConfigOptions): Promise<InlineConfig> {
   const userCwd = path.resolve(opts.userCwd);
   const config = opts.config ?? (await loadUserConfig(userCwd));
-  const slidesDir = config.slidesDir ?? 'slides';
+  const framesDir = config.framesDir ?? 'frames';
   const themesDir = config.themesDir ?? 'themes';
   const assetsDir = config.assetsDir ?? 'assets';
-  const slidesAbs = path.resolve(userCwd, slidesDir);
+  const framesAbs = path.resolve(userCwd, framesDir);
   const themesAbs = path.resolve(userCwd, themesDir);
   const assetsAbs = path.resolve(userCwd, assetsDir);
 
@@ -58,16 +58,16 @@ export async function createViteConfig(opts: CreateViteConfigOptions): Promise<I
     configFile: false,
     envDir: userCwd,
     plugins: [
-      locTagsPlugin({ userCwd, slidesDir }),
+      locTagsPlugin({ userCwd, framesDir }),
       react(),
       tailwindcss(),
       openFramePlugin({ userCwd, config, coreVersion: CORE_VERSION }),
       themesPlugin({ userCwd, config }),
       designPlugin({ userCwd }),
-      apiPlugin({ userCwd, slidesDir, assetsDir, coreVersion: CORE_VERSION }),
-      mcpPlugin({ userCwd, slidesDir, assetsDir, coreVersion: CORE_VERSION }),
-      notesPlugin({ userCwd, slidesDir }),
-      currentPlugin({ userCwd, slidesDir }),
+      apiPlugin({ userCwd, framesDir, assetsDir, coreVersion: CORE_VERSION }),
+      mcpPlugin({ userCwd, framesDir, assetsDir, coreVersion: CORE_VERSION }),
+      notesPlugin({ userCwd, framesDir }),
+      currentPlugin({ userCwd, framesDir }),
     ],
     resolve: {
       alias: {
@@ -109,7 +109,7 @@ export async function createViteConfig(opts: CreateViteConfigOptions): Promise<I
     },
     server: {
       port: config.port ?? 5173,
-      fs: { allow: [APP_ROOT, userCwd, slidesAbs, themesAbs, assetsAbs] },
+      fs: { allow: [APP_ROOT, userCwd, framesAbs, themesAbs, assetsAbs] },
     },
     build: {
       outDir: path.resolve(userCwd, 'dist'),

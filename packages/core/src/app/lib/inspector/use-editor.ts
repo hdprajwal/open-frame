@@ -27,13 +27,13 @@ export class NoOpEditError extends Error {
   }
 }
 
-export function useEditor(slideId: string) {
+export function useEditor(frameId: string) {
   const applyEdit = useCallback(
     async (line: number, column: number, ops: EditOp[]) => {
       const res = await fetch('/__edit', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ slideId, line, column, ops }),
+        body: JSON.stringify({ frameId, line, column, ops }),
       });
       const body = (await res.json().catch(() => ({}))) as { error?: string; changed?: boolean };
       if (!res.ok) {
@@ -43,7 +43,7 @@ export function useEditor(slideId: string) {
         throw new NoOpEditError();
       }
     },
-    [slideId],
+    [frameId],
   );
 
   // Batch many element edits into one file write and one HMR tick.
@@ -55,7 +55,7 @@ export function useEditor(slideId: string) {
       const res = await fetch('/__edit/batch', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ slideId, edits }),
+        body: JSON.stringify({ frameId, edits }),
       });
       const body = (await res.json().catch(() => ({}))) as {
         error?: string;
@@ -66,7 +66,7 @@ export function useEditor(slideId: string) {
       }
       return body.results ?? [];
     },
-    [slideId],
+    [frameId],
   );
 
   return { applyEdit, applyEdits };

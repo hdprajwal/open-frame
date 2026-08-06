@@ -1,6 +1,6 @@
 import path from 'node:path';
 import type { ViteDevServer } from 'vite';
-import { SLIDE_ID_RE } from '../../editing/slide-ops.ts';
+import { FRAME_ID_RE } from '../../editing/frame-ops.ts';
 import { GLOBAL_SCOPE } from '../../files/assets.ts';
 import type { ApiContext } from './context.ts';
 
@@ -20,20 +20,20 @@ export function registerWatchers(server: ViteDevServer, ctx: ApiContext): void {
       server.ws.send({
         type: 'custom',
         event: 'open-frame:assets-changed',
-        data: { slideId: GLOBAL_SCOPE },
+        data: { frameId: GLOBAL_SCOPE },
       });
       return;
     }
-    if (!p.startsWith(ctx.slidesRoot + path.sep)) return;
-    const rel = p.slice(ctx.slidesRoot.length + 1);
+    if (!p.startsWith(ctx.framesRoot + path.sep)) return;
+    const rel = p.slice(ctx.framesRoot.length + 1);
     const parts = rel.split(path.sep);
     if (parts.length < 3 || parts[1] !== 'assets') return;
-    const slideId = parts[0];
-    if (!SLIDE_ID_RE.test(slideId)) return;
+    const frameId = parts[0];
+    if (!FRAME_ID_RE.test(frameId)) return;
     server.ws.send({
       type: 'custom',
       event: 'open-frame:assets-changed',
-      data: { slideId },
+      data: { frameId },
     });
   };
   server.watcher.on('add', onAssetChange);

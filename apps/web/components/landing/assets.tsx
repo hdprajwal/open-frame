@@ -87,14 +87,14 @@ function AssetManagerMock() {
         <span className="w-10" />
       </div>
 
-      {/* toolbar — slides/assets switcher + upload */}
+      {/* toolbar — frames/assets switcher + upload */}
       <div className="flex items-center justify-between gap-3 px-4 sm:px-5 py-3 sm:py-4 border-b border-hairline">
         <div className="relative inline-flex rounded-full border border-hairline bg-surface p-1">
           <span
             aria-hidden
             className="absolute top-1 bottom-1 left-1/2 right-1 rounded-full border border-brand bg-brand/15"
           />
-          <span className="relative px-4 py-1.5 font-mono text-12 text-body">Slides</span>
+          <span className="relative px-4 py-1.5 font-mono text-12 text-body">Frames</span>
           <span className="relative px-4 py-1.5 font-mono text-12 text-brand">Assets</span>
         </div>
         <span className="inline-flex items-center gap-2 rounded-8 border border-hairline bg-surface px-3.5 py-1.5 font-sans text-13 text-ink">

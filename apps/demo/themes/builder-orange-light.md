@@ -6,7 +6,7 @@ mode: light
 
 # Builder Orange Light
 
-The light-canvas twin of **Builder Orange**, lifted from the Prajwal HD brand system: a clean white canvas with a faint dark dot grid, near-black ink, one warm Strava orange, confident Inter Tight headlines, and IBM Plex Mono chrome (a dark `PH` brand tile, mono context line, mono chips). The signature is the same wireframe orange cube. The one dark element kept from the brand is the terminal card — a deliberate near-black inset on the white page (exactly like the brand hero). Orange stays a highlight, never a wash: one word, number, or the cube per slide. Use this when you want the editorial, paper-clean read; use the dark `builder-orange` when you want the high-contrast night look. Same components, same names, inverted canvas.
+The light-canvas twin of **Builder Orange**, lifted from the Prajwal HD brand system: a clean white canvas with a faint dark dot grid, near-black ink, one warm Strava orange, confident Inter Tight headlines, and IBM Plex Mono chrome (a dark `PH` brand tile, mono context line, mono chips). The signature is the same wireframe orange cube. The one dark element kept from the brand is the terminal card — a deliberate near-black inset on the white page (exactly like the brand hero). Orange stays a highlight, never a wash: one word, number, or the cube per frame. Use this when you want the editorial, paper-clean read; use the dark `builder-orange` when you want the high-contrast night look. Same components, same names, inverted canvas.
 
 ## Palette
 
@@ -24,7 +24,7 @@ The light-canvas twin of **Builder Orange**, lifted from the Prajwal HD brand sy
 | tile     | `#0b0b0c` | the `PH` brand tile background (text sits in `#ffffff`)     |
 | term     | `#0b0b0c` | the terminal card stays dark even on the white page         |
 
-**Contrast rule (do not skip).** The canvas is white `#ffffff`, so the mirror of the dark-theme trap applies: any panel (card, chip, callout) must be a shade *darker* than the bg or it disappears. Keep `surface` in the **`#faf7f2`–`#f2f2f3`** band and always pair it with the `#e9e9ec` hairline border — a borderless near-white panel on white reads as nothing. Body copy is `muted #6b6f76`, never a lighter gray (it greys out against the paper). Headlines and the `PH` tile carry the near-black ink. Never set a whole paragraph in orange — it vibrates and kills readability. One orange emphasis per slide: a single word in the headline, or the cube, or one key figure. Not all three at once. The terminal card is the one allowed dark element; everything else stays light.
+**Contrast rule (do not skip).** The canvas is white `#ffffff`, so the mirror of the dark-theme trap applies: any panel (card, chip, callout) must be a shade *darker* than the bg or it disappears. Keep `surface` in the **`#faf7f2`–`#f2f2f3`** band and always pair it with the `#e9e9ec` hairline border — a borderless near-white panel on white reads as nothing. Body copy is `muted #6b6f76`, never a lighter gray (it greys out against the paper). Headlines and the `PH` tile carry the near-black ink. Never set a whole paragraph in orange — it vibrates and kills readability. One orange emphasis per frame: a single word in the headline, or the cube, or one key figure. Not all three at once. The terminal card is the one allowed dark element; everything else stays light.
 
 ## Typography
 
@@ -51,7 +51,7 @@ The light-canvas twin of **Builder Orange**, lifted from the Prajwal HD brand sy
 
 ## Fixed components
 
-Paste-ready. Copy verbatim into a slide that uses this theme. They assume `--osd-*` vars from a `design` const (`bg #ffffff`, `text #0b0b0c`, `accent #fc4c02`) plus the `mono` / `muted` / `surface` / `hairline` consts below.
+Paste-ready. Copy verbatim into a frame that uses this theme. They assume `--of-*` vars from a `design` const (`bg #ffffff`, `text #0b0b0c`, `accent #fc4c02`) plus the `mono` / `muted` / `surface` / `hairline` consts below.
 
 ```tsx
 const mono = '"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace';
@@ -64,11 +64,11 @@ const hairline = '#e9e9ec';
 const fill = {
   width: '100%',
   height: '100%',
-  backgroundColor: 'var(--osd-bg)',
+  backgroundColor: 'var(--of-bg)',
   backgroundImage: 'radial-gradient(rgba(0,0,0,.05) 1px, transparent 1px)',
   backgroundSize: '46px 46px',
-  color: 'var(--osd-text)',
-  fontFamily: 'var(--osd-font-body)',
+  color: 'var(--of-text)',
+  fontFamily: 'var(--of-font-body)',
   display: 'flex',
   flexDirection: 'column' as const,
   padding: 88,
@@ -82,7 +82,7 @@ The signature glyph — a wireframe orange cube. Use it once per cover/closer, f
 
 ```tsx
 const Cube = ({ size = 260 }: { size?: number }) => (
-  <svg width={size} height={size} viewBox="0 0 200 200" fill="none" style={{ color: 'var(--osd-accent)' }} aria-hidden>
+  <svg width={size} height={size} viewBox="0 0 200 200" fill="none" style={{ color: 'var(--of-accent)' }} aria-hidden>
     <g stroke="currentColor" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round">
       <path d="M100 18 L168 56 L168 134 L100 172 L32 134 L32 56 Z" />
       <path d="M100 18 L100 95 M100 95 L168 56 M100 95 L32 56 M100 95 L100 172" />
@@ -98,13 +98,13 @@ const Cube = ({ size = 260 }: { size?: number }) => (
 
 ### BrandMini (top chrome)
 
-Dark PH tile + name on the left, a mono `context / NN` page counter on the right. Pull the page number from `useSlidePageNumber()` — never hardcode it.
+Dark PH tile + name on the left, a mono `context / NN` page counter on the right. Pull the page number from `useFramePageNumber()` — never hardcode it.
 
 ```tsx
-import { useSlidePageNumber } from '@open-frame/core';
+import { useFramePageNumber } from '@open-frame/core';
 
 const BrandMini = ({ ctx = 'building in public' }: { ctx?: string }) => {
-  const { current } = useSlidePageNumber();
+  const { current } = useFramePageNumber();
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -113,7 +113,7 @@ const BrandMini = ({ ctx = 'building in public' }: { ctx?: string }) => {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontFamily: mono, fontWeight: 700, fontSize: 24,
         }}>PH</div>
-        <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 700, fontSize: 26 }}>Prajwal HD</span>
+        <span style={{ fontFamily: 'var(--of-font-display)', fontWeight: 700, fontSize: 26 }}>Prajwal HD</span>
       </div>
       <span style={{ fontFamily: mono, fontSize: 20, color: muted }}>
         {ctx} / {String(current).padStart(2, '0')}
@@ -130,8 +130,8 @@ Heavy Inter Tight. Keep it near-black and drop one word to orange with `<Em>` (n
 ```tsx
 const Title = ({ children, size = 112 }: { children: React.ReactNode; size?: number }) => (
   <h1 style={{
-    fontFamily: 'var(--osd-font-display)', fontWeight: 800, fontSize: size,
-    lineHeight: 1.0, letterSpacing: '-0.035em', margin: 0, color: 'var(--osd-text)',
+    fontFamily: 'var(--of-font-display)', fontWeight: 800, fontSize: size,
+    lineHeight: 1.0, letterSpacing: '-0.035em', margin: 0, color: 'var(--of-text)',
   }}>
     {children}
   </h1>
@@ -139,7 +139,7 @@ const Title = ({ children, size = 112 }: { children: React.ReactNode; size?: num
 
 // One orange word inside a near-black headline. Same weight, not italic.
 const Em = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: 'var(--osd-accent)' }}>{children}</span>
+  <span style={{ color: 'var(--of-accent)' }}>{children}</span>
 );
 // usage: <Title>Building <Em>AI infra</Em> that ships.</Title>
 ```
@@ -174,8 +174,8 @@ Light building blocks that sit just *off* the white with a hairline edge; orange
 ```tsx
 // Callout — warm surface card, orange left bar + orange figure.
 const Callout = ({ value, children }: { value: string; children: React.ReactNode }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: 20, background: surface, border: `1px solid ${hairline}`, borderLeft: '4px solid var(--osd-accent)', borderRadius: 14, padding: '22px 28px' }}>
-    <span style={{ fontFamily: mono, fontSize: 34, fontWeight: 600, color: 'var(--osd-accent)', flexShrink: 0 }}>{value}</span>
+  <div style={{ display: 'flex', alignItems: 'center', gap: 20, background: surface, border: `1px solid ${hairline}`, borderLeft: '4px solid var(--of-accent)', borderRadius: 14, padding: '22px 28px' }}>
+    <span style={{ fontFamily: mono, fontSize: 34, fontWeight: 600, color: 'var(--of-accent)', flexShrink: 0 }}>{value}</span>
     <span style={{ fontSize: 24, color: muted, lineHeight: 1.35 }}>{children}</span>
   </div>
 );
@@ -192,12 +192,12 @@ const Terminal = ({ children, title = 'builder@prajwalhd: ~' }: { children: Reac
     <div style={{ padding: '22px 24px', fontSize: 24, lineHeight: 1.75, color: '#d6d6da', whiteSpace: 'pre' }}>{children}</div>
   </div>
 );
-// inside Terminal: <span style={{ color: 'var(--osd-accent)' }}>$</span> ./infra run --watch
+// inside Terminal: <span style={{ color: 'var(--of-accent)' }}>$</span> ./infra run --watch
 ```
 
 ## Motion
 
-- Philosophy: **static.** A still carousel exported to PNG — no transitions, no keyframes. The brand reads as a clean print system; let the type and the cube do the work. (If presenting live, the deck-wide `RISE` from `slide-authoring` is the only acceptable addition.)
+- Philosophy: **static.** A still carousel exported to PNG — no transitions, no keyframes. The brand reads as a clean print system; let the type and the cube do the work. (If presenting live, the deck-wide `RISE` from `frame-authoring` is the only acceptable addition.)
 
 ## Aesthetic
 

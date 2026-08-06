@@ -19,7 +19,7 @@ A minimal, editorial carousel identity for square (1:1) LinkedIn posts: warm off
 | surface | `#f1efec` | inset cards / code blocks (sits just off the bg)       |
 | hairline| `#ddd6cd` | 1px borders on surfaces                                 |
 
-**Contrast rule (do not skip).** This canvas is near-white `#fbfbfb`, so the mirror of the dark-theme trap applies: any panel (card, callout, code block) must be a shade *darker* than the bg or it disappears. Keep `surface` around **`#f1efec`–`#eceae6`** and always pair it with the `#ddd6cd` hairline border — a borderless near-white panel on near-white reads as nothing. Body text must be charcoal `#2a2522`, never a light gray, or it greys out against the paper. Red is for headlines and accents only; never set body paragraphs in red (it vibrates and kills readability). One red headline per slide.
+**Contrast rule (do not skip).** This canvas is near-white `#fbfbfb`, so the mirror of the dark-theme trap applies: any panel (card, callout, code block) must be a shade *darker* than the bg or it disappears. Keep `surface` around **`#f1efec`–`#eceae6`** and always pair it with the `#ddd6cd` hairline border — a borderless near-white panel on near-white reads as nothing. Body text must be charcoal `#2a2522`, never a light gray, or it greys out against the paper. Red is for headlines and accents only; never set body paragraphs in red (it vibrates and kills readability). One red headline per frame.
 
 ## Typography
 
@@ -49,8 +49,8 @@ const fill = {
   backgroundImage: `url(${bg})`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  color: 'var(--osd-text)',
-  fontFamily: 'var(--osd-font-body)',
+  color: 'var(--of-text)',
+  fontFamily: 'var(--of-font-body)',
   display: 'flex',
   flexDirection: 'column' as const,
   padding: 88,
@@ -63,12 +63,12 @@ const fill = {
 - Canvas: **1080 × 1080** (1:1). Set `meta.canvasWidth` / `meta.canvasHeight` to `1080`.
 - Content padding: **88 px** from every edge.
 - Alignment: **left-aligned, single column.** Headline anchored to the top-left of the content area; body directly under it. Never center.
-- Vertical rhythm: a flex column with `padding: 88`. Cover/closer push the headline block up and the sub-line to the bottom row. Content slides: headline + body in the upper two-thirds, footer pinned bottom.
+- Vertical rhythm: a flex column with `padding: 88`. Cover/closer push the headline block up and the sub-line to the bottom row. Content frames: headline + body in the upper two-thirds, footer pinned bottom.
 - Chrome lives in the **bottom row** (not the top): a low-opacity text **Badge** on the left, and a red **SwipePill** on the right — swapped for a red **Bookmark** on the final page. The cover replaces the badge with a muted sub-line.
 
 ## Fixed components
 
-Paste-ready. Copy verbatim into a slide that uses this theme. They assume `--osd-*` vars from a `design` const (`bg #fbfbfb`, `text #2a2522`, `accent #ef3c1d`) plus the `mono` and `muted` consts above.
+Paste-ready. Copy verbatim into a frame that uses this theme. They assume `--of-*` vars from a `design` const (`bg #fbfbfb`, `text #2a2522`, `accent #ef3c1d`) plus the `mono` and `muted` consts above.
 
 ### Badge
 
@@ -79,8 +79,8 @@ const mono = '"JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace';
 
 const Badge = () => (
   <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2, opacity: 0.55 }}>
-    <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 700, fontSize: 20, color: 'var(--osd-text)' }}>Prajwal</span>
-    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--osd-accent)' }}>hdprajwal</span>
+    <span style={{ fontFamily: 'var(--of-font-display)', fontWeight: 700, fontSize: 20, color: 'var(--of-text)' }}>Prajwal</span>
+    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--of-accent)' }}>hdprajwal</span>
   </div>
 );
 ```
@@ -90,8 +90,8 @@ const Badge = () => (
 ```tsx
 const Title = ({ children, size = 68 }: { children: React.ReactNode; size?: number }) => (
   <h1 style={{
-    fontFamily: 'var(--osd-font-display)', fontWeight: 900, fontSize: size,
-    lineHeight: 1.0, letterSpacing: '-0.035em', margin: 0, color: 'var(--osd-accent)',
+    fontFamily: 'var(--of-font-display)', fontWeight: 900, fontSize: size,
+    lineHeight: 1.0, letterSpacing: '-0.035em', margin: 0, color: 'var(--of-accent)',
   }}>
     {children}
   </h1>
@@ -99,23 +99,23 @@ const Title = ({ children, size = 68 }: { children: React.ReactNode; size?: numb
 
 // Optional: drop one word to charcoal inside the red headline. Use at most once.
 const Em = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: 'var(--osd-text)' }}>{children}</span>
+  <span style={{ color: 'var(--of-text)' }}>{children}</span>
 );
 // usage: <Title size={124}>Save this to <Em>rethink</Em> how you work</Title>
 ```
 
 ### Footer
 
-Pull the page number from `useSlidePageNumber()` so the pill auto-swaps to a bookmark on the last page. Pass `left` to replace the badge (e.g. the cover/closer sub-line).
+Pull the page number from `useFramePageNumber()` so the pill auto-swaps to a bookmark on the last page. Pass `left` to replace the badge (e.g. the cover/closer sub-line).
 
 ```tsx
-import { useSlidePageNumber } from '@open-frame/core';
+import { useFramePageNumber } from '@open-frame/core';
 
 const SwipePill = () => (
   <div style={{
     display: 'inline-flex', alignItems: 'center', gap: 12,
-    background: 'var(--osd-accent)', color: '#fff', borderRadius: 100, padding: '11px 22px',
-    fontFamily: 'var(--osd-font-display)', fontWeight: 800, fontSize: 18, letterSpacing: '0.04em',
+    background: 'var(--of-accent)', color: '#fff', borderRadius: 100, padding: '11px 22px',
+    fontFamily: 'var(--of-font-display)', fontWeight: 800, fontSize: 18, letterSpacing: '0.04em',
   }}>
     SWIPE
     <svg width="34" height="14" viewBox="0 0 34 14" fill="none">
@@ -131,7 +131,7 @@ const Bookmark = () => (
 );
 
 const Footer = ({ left }: { left?: React.ReactNode }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginTop: 'auto' }}>
       {left ?? <Badge />}
@@ -184,7 +184,7 @@ const CodeBlock = ({ children }: { children: React.ReactNode }) => (
 
 ## Motion
 
-- Philosophy: **static.** A still carousel exported to PNG — no transitions, no keyframes. (If presenting live, the deck-wide `RISE` from `slide-authoring` is the only acceptable addition.)
+- Philosophy: **static.** A still carousel exported to PNG — no transitions, no keyframes. (If presenting live, the deck-wide `RISE` from `frame-authoring` is the only acceptable addition.)
 
 ## Aesthetic
 
@@ -196,7 +196,7 @@ Confident, editorial, minimal. One bold red on warm paper, oversized heavy grote
 import bg from '@assets/red-white-minimal-bg.png';
 
 const Content: Page = () => (
-  <div style={{ width: '100%', height: '100%', backgroundColor: '#fbfbfb', backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'var(--osd-text)', display: 'flex', flexDirection: 'column', padding: 88, boxSizing: 'border-box', fontFamily: 'var(--osd-font-body)' }}>
+  <div style={{ width: '100%', height: '100%', backgroundColor: '#fbfbfb', backgroundImage: `url(${bg})`, backgroundSize: 'cover', backgroundPosition: 'center', color: 'var(--of-text)', display: 'flex', flexDirection: 'column', padding: 88, boxSizing: 'border-box', fontFamily: 'var(--of-font-body)' }}>
     <div style={{ marginTop: 0 }}>
       <Title size={68}>Reactive work:</Title>
       <p style={{ fontSize: 32, color: '#2a2522', lineHeight: 1.5, marginTop: 32, maxWidth: 820 }}>

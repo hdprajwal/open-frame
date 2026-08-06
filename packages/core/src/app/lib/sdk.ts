@@ -1,26 +1,26 @@
 import type { ComponentType } from 'react';
 import type { DesignSystem } from './design.ts';
 import { FORMAT_PRESETS, type FormatPreset } from './formats.ts';
-import type { SlideTransition } from './transition.ts';
+import type { FrameTransition } from './transition.ts';
 
-export type Page = ComponentType & { transition?: SlideTransition };
+export type Page = ComponentType & { transition?: FrameTransition };
 
-export type SlideMeta = {
+export type FrameMeta = {
   title?: string;
   theme?: string;
-  /** ISO 8601 timestamp. Set once at scaffold time; used to sort the slide list. */
+  /** ISO 8601 timestamp. Set once at scaffold time; used to sort the frame list. */
   createdAt?: string;
   format?: FormatPreset;
   canvas?: { width: number; height: number };
 };
 
-export type SlideModule = {
+export type FrameModule = {
   default: Page[];
-  meta?: SlideMeta;
+  meta?: FrameMeta;
   design?: DesignSystem;
   // Index-aligned with `default`.
   notes?: (string | undefined)[];
-  transition?: SlideTransition;
+  transition?: FrameTransition;
 };
 
 // 'lucide' is display-only for built-in rows (Draft, Themes, Assets); the

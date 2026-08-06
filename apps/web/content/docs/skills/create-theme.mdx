@@ -14,17 +14,17 @@ stem:
 
 - `themes/<id>.md` — palette, type stack, layout vocabulary, fixed
   Title/Footer/Eyebrow components, motion, and voice notes that
-  `/create-slide` reads on its next run.
-- `themes/<id>.demo.tsx` — a runnable 2–3 page mini-slide that inlines
+  `/create-frame` reads on its next run.
+- `themes/<id>.demo.tsx` — a runnable 2–3 page mini-frame that inlines
   the same components from the markdown. The dev UI's **Themes** panel
   imports it and renders it as the theme's live preview.
 
 Both files are always produced together — a theme without its demo can't
-preview, a demo without its markdown can't be picked by `/create-slide`.
+preview, a demo without its markdown can't be picked by `/create-frame`.
 
 The input can be:
 
-- **An existing deck.** The skill scans `slides/<id>/index.tsx`, distils the
+- **An existing deck.** The skill scans `frames/<id>/index.tsx`, distils the
   recurring tokens, and writes them out.
 - **A brief.** Describe the system in chat (*"warm editorial, serif display,
   high-contrast palette"*) and the skill bootstraps the bundle from
@@ -50,7 +50,7 @@ A markdown recipe:
 
 ## Voice
 - Tight, declarative, never coy.
-- One concept per slide.
+- One concept per frame.
 ```
 
 …paired with a preview module:
@@ -68,10 +68,10 @@ See [Themes](/docs/core-feature/themes) for how a theme is consumed.
 
 ## Using the theme
 
-Once the file exists, mention it by name on the next `/create-slide`:
+Once the file exists, mention it by name on the next `/create-frame`:
 
 ```text
-/create-slide for "Q3 board update — use the corporate theme"
+/create-frame for "Q3 board update — use the corporate theme"
 ```
 
 The agent loads `themes/corporate.md` before writing the deck.

@@ -2,7 +2,7 @@
 
 You are working on the **open-frame framework** — the runtime, CLI, and tooling that ship to npm.
 
-(Slide-authoring guidance lives in the `slide-authoring` / `create-slide` skills under `apps/demo/.claude/skills/`. Use those only when editing files inside `apps/demo/slides/`.)
+(Frame-authoring guidance lives in the `frame-authoring` / `create-frame` skills under `apps/demo/.claude/skills/`. Use those only when editing files inside `apps/demo/frames/`.)
 
 ## Layout
 
@@ -35,7 +35,7 @@ Filter to one package: `pnpm core <script>` / `pnpm cli <script>`.
 - **Biome must pass before commit.** Run `pnpm check` (or `pnpm check:fix`). CI and the user's review both expect a clean tree.
 - **If `packages/core` or `packages/cli` changes, add a changeset.** Run `pnpm changeset`, pick the right package(s) and bump (`patch` for fixes/polish, `minor` for new public API, `major` for breaking). Apps (`demo`, `web`) and root tooling do **not** need one.
 - **Changeset descriptions: short and direct.** One line, present-tense, what changed from a user's perspective. Match the tone of `.changeset/*.md` already in the repo. No paragraphs, no rationale, no "this PR…".
-  - Good: `Replace spinner with a hairline + sliding bar for slide and presenter loading states.`
+  - Good: `Replace spinner with a hairline + sliding bar for frame and presenter loading states.`
   - Bad: `This change introduces a new loading indicator because the previous spinner felt heavy and we wanted something more subtle for presentation contexts…`
 - Don't bump versions or edit `CHANGELOG.md` by hand — `changeset version` owns that.
 - Don't add dependencies casually. The `core` runtime ships to users; every dep inflates install size.

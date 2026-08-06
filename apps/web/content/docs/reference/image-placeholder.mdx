@@ -4,11 +4,11 @@ description: A typed stand-in for a real image the user has to supply.
 ---
 
 `ImagePlaceholder` is a small runtime component that renders a sized, dashed
-box with a hint label. Drop it into a slide whenever the layout calls for a
+box with a hint label. Drop it into a frame whenever the layout calls for a
 real image — a product screenshot, a team photo, a customer dashboard — that
 you don't have on disk yet.
 
-```tsx title="slides/q2-launch/index.tsx"
+```tsx title="frames/q2-launch/index.tsx"
 import { ImagePlaceholder } from '@open-frame/core';
 
 const Hero = () => (
@@ -86,7 +86,7 @@ The inspector's **Replace…** action is wired to a Vite-plugin op called
    />
    ```
 
-The asset path must live under `./assets/` relative to the slide. If you skip
+The asset path must live under `./assets/` relative to the frame. If you skip
 the inspector and want to swap the placeholder by hand, the snippet above is
 exactly what to write.
 
@@ -106,12 +106,12 @@ so you can reopen the dialog later and adjust.
 ## When to use it
 
 Use a placeholder only when a *specific concrete* image is required by the
-deck's topic — a product-intro deck (one screenshot per feature), an offsite
+frame's topic — a product-intro deck (one screenshot per feature), an offsite
 recap (team photo), a case study (customer logo).
 
 Do **not** use it for decoration, generic stock-photo filler, or anywhere a
 typographic or iconographic solution would do. Empty placeholders are friction
 the user has to clear; only spend that friction when the alternative is worse.
 
-See the **Image placeholders** section of the `slide-authoring` skill for the
+See the **Image placeholders** section of the `frame-authoring` skill for the
 full editorial checklist.
