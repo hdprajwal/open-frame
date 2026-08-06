@@ -1,6 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { parse as babelParse } from '@babel/parser';
+import { writeTrackedFile } from '../files/self-writes.ts';
 
 export const SLIDE_ID_RE = /^[a-z0-9_-]+$/i;
 
@@ -168,7 +169,7 @@ export async function duplicateSlideDir(
 
   try {
     await fs.cp(srcDir, dstDir, { recursive: true, errorOnExist: true, force: false });
-    await fs.writeFile(path.join(dstDir, 'index.tsx'), copiedEntrySource, 'utf8');
+    await writeTrackedFile(path.join(dstDir, 'index.tsx'), copiedEntrySource);
     return { ok: true, slideId: newId };
   } catch (err) {
     if ((err as NodeJS.ErrnoException).code === 'EEXIST') {
