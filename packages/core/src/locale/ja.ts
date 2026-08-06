@@ -235,6 +235,8 @@ export const ja: Locale = {
     cropFitContain: '全体表示',
     cropApply: '適用',
     cropResetAria: 'トリミングをリセット',
+    radiusLabel: '角丸',
+    radiusUsePx: 'px で指定',
     agentWatching: 'エージェント監視中',
     agentWatchingTooltip: '選択中の要素はエージェントにリアルタイムで同期されています。',
     agentNotWatching: 'エージェント未接続',

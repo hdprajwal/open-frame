@@ -240,6 +240,8 @@ export type Locale = {
     cropFitContain: string;
     cropApply: string;
     cropResetAria: string;
+    radiusLabel: string;
+    radiusUsePx: string;
     leaveComment: string;
     commentPlaceholder: string;
     commentShortcutHint: string;

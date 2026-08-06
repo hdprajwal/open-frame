@@ -153,6 +153,33 @@ describe('applyEdit / set-style', () => {
     if (!r.ok) throw new Error(`expected ok, got ${r.error}`);
     expect(r.source).toContain("fontFamily: 'Pacifico\\'s'");
   });
+
+  it('adds a border radius to an image alongside crop styles', () => {
+    const src = [
+      'export default [() => (',
+      "<img src={hero} style={{ objectFit: 'cover', objectPosition: '50% 50%' }} />",
+      ')];',
+      '',
+    ].join('\n');
+    const r = applyEdit(src, 2, 0, [{ kind: 'set-style', key: 'borderRadius', value: '16px' }]);
+    if (!r.ok) throw new Error(`expected ok, got ${r.error}`);
+    expect(r.source).toContain(
+      "style={{ objectFit: 'cover', objectPosition: '50% 50%', borderRadius: '16px' }}",
+    );
+  });
+
+  it('clears an image border radius when the value is null', () => {
+    const src = [
+      'export default [() => (',
+      "<img src={hero} style={{ objectFit: 'cover', borderRadius: '16px' }} />",
+      ')];',
+      '',
+    ].join('\n');
+    const r = applyEdit(src, 2, 0, [{ kind: 'set-style', key: 'borderRadius', value: null }]);
+    if (!r.ok) throw new Error(`expected ok, got ${r.error}`);
+    expect(r.source).toContain("style={{ objectFit: 'cover' }}");
+    expect(r.source).not.toContain('borderRadius');
+  });
 });
 
 describe('applyEdit / set-text', () => {

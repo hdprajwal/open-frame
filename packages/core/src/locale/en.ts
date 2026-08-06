@@ -238,6 +238,8 @@ export const en: Locale = {
     cropFitContain: 'Fit',
     cropApply: 'Apply',
     cropResetAria: 'Reset crop',
+    radiusLabel: 'Radius',
+    radiusUsePx: 'Use px',
     leaveComment: 'Leave a comment',
     commentPlaceholder: 'Describe a change for the agent…',
     commentShortcutHint: '⌘/ to focus · ⌘↵ to add',
