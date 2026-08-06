@@ -16,18 +16,22 @@ function fakeServer(sent: SentMessage[]): ViteDevServer {
   } as unknown as ViteDevServer;
 }
 
-async function triggerHotUpdate(file: string, contents: string): Promise<SentMessage[]> {
+async function triggerHotUpdate(file: string, read: () => Promise<string>): Promise<SentMessage[]> {
   const sent: SentMessage[] = [];
   const plugin = openFramePlugin({ userCwd: USER_CWD, config: {}, coreVersion: '0.0.0' });
   const handle = plugin.handleHotUpdate as (ctx: HmrContext) => Promise<unknown>;
   await handle({
     file,
     server: fakeServer(sent),
-    read: async () => contents,
+    read,
     modules: [],
     timestamp: Date.now(),
   } as unknown as HmrContext);
   return sent;
+}
+
+function reads(contents: string): () => Promise<string> {
+  return async () => contents;
 }
 
 function externalEdits(sent: SentMessage[]): SentMessage[] {
@@ -40,7 +44,7 @@ describe('openFramePlugin handleHotUpdate', () => {
   });
 
   it('emits external-edit for a change the dev server did not make', async () => {
-    const sent = await triggerHotUpdate(SLIDE_FILE, 'export default []\n');
+    const sent = await triggerHotUpdate(SLIDE_FILE, reads('export default []\n'));
 
     expect(externalEdits(sent)).toEqual([
       {
@@ -53,20 +57,31 @@ describe('openFramePlugin handleHotUpdate', () => {
 
   it('stays quiet for a change matching a recent own write', async () => {
     selfWrites.record(SLIDE_FILE, 'export default []\n');
-    const sent = await triggerHotUpdate(SLIDE_FILE, 'export default []\n');
+    const sent = await triggerHotUpdate(SLIDE_FILE, reads('export default []\n'));
 
     expect(externalEdits(sent)).toEqual([]);
   });
 
   it('emits external-edit when a recent own write has different contents', async () => {
     selfWrites.record(SLIDE_FILE, 'export default []\n');
-    const sent = await triggerHotUpdate(SLIDE_FILE, 'export default [Cover]\n');
+    const sent = await triggerHotUpdate(SLIDE_FILE, reads('export default [Cover]\n'));
 
     expect(externalEdits(sent)).toHaveLength(1);
   });
 
+  it('stays quiet when the changed file cannot be read', async () => {
+    const sent = await triggerHotUpdate(SLIDE_FILE, async () => {
+      throw new Error('EACCES');
+    });
+
+    expect(externalEdits(sent)).toEqual([]);
+  });
+
   it('ignores files that are not slide entries', async () => {
-    const sent = await triggerHotUpdate(path.join(USER_CWD, 'slides', 'intro', 'helper.tsx'), 'x');
+    const sent = await triggerHotUpdate(
+      path.join(USER_CWD, 'slides', 'intro', 'helper.tsx'),
+      reads('x'),
+    );
 
     expect(sent).toEqual([]);
   });
