@@ -2,10 +2,17 @@ import http from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
-import type { ConfigEnv, Connect, UserConfig, ViteDevServer } from 'vite';
+import type { ConfigEnv, Connect, ResolvedConfig, UserConfig, ViteDevServer } from 'vite';
 import { afterEach, describe, expect, it } from 'vitest';
+import { validateMutationRequest } from '../http/request-guard.ts';
 import { AGENT_PRESENCE_EVENT } from '../mcp/presence.ts';
-import { checkMcpRequest, MCP_ENDPOINT, mcpPlugin, mountMcpEndpoint } from './mcp-plugin.ts';
+import {
+  checkMcpRequest,
+  MAX_SESSIONS,
+  MCP_ENDPOINT,
+  mcpPlugin,
+  mountMcpEndpoint,
+} from './mcp-plugin.ts';
 
 function makeReq(headers: Record<string, string | undefined>, method: string) {
   return {
@@ -15,6 +22,8 @@ function makeReq(headers: Record<string, string | undefined>, method: string) {
   } as unknown as Connect.IncomingMessage;
 }
 
+const DEV_CONFIG = {} as ResolvedConfig;
+
 function applies(env: ConfigEnv): boolean {
   const apply = mcpPlugin({ userCwd: '/tmp/deck', coreVersion: '1.2.3' }).apply;
   if (typeof apply !== 'function') throw new Error('expected a function apply');
@@ -23,9 +32,34 @@ function applies(env: ConfigEnv): boolean {
 
 type Harness = {
   url: string;
+  port: number;
   events: Array<{ type?: string; event?: string; data?: unknown }>;
   close: () => Promise<void>;
 };
+
+type RawResponse = { status: number; body: string };
+
+function rawRequest(
+  port: number,
+  options: { method: string; headers: Record<string, string>; body?: string },
+): Promise<RawResponse> {
+  return new Promise((resolve, reject) => {
+    const req = http.request(
+      { host: '127.0.0.1', port, path: MCP_ENDPOINT, method: options.method },
+      (res) => {
+        let body = '';
+        res.setEncoding('utf8');
+        res.on('data', (chunk: string) => {
+          body += chunk;
+        });
+        res.on('end', () => resolve({ status: res.statusCode ?? 0, body }));
+      },
+    );
+    req.on('error', reject);
+    for (const [name, value] of Object.entries(options.headers)) req.setHeader(name, value);
+    req.end(options.body);
+  });
+}
 
 async function startHarness(): Promise<Harness> {
   const events: Harness['events'] = [];
@@ -44,6 +78,7 @@ async function startHarness(): Promise<Harness> {
   });
 
   const host = {
+    config: DEV_CONFIG,
     httpServer: server,
     middlewares: {
       use: (_path: string, fn: Connect.NextHandleFunction) => {
@@ -64,6 +99,7 @@ async function startHarness(): Promise<Harness> {
 
   return {
     url: `http://127.0.0.1:${port}${MCP_ENDPOINT}`,
+    port,
     events,
     close: () =>
       new Promise<void>((resolve, reject) => {
@@ -97,18 +133,18 @@ describe('checkMcpRequest', () => {
       },
       'POST',
     );
-    expect(checkMcpRequest(req)).toEqual({ ok: true });
+    expect(checkMcpRequest(req, DEV_CONFIG)).toEqual({ ok: true });
   });
 
   it('accepts stream and session-teardown requests without a JSON body', () => {
     const headers = { host: 'localhost:5173', origin: 'http://localhost:5173' };
-    expect(checkMcpRequest(makeReq(headers, 'GET'))).toEqual({ ok: true });
-    expect(checkMcpRequest(makeReq(headers, 'DELETE'))).toEqual({ ok: true });
+    expect(checkMcpRequest(makeReq(headers, 'GET'), DEV_CONFIG)).toEqual({ ok: true });
+    expect(checkMcpRequest(makeReq(headers, 'DELETE'), DEV_CONFIG)).toEqual({ ok: true });
   });
 
   it('rejects posts that are not JSON', () => {
     const req = makeReq({ host: 'localhost:5173', 'content-type': 'text/plain' }, 'POST');
-    expect(checkMcpRequest(req)).toEqual({
+    expect(checkMcpRequest(req, DEV_CONFIG)).toEqual({
       ok: false,
       status: 415,
       error: 'content-type must be application/json',
@@ -125,7 +161,7 @@ describe('checkMcpRequest', () => {
       },
       'POST',
     );
-    expect(checkMcpRequest(crossSite)).toEqual({
+    expect(checkMcpRequest(crossSite, DEV_CONFIG)).toEqual({
       ok: false,
       status: 403,
       error: 'cross-site request blocked',
@@ -139,16 +175,43 @@ describe('checkMcpRequest', () => {
       },
       'POST',
     );
-    expect(checkMcpRequest(badOrigin)).toEqual({
+    expect(checkMcpRequest(badOrigin, DEV_CONFIG)).toEqual({
       ok: false,
       status: 403,
       error: 'origin mismatch',
     });
   });
 
+  it('rejects a rebound host that the origin check waves through', () => {
+    const rebound = makeReq(
+      {
+        host: 'rebind.evil.example:5173',
+        origin: 'http://rebind.evil.example:5173',
+        'sec-fetch-site': 'same-origin',
+        'content-type': 'application/json',
+      },
+      'POST',
+    );
+    expect(validateMutationRequest(rebound, { requireJsonBody: true })).toEqual({ ok: true });
+    expect(checkMcpRequest(rebound, DEV_CONFIG)).toEqual({
+      ok: false,
+      status: 403,
+      error: 'host not allowed',
+    });
+  });
+
+  it('rejects a request with no host header', () => {
+    const req = makeReq({ origin: 'http://localhost:5173' }, 'GET');
+    expect(checkMcpRequest(req, DEV_CONFIG)).toEqual({
+      ok: false,
+      status: 403,
+      error: 'host not allowed',
+    });
+  });
+
   it('rejects methods the transport does not speak', () => {
     const req = makeReq({ host: 'localhost:5173' }, 'PUT');
-    expect(checkMcpRequest(req)).toEqual({
+    expect(checkMcpRequest(req, DEV_CONFIG)).toEqual({
       ok: false,
       status: 405,
       error: 'method not allowed',
@@ -234,5 +297,127 @@ describe('mounted /__mcp endpoint', () => {
     });
 
     expect(res.status).toBe(404);
+  });
+
+  it('rejects a rebound host before the transport sees it', async () => {
+    harness = await startHarness();
+    const res = await rawRequest(harness.port, {
+      method: 'POST',
+      headers: {
+        host: `rebind.evil.example:${harness.port}`,
+        origin: `http://rebind.evil.example:${harness.port}`,
+        'sec-fetch-site': 'same-origin',
+        'content-type': 'application/json',
+        accept: 'application/json, text/event-stream',
+      },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'initialize',
+        params: {
+          protocolVersion: '2025-06-18',
+          capabilities: {},
+          clientInfo: { name: 'evil', version: '1.0.0' },
+        },
+      }),
+    });
+
+    expect(res.status).toBe(403);
+    expect(JSON.parse(res.body)).toEqual({ error: 'host not allowed' });
+  });
+
+  it('pins an open session to the host it was opened from', async () => {
+    harness = await startHarness();
+    const transport = new StreamableHTTPClientTransport(new URL(harness.url));
+    const client = new Client({ name: 'claude-code', version: '9.9.9' });
+    await client.connect(transport);
+    const sessionId = transport.sessionId as string;
+    expect(sessionId).toBeTruthy();
+
+    const res = await rawRequest(harness.port, {
+      method: 'POST',
+      headers: {
+        host: `localhost:${harness.port}`,
+        'content-type': 'application/json',
+        accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId,
+      },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 2, method: 'tools/list' }),
+    });
+
+    expect(res.status).toBe(403);
+    expect(JSON.parse(res.body)).toMatchObject({
+      error: { code: -32000, message: expect.stringContaining('Invalid Host header') },
+    });
+
+    await client.close();
+  });
+
+  it('drops a session on delete', async () => {
+    harness = await startHarness();
+    const transport = new StreamableHTTPClientTransport(new URL(harness.url));
+    const client = new Client({ name: 'claude-code', version: '9.9.9' });
+    await client.connect(transport);
+    const sessionId = transport.sessionId as string;
+
+    await transport.terminateSession();
+    await client.close();
+
+    const res = await fetch(harness.url, {
+      method: 'GET',
+      headers: { accept: 'text/event-stream', 'mcp-session-id': sessionId },
+    });
+    expect(res.status).toBe(404);
+    await expect(res.json()).resolves.toEqual({ error: 'unknown mcp session' });
+  });
+
+  it('evicts the least recently used session once the map is full', async () => {
+    harness = await startHarness();
+    const clients: Client[] = [];
+    const sessionIds: string[] = [];
+
+    for (let i = 0; i <= MAX_SESSIONS; i += 1) {
+      const transport = new StreamableHTTPClientTransport(new URL(harness.url));
+      const client = new Client({ name: 'claude-code', version: '9.9.9' });
+      await client.connect(transport);
+      clients.push(client);
+      sessionIds.push(transport.sessionId as string);
+    }
+
+    const evicted = await rawRequest(harness.port, {
+      method: 'DELETE',
+      headers: {
+        host: `127.0.0.1:${harness.port}`,
+        'mcp-session-id': sessionIds[0] as string,
+      },
+    });
+    expect(evicted.status).toBe(404);
+    expect(JSON.parse(evicted.body)).toEqual({ error: 'unknown mcp session' });
+
+    const kept = await rawRequest(harness.port, {
+      method: 'DELETE',
+      headers: {
+        host: `127.0.0.1:${harness.port}`,
+        'mcp-session-id': sessionIds[MAX_SESSIONS] as string,
+      },
+    });
+    expect(kept.status).not.toBe(404);
+
+    await Promise.all(clients.map((client) => client.close()));
+  });
+
+  it('rejects a malformed json body', async () => {
+    harness = await startHarness();
+    const res = await fetch(harness.url, {
+      method: 'POST',
+      headers: {
+        'content-type': 'application/json',
+        accept: 'application/json, text/event-stream',
+      },
+      body: '{ not json',
+    });
+
+    expect(res.status).toBe(400);
+    await expect(res.json()).resolves.toEqual({ error: 'malformed mcp request' });
   });
 });
