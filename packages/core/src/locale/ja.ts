@@ -97,9 +97,14 @@ export const ja: Locale = {
   },
 
   frame: {
-    agentConnected: 'エージェント接続中',
-    agentConnectedTooltip:
-      '現在のフレームと Inspector の選択はエージェントにリアルタイムで同期されています。',
+    agentName: 'エージェント',
+    agentIdle: '{name}: 待機中',
+    agentIdleTooltip:
+      'dev server に接続済みです。現在のフレームと Inspector の選択はエージェントに同期されていますが、最近フレームへの編集はありません。',
+    agentActive: '{name}: 稼働中',
+    agentActiveTooltip:
+      '{name} が少し前にフレームを編集しました。編集されたフレームは点滅して知らせます。',
+    followAgentEdits: 'エージェントの編集を追う',
     agentDisconnected: 'エージェント切断',
     agentDisconnectedTooltip:
       'dev server との接続が切れたため、現在のフレームや Inspector の選択がエージェントに届かなくなっています。dev server を再起動して接続を復旧してください。',
@@ -239,6 +244,8 @@ export const ja: Locale = {
     radiusUsePx: 'px で指定',
     agentWatching: 'エージェント監視中',
     agentWatchingTooltip: '選択中の要素はエージェントにリアルタイムで同期されています。',
+    agentEditing: '{name} が編集中',
+    agentEditingTooltip: '{name} が少し前にこのフレームを編集しました。',
     agentNotWatching: 'エージェント未接続',
     agentNotWatchingTooltip:
       'dev server との接続が切れたため、選択中の要素がエージェントに見えなくなっています。dev server を再起動して接続を復旧してください。',

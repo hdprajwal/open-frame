@@ -405,6 +405,47 @@
   }
 }
 
+/*
+ * Edit flash — an inset ring that pulses twice over a frame an agent just
+ * wrote, then removes itself. Rendered as its own overlay element keyed on the
+ * edit revision, so a second edit restarts the animation from the top.
+ */
+@keyframes of-edit-flash {
+  0% {
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.25;
+  }
+  68% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.edit-flash {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  pointer-events: none;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 2px var(--color-brand);
+  background: color-mix(in oklab, var(--color-brand) 7%, transparent);
+  animation: of-edit-flash 1800ms ease-out 1 both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .edit-flash {
+    animation: none;
+    opacity: 1;
+  }
+}
+
 [data-of-freeze-motion],
 [data-of-freeze-motion] *,
 [data-of-freeze-motion] *::before,

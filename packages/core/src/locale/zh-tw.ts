@@ -96,8 +96,13 @@ export const zhTW: Locale = {
   },
 
   frame: {
-    agentConnected: 'Agent 已連線',
-    agentConnectedTooltip: '目前的 frame 與 Inspector 選擇會即時同步給 agent。',
+    agentName: 'Agent',
+    agentIdle: '{name} 閒置中',
+    agentIdleTooltip:
+      '已連線 dev server，目前的 frame 與 Inspector 選擇會即時同步給 agent，但最近沒有對 frame 的編輯。',
+    agentActive: '{name} 活躍中',
+    agentActiveTooltip: '{name} 剛剛編輯了一個 frame。被編輯的 frame 會閃爍提示。',
+    followAgentEdits: '跟隨 agent 的編輯',
     agentDisconnected: 'Agent 已斷線',
     agentDisconnectedTooltip:
       '已和 dev server 斷線，agent 沒辦法再看到你目前的 frame 或 Inspector 選擇。請重新啟動 dev server 來恢復連線。',
@@ -235,6 +240,8 @@ export const zhTW: Locale = {
     radiusUsePx: '改用 px',
     agentWatching: 'Agent 正在關注',
     agentWatchingTooltip: '選取的元素會即時同步給 agent。',
+    agentEditing: '{name} 正在編輯',
+    agentEditingTooltip: '{name} 剛剛編輯了這個 frame。',
     agentNotWatching: 'Agent 沒在關注',
     agentNotWatchingTooltip:
       '已和 dev server 斷線，agent 看不到你選的元素了。請重新啟動 dev server 來恢復連線。',
