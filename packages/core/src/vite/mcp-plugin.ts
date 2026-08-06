@@ -4,6 +4,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import type { Connect, Plugin, ViteDevServer } from 'vite';
 import { validateMutationRequest } from '../http/request-guard.ts';
+import { AGENT_PRESENCE_EVENT, agentPresenceFromClientInfo } from '../mcp/presence.ts';
 import type { McpToolContext } from '../mcp/registry.ts';
 import { createMcpServer } from '../mcp/server.ts';
 import { json, readBody } from './routes/context.ts';
@@ -63,6 +64,11 @@ export function mountMcpEndpoint(server: ViteDevServer, opts: McpPluginOptions):
       if (transport.sessionId) sessions.delete(transport.sessionId);
     };
     const mcp = createMcpServer(ctx);
+    mcp.server.oninitialized = () => {
+      const presence = agentPresenceFromClientInfo(mcp.server.getClientVersion());
+      if (!presence) return;
+      server.ws.send({ type: 'custom', event: AGENT_PRESENCE_EVENT, data: presence });
+    };
     await mcp.connect(transport);
     return transport;
   }

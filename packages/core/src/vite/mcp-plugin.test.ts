@@ -4,6 +4,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/streamableHttp.js';
 import type { ConfigEnv, Connect, UserConfig, ViteDevServer } from 'vite';
 import { afterEach, describe, expect, it } from 'vitest';
+import { AGENT_PRESENCE_EVENT } from '../mcp/presence.ts';
 import { checkMcpRequest, MCP_ENDPOINT, mcpPlugin, mountMcpEndpoint } from './mcp-plugin.ts';
 
 function makeReq(headers: Record<string, string | undefined>, method: string) {
@@ -22,7 +23,7 @@ function applies(env: ConfigEnv): boolean {
 
 type Harness = {
   url: string;
-  events: Array<{ event?: string; data?: unknown }>;
+  events: Array<{ type?: string; event?: string; data?: unknown }>;
   close: () => Promise<void>;
 };
 
@@ -50,7 +51,7 @@ async function startHarness(): Promise<Harness> {
       },
     },
     ws: {
-      send: (payload: { event?: string; data?: unknown }) => {
+      send: (payload: { type?: string; event?: string; data?: unknown }) => {
         events.push(payload);
       },
     },
@@ -170,6 +171,27 @@ describe('mounted /__mcp endpoint', () => {
 
     expect(client.getServerVersion()).toMatchObject({ name: 'open-frame', version: '1.2.3' });
     expect(client.getServerCapabilities()?.tools).toBeUndefined();
+
+    await client.close();
+  });
+
+  it('announces the client name from the handshake over the ws event channel', async () => {
+    harness = await startHarness();
+    const client = new Client({ name: 'claude-code', version: '9.9.9' });
+    await client.connect(new StreamableHTTPClientTransport(new URL(harness.url)));
+
+    expect(harness.events).toEqual([
+      {
+        type: 'custom',
+        event: AGENT_PRESENCE_EVENT,
+        data: {
+          name: 'claude-code',
+          version: '9.9.9',
+          source: 'mcp',
+          at: expect.any(String),
+        },
+      },
+    ]);
 
     await client.close();
   });
