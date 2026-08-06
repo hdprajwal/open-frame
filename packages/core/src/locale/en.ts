@@ -98,9 +98,13 @@ export const en: Locale = {
   frame: {
     home: 'Home',
     backToHome: 'Back to home',
-    agentConnected: 'Agent connected',
-    agentConnectedTooltip:
-      'The current frame and inspector selection are synced to your agent in real time.',
+    agentName: 'Agent',
+    agentIdle: '{name} idle',
+    agentIdleTooltip:
+      'Connected to the dev server. The current frame and inspector selection are synced to your agent, but nothing has edited your frames recently.',
+    agentActive: '{name} active',
+    agentActiveTooltip: '{name} edited a frame moments ago. Edited frames flash as they change.',
+    followAgentEdits: 'Follow agent edits',
     agentDisconnected: 'Agent disconnected',
     agentDisconnectedTooltip:
       'Lost connection to the dev server, so your agent can no longer see the current frame or inspector selection. Restart the dev server to restore the connection.',
@@ -199,6 +203,8 @@ export const en: Locale = {
     deselect: 'Deselect',
     agentWatching: 'Agent is watching',
     agentWatchingTooltip: 'The selected element is synced to your agent in real time.',
+    agentEditing: '{name} is editing',
+    agentEditingTooltip: '{name} edited this frame moments ago.',
     agentNotWatching: 'Agent not watching',
     agentNotWatchingTooltip:
       'Lost connection to the dev server, so your agent can no longer see the selected element. Restart the dev server to restore the connection.',

@@ -11,6 +11,7 @@ import {
   X,
 } from 'lucide-react';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { AgentPresenceDot } from '@/components/agent-presence-dot';
 import { Field, NumberField, Section } from '@/components/panel/panel-fields';
 import { PANEL_TRANSITION_MS, PanelShell, useAnimatedOpen } from '@/components/panel/panel-shell';
 import { Button } from '@/components/ui/button';
@@ -31,8 +32,8 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { type BorderRadius, parseBorderRadius } from '@/lib/inspector/border-radius';
 import { findFrameSource } from '@/lib/inspector/fiber';
 import type { EditOp } from '@/lib/inspector/use-editor';
-import { useAgentSocketConnected } from '@/lib/use-agent-socket';
-import { useLocale } from '@/lib/use-locale';
+import { useAgentPresence } from '@/lib/use-agent-presence';
+import { format, useLocale } from '@/lib/use-locale';
 import type { Locale } from '../../../locale/types';
 import { AssetPickerDialog } from './asset-picker-dialog';
 import { type SelectedTarget, useInspector } from './inspector-provider';
@@ -906,7 +907,22 @@ function PlaceholderField({
 
 function AgentWatchingBadge() {
   const t = useLocale();
-  const connected = useAgentSocketConnected();
+  const { state, name } = useAgentPresence();
+  const who = name ?? t.frame.agentName;
+
+  const label =
+    state === 'unreachable'
+      ? t.inspector.agentNotWatching
+      : state === 'active'
+        ? format(t.inspector.agentEditing, { name: who })
+        : t.inspector.agentWatching;
+  const tooltip =
+    state === 'unreachable'
+      ? t.inspector.agentNotWatchingTooltip
+      : state === 'active'
+        ? format(t.inspector.agentEditingTooltip, { name: who })
+        : t.inspector.agentWatchingTooltip;
+
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
@@ -915,17 +931,8 @@ function AgentWatchingBadge() {
             type="button"
             className="flex shrink-0 cursor-help items-center gap-1.5 rounded-3 border border-hairline bg-card px-1.5 py-px text-10.5 text-foreground/85 outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
-            <span aria-hidden className="relative flex size-1.5 items-center justify-center">
-              {connected ? (
-                <>
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-                </>
-              ) : (
-                <span className="relative inline-flex size-1.5 rounded-full bg-rose-500" />
-              )}
-            </span>
-            {connected ? t.inspector.agentWatching : t.inspector.agentNotWatching}
+            <AgentPresenceDot state={state} />
+            {label}
           </button>
         </TooltipTrigger>
         <TooltipContent
@@ -933,7 +940,7 @@ function AgentWatchingBadge() {
           align="end"
           className="w-max max-w-[min(520px,calc(100vw-2rem))] text-center leading-relaxed"
         >
-          {connected ? t.inspector.agentWatchingTooltip : t.inspector.agentNotWatchingTooltip}
+          {tooltip}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

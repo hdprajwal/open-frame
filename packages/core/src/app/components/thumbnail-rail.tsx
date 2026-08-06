@@ -17,6 +17,7 @@ import {
 import { CSS } from '@dnd-kit/utilities';
 import { Copy, Grid2x2, ListOrdered, type LucideIcon, Sparkles, Trash2 } from 'lucide-react';
 import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import {
   ContextMenu,
   ContextMenuContent,
@@ -26,6 +27,7 @@ import {
 } from '@/components/ui/context-menu';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { usePageEditFlash } from '@/lib/use-external-edits';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
@@ -598,6 +600,8 @@ function ThumbContents({
   const t = useLocale();
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [hasSteps, setHasSteps] = useState(false);
+  const { frameId = '' } = useParams();
+  const editFlash = usePageEditFlash(frameId, index);
 
   // Steps live in JSX and can't be introspected statically — detect them from
   // the already-rendered thumbnail DOM, where each Step emits `data-of-step`.
@@ -651,6 +655,7 @@ function ThumbContents({
             className="pointer-events-none absolute inset-y-0 left-0 w-[2px] bg-brand"
           />
         )}
+        {editFlash !== null && <span key={editFlash} className="edit-flash" />}
       </div>
     </>
   );

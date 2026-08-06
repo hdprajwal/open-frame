@@ -30,6 +30,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useFrameEditFlash } from '@/lib/use-external-edits';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import { FrameCanvas } from '../components/frame-canvas';
@@ -419,6 +420,7 @@ function FrameCard({
   const [dragging, setDragging] = useState(false);
   const [dialog, setDialog] = useState<DialogKind>(null);
   const tCard = useLocale();
+  const editFlash = useFrameEditFlash(id);
 
   useEffect(() => {
     let cancelled = false;
@@ -478,6 +480,7 @@ function FrameCard({
                 {tCard.common.loading}
               </div>
             )}
+            {editFlash !== null && <span key={editFlash} className="edit-flash" />}
           </div>
         </Link>
         <div className="mt-3 flex items-center gap-2">

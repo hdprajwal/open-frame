@@ -95,10 +95,34 @@ function Contrast() {
   );
 }
 
+function Pace() {
+  return (
+    <div style={{ ...fill, background: paper, color: ink, justifyContent: 'center', gap: 40 }}>
+      <span style={{ ...eyebrow, color: accent }}>03 — Pace</span>
+      <h2
+        style={{
+          margin: 0,
+          fontSize: 104,
+          lineHeight: 1.0,
+          fontWeight: 800,
+          letterSpacing: '-0.02em',
+        }}
+      >
+        One swipe,
+        <br />
+        one beat.
+      </h2>
+      <p style={{ margin: 0, fontSize: 30, lineHeight: 1.45, maxWidth: 760, color: '#54524c' }}>
+        Nothing carries over. If a point needs the page before it, it belongs on the page before it.
+      </p>
+    </div>
+  );
+}
+
 function Close() {
   return (
     <div style={{ ...fill, background: ink, color: paper, justifyContent: 'space-between' }}>
-      <span style={{ ...eyebrow, color: accent }}>03 — Ship</span>
+      <span style={{ ...eyebrow, color: accent }}>04 — Ship</span>
       <h2
         style={{
           margin: 0,
@@ -125,4 +149,4 @@ export const meta: FrameMeta = {
   createdAt: '2026-07-02T00:00:00+05:30',
 };
 
-export default [Cover, Idea, Contrast, Close] satisfies Page[];
+export default [Cover, Idea, Contrast, Pace, Close] satisfies Page[];

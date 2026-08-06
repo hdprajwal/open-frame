@@ -102,8 +102,12 @@ export type Locale = {
   frame: {
     home: string;
     backToHome: string;
-    agentConnected: string;
-    agentConnectedTooltip: string;
+    agentName: string;
+    agentIdle: string;
+    agentIdleTooltip: string;
+    agentActive: string;
+    agentActiveTooltip: string;
+    followAgentEdits: string;
     agentDisconnected: string;
     agentDisconnectedTooltip: string;
     download: string;
@@ -201,6 +205,8 @@ export type Locale = {
     deselect: string;
     agentWatching: string;
     agentWatchingTooltip: string;
+    agentEditing: string;
+    agentEditingTooltip: string;
     agentNotWatching: string;
     agentNotWatchingTooltip: string;
     contentSection: string;

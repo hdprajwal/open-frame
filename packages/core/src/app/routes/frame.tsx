@@ -3,6 +3,7 @@ import {
   Check,
   ChevronDown,
   ChevronLeft,
+  Crosshair,
   Download,
   FileCode2,
   FileImage,
@@ -17,8 +18,9 @@ import {
   Presentation,
 } from 'lucide-react';
 import { type RefObject, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { AgentPresenceDot } from '@/components/agent-presence-dot';
 import { AssetView } from '@/components/asset-view';
 import { HistoryProvider } from '@/components/history-provider';
 import { CommentWidget } from '@/components/inspector/comment-widget';
@@ -44,8 +46,10 @@ import {
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useFolders } from '@/lib/folders';
-import { useAgentSocketConnected } from '@/lib/use-agent-socket';
+import { useAgentPresence } from '@/lib/use-agent-presence';
 import { useClickPageNavigation } from '@/lib/use-click-page-navigation';
+import { useExternalEdits, useFrameEditFlash } from '@/lib/use-external-edits';
+import { useFollowAgentEdits } from '@/lib/use-follow-agent-edits';
 import { useIsMobile } from '@/lib/use-is-mobile';
 import { format, useLocale } from '@/lib/use-locale';
 import { useWheelPageNavigation } from '@/lib/use-wheel-page-navigation';
@@ -88,6 +92,10 @@ export function Frame() {
     };
   }, []);
   const { renameFrame } = useFolders();
+  const navigate = useNavigate();
+  const [followEdits, setFollowEdits] = useFollowAgentEdits();
+  const { latest: latestEdit } = useExternalEdits();
+  const editFlash = useFrameEditFlash(frameId);
   const frameViewportRef = useRef<HTMLElement>(null);
   const t = useLocale();
   const isMobile = useIsMobile();
@@ -119,20 +127,40 @@ export function Frame() {
     });
   }, [frameId, index, pageCount, frame, view]);
 
-  const goTo = useCallback(
+  // Unclamped, because an edit that adds a page lands here before the reloaded
+  // module has grown — clamping would strand you on the old last page.
+  const setPageParam = useCallback(
     (i: number) => {
-      const clamped = Math.max(0, Math.min(pageCount - 1, i));
       setSearchParams(
         (prev) => {
           const next = new URLSearchParams(prev);
-          next.set('p', String(clamped + 1));
+          next.set('p', String(i + 1));
           return next;
         },
         { replace: true },
       );
     },
-    [pageCount, setSearchParams],
+    [setSearchParams],
   );
+
+  const goTo = useCallback(
+    (i: number) => {
+      setPageParam(Math.max(0, Math.min(pageCount - 1, i)));
+    },
+    [pageCount, setPageParam],
+  );
+
+  // Follow mode jumps to whatever the agent just touched, but never while you
+  // are presenting — losing your place mid-talk is worse than missing an edit.
+  useEffect(() => {
+    if (!followEdits || !latestEdit || playMode) return;
+    if (latestEdit.frameId !== frameId) {
+      const page = latestEdit.pageIndex === null ? '' : `?p=${latestEdit.pageIndex + 1}`;
+      navigate(`/f/${encodeURIComponent(latestEdit.frameId)}${page}`);
+      return;
+    }
+    if (latestEdit.pageIndex !== null) setPageParam(latestEdit.pageIndex);
+  }, [followEdits, latestEdit, playMode, frameId, navigate, setPageParam]);
 
   const reorderPage = useCallback(
     async (from: number, to: number) => {
@@ -578,7 +606,13 @@ export function Frame() {
                   </TabsList>
                 </Tabs>
               )}
-              {import.meta.env.DEV && <AgentConnectedBadge />}
+              {import.meta.env.DEV && <AgentPresenceBadge />}
+              {import.meta.env.DEV && view === 'frames' && (
+                <FollowEditsToggle
+                  active={followEdits}
+                  onToggle={() => setFollowEdits(!followEdits)}
+                />
+              )}
             </div>
 
             {/* On md+ the title centers to the viewport via absolute positioning. On mobile the
@@ -772,6 +806,7 @@ export function Frame() {
                     <InspectOverlay />
                     <SaveBar />
                     {import.meta.env.DEV && <CommentWidget />}
+                    {editFlash !== null && <span key={editFlash} className="edit-flash" />}
                   </main>
                   {/* Mobile-only horizontal rail. Sits below the canvas and
                     pads its bottom for the iOS home indicator / Safari URL bar. */}
@@ -946,9 +981,22 @@ function ResizableRail(props: {
   );
 }
 
-function AgentConnectedBadge() {
+function AgentPresenceBadge() {
   const t = useLocale();
-  const connected = useAgentSocketConnected();
+  const { state, name } = useAgentPresence();
+  const who = name ?? t.frame.agentName;
+
+  const label =
+    state === 'unreachable'
+      ? t.frame.agentDisconnected
+      : format(state === 'active' ? t.frame.agentActive : t.frame.agentIdle, { name: who });
+  const tooltip =
+    state === 'unreachable'
+      ? t.frame.agentDisconnectedTooltip
+      : format(state === 'active' ? t.frame.agentActiveTooltip : t.frame.agentIdleTooltip, {
+          name: who,
+        });
+
   return (
     <TooltipProvider delayDuration={200}>
       <Tooltip>
@@ -957,17 +1005,8 @@ function AgentConnectedBadge() {
             type="button"
             className="ml-1 flex shrink-0 cursor-help items-center gap-1.5 rounded-3 border border-hairline bg-card px-1.5 py-0.5 text-10.5 text-foreground/85 outline-none focus-visible:ring-2 focus-visible:ring-ring/30"
           >
-            <span aria-hidden className="relative flex size-1.5 items-center justify-center">
-              {connected ? (
-                <>
-                  <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
-                </>
-              ) : (
-                <span className="relative inline-flex size-1.5 rounded-full bg-rose-500" />
-              )}
-            </span>
-            {connected ? t.frame.agentConnected : t.frame.agentDisconnected}
+            <AgentPresenceDot state={state} />
+            {label}
           </button>
         </TooltipTrigger>
         <TooltipContent
@@ -975,7 +1014,35 @@ function AgentConnectedBadge() {
           align="start"
           className="w-max max-w-[min(520px,calc(100vw-2rem))] text-center leading-relaxed"
         >
-          {connected ? t.frame.agentConnectedTooltip : t.frame.agentDisconnectedTooltip}
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+function FollowEditsToggle({ active, onToggle }: { active: boolean; onToggle: () => void }) {
+  const t = useLocale();
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <button
+            type="button"
+            aria-pressed={active}
+            aria-label={t.frame.followAgentEdits}
+            onClick={onToggle}
+            className={cn(
+              buttonVariants({ variant: 'ghost', size: 'icon-sm' }),
+              'shrink-0',
+              active && 'bg-brand/10 text-brand',
+            )}
+          >
+            <Crosshair className="size-3.5" />
+          </button>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" align="start">
+          {t.frame.followAgentEdits}
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>
