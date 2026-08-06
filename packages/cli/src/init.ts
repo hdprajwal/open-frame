@@ -29,7 +29,7 @@ export function sanitizeDirName(value: string): string {
     .replace(/-+/g, '-')
     .replace(/(^-|-$)/g, '')
     .replace(/-*([/\\])-*/g, '$1');
-  if (cleaned === '' || /^[/\\]+$/.test(cleaned)) return 'my-slides';
+  if (cleaned === '' || /^[/\\]+$/.test(cleaned)) return 'my-frames';
   return cleaned;
 }
 

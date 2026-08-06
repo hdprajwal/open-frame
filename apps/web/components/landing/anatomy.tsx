@@ -81,7 +81,7 @@ export function Anatomy() {
                 className="h-2.5 w-2.5 rounded-full transition-colors duration-500"
                 style={{ background: v.accent }}
               />
-              <span>slides/hello/index.tsx</span>
+              <span>frames/hello/index.tsx</span>
             </div>
             <span className="flex items-center gap-2 tracking-8 uppercase">
               <span
@@ -117,7 +117,7 @@ export function Anatomy() {
                 className="relative w-full rounded-4 overflow-hidden border border-hairline"
                 style={{ aspectRatio: '16 / 9', containerType: 'inline-size' }}
               >
-                <SlidePreview variant={v} index={i} />
+                <FramePreview variant={v} index={i} />
               </div>
             </div>
           </div>
@@ -127,7 +127,7 @@ export function Anatomy() {
   );
 }
 
-function SlidePreview({ variant, index }: { variant: Variant; index: number }) {
+function FramePreview({ variant, index }: { variant: Variant; index: number }) {
   const { word, accent, label, subtitle } = variant;
   return (
     <div

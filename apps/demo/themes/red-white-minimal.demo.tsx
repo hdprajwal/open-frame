@@ -1,5 +1,5 @@
 import bg from '@assets/red-white-minimal-bg.png';
-import { type DesignSystem, type Page, useSlidePageNumber } from '@open-frame/core';
+import { type DesignSystem, type Page, useFramePageNumber } from '@open-frame/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#fbfbfb', text: '#2a2522', accent: '#ef3c1d' },
@@ -23,8 +23,8 @@ const fill = {
   backgroundImage: `url(${bg})`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
-  color: 'var(--osd-text)',
-  fontFamily: 'var(--osd-font-body)',
+  color: 'var(--of-text)',
+  fontFamily: 'var(--of-font-body)',
   display: 'flex',
   flexDirection: 'column' as const,
   padding: 88,
@@ -36,28 +36,28 @@ const Badge = () => (
   <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2, opacity: 0.55 }}>
     <span
       style={{
-        fontFamily: 'var(--osd-font-display)',
+        fontFamily: 'var(--of-font-display)',
         fontWeight: 700,
         fontSize: 20,
-        color: 'var(--osd-text)',
+        color: 'var(--of-text)',
       }}
     >
       Prajwal
     </span>
-    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--osd-accent)' }}>hdprajwal</span>
+    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--of-accent)' }}>hdprajwal</span>
   </div>
 );
 
 const Title = ({ children, size = 68 }: { children: React.ReactNode; size?: number }) => (
   <h1
     style={{
-      fontFamily: 'var(--osd-font-display)',
+      fontFamily: 'var(--of-font-display)',
       fontWeight: 900,
       fontSize: size,
       lineHeight: 1.0,
       letterSpacing: '-0.035em',
       margin: 0,
-      color: 'var(--osd-accent)',
+      color: 'var(--of-accent)',
     }}
   >
     {children}
@@ -65,7 +65,7 @@ const Title = ({ children, size = 68 }: { children: React.ReactNode; size?: numb
 );
 
 const Em = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: 'var(--osd-text)' }}>{children}</span>
+  <span style={{ color: 'var(--of-text)' }}>{children}</span>
 );
 
 const SwipePill = () => (
@@ -74,11 +74,11 @@ const SwipePill = () => (
       display: 'inline-flex',
       alignItems: 'center',
       gap: 12,
-      background: 'var(--osd-accent)',
+      background: 'var(--of-accent)',
       color: '#fff',
       borderRadius: 100,
       padding: '11px 22px',
-      fontFamily: 'var(--osd-font-display)',
+      fontFamily: 'var(--of-font-display)',
       fontWeight: 800,
       fontSize: 18,
       letterSpacing: '0.04em',
@@ -104,7 +104,7 @@ const Bookmark = () => (
 );
 
 const Footer = ({ left }: { left?: React.ReactNode }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{
@@ -142,13 +142,13 @@ const Callout = ({ value, children }: { value: string; children: React.ReactNode
         fontFamily: mono,
         fontSize: 34,
         fontWeight: 700,
-        color: 'var(--osd-accent)',
+        color: 'var(--of-accent)',
         flexShrink: 0,
       }}
     >
       {value}
     </span>
-    <span style={{ fontSize: 22, color: 'var(--osd-text)', lineHeight: 1.35 }}>{children}</span>
+    <span style={{ fontSize: 22, color: 'var(--of-text)', lineHeight: 1.35 }}>{children}</span>
   </div>
 );
 
@@ -177,7 +177,7 @@ const Content: Page = () => (
       <p
         style={{
           fontSize: 32,
-          color: 'var(--osd-text)',
+          color: 'var(--of-text)',
           lineHeight: 1.5,
           marginTop: 32,
           maxWidth: 820,

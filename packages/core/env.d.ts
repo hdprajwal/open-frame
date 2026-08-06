@@ -1,4 +1,4 @@
-// Ambient module declarations for assets imported from `slides/<id>/assets/`.
+// Ambient module declarations for assets imported from `frames/<id>/assets/`.
 // Mirrors Vite's default asset handling (default export = resolved URL).
 //
 // Consumers opt in via tsconfig:

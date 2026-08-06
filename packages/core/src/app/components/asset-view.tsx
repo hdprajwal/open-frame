@@ -45,22 +45,22 @@ import {
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 
-type Props = { slideId: string | null };
+type Props = { frameId: string | null };
 
-type Scope = 'slide' | 'global';
+type Scope = 'frame' | 'global';
 
-const GLOBAL_SLIDE_ID = '@global';
+const GLOBAL_FRAME_ID = '@global';
 
 type ConflictState = {
   file: File;
   resolve: (decision: 'replace' | 'rename' | 'cancel') => void;
 };
 
-export function AssetView({ slideId }: Props) {
-  const lockedToGlobal = slideId === null;
-  const [scope, setScope] = useState<Scope>(lockedToGlobal ? 'global' : 'slide');
-  const effectiveSlideId = scope === 'global' || slideId === null ? GLOBAL_SLIDE_ID : slideId;
-  const { assets, loading, available, upload, rename, remove } = useAssets(effectiveSlideId);
+export function AssetView({ frameId }: Props) {
+  const lockedToGlobal = frameId === null;
+  const [scope, setScope] = useState<Scope>(lockedToGlobal ? 'global' : 'frame');
+  const effectiveFrameId = scope === 'global' || frameId === null ? GLOBAL_FRAME_ID : frameId;
+  const { assets, loading, available, upload, rename, remove } = useAssets(effectiveFrameId);
   const [dragActive, setDragActive] = useState(false);
   const [conflict, setConflict] = useState<ConflictState | null>(null);
   const [preview, setPreview] = useState<AssetEntry | null>(null);
@@ -151,14 +151,14 @@ export function AssetView({ slideId }: Props) {
           ) : (
             <Tabs value={scope} onValueChange={(next) => setScope(next as Scope)}>
               <TabsList>
-                <TabsTrigger value="slide">{t.asset.scopeSlide}</TabsTrigger>
+                <TabsTrigger value="frame">{t.asset.scopeFrame}</TabsTrigger>
                 <TabsTrigger value="global">{t.asset.scopeGlobal}</TabsTrigger>
               </TabsList>
             </Tabs>
           )}
           <p className="min-w-0 truncate text-12 text-muted-foreground">
             <span className="font-mono text-11.5">
-              {scope === 'global' ? 'assets/' : `slides/${slideId}/assets/`}
+              {scope === 'global' ? 'assets/' : `frames/${frameId}/assets/`}
             </span>
             {!loading && (
               <>
@@ -252,7 +252,7 @@ export function AssetView({ slideId }: Props) {
                   onDelete={() => {
                     setConfirmDelete(asset);
                     setConfirmDeleteUsages(null);
-                    listAssetUsages(effectiveSlideId, asset.name)
+                    listAssetUsages(effectiveFrameId, asset.name)
                       .then((u) => setConfirmDeleteUsages(u))
                       .catch(() => setConfirmDeleteUsages([]));
                   }}
@@ -305,9 +305,9 @@ export function AssetView({ slideId }: Props) {
             const assetPath =
               scope === 'global' ? `@assets/${target.name}` : `./assets/${target.name}`;
             for (const u of usages) {
-              const rev = await revertAssetUsage(u.slideId, assetPath);
+              const rev = await revertAssetUsage(u.frameId, assetPath);
               if (!rev.ok) {
-                toast.error(format(t.asset.toastRevertFailed, { slideId: u.slideId }));
+                toast.error(format(t.asset.toastRevertFailed, { frameId: u.frameId }));
                 return;
               }
             }
@@ -573,7 +573,7 @@ function DeleteDialog({
   const t = useLocale();
   const inUse = (usages?.length ?? 0) > 0;
   const totalUses = usages?.reduce((acc, u) => acc + u.count, 0) ?? 0;
-  const slideCount = usages?.length ?? 0;
+  const frameCount = usages?.length ?? 0;
   const [descPrefix, descSuffix] = t.asset.deleteAssetDescription.split('{name}');
   return (
     <Dialog open onOpenChange={(open) => !open && onCancel()}>
@@ -586,7 +586,7 @@ function DeleteDialog({
                 {format(t.asset.deleteAssetInUseDescription, {
                   name: asset.name,
                   count: totalUses,
-                  slides: slideCount,
+                  frames: frameCount,
                 })}{' '}
                 {t.asset.deleteAssetInUseHint}
               </>
@@ -602,8 +602,8 @@ function DeleteDialog({
         {inUse && usages && (
           <ul className="max-h-40 overflow-y-auto rounded-5 border border-hairline bg-muted/40 px-3 py-2 font-mono text-11.5 leading-relaxed">
             {usages.map((u) => (
-              <li key={u.slideId} className="flex items-center justify-between gap-3">
-                <span className="truncate">{u.slideId}</span>
+              <li key={u.frameId} className="flex items-center justify-between gap-3">
+                <span className="truncate">{u.frameId}</span>
                 <span className="text-muted-foreground">×{u.count}</span>
               </li>
             ))}

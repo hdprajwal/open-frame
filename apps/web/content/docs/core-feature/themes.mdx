@@ -6,8 +6,8 @@ description: Reusable design systems shared across decks.
 A theme is a **bundle of two paired files** under `themes/`:
 
 - `themes/<id>.md` — agent-facing recipe: palette, typography, layout,
-  fixed components, motion. `create-slide` reads this before authoring.
-- `themes/<id>.demo.tsx` — a runnable mini-slide that demonstrates the
+  fixed components, motion. `create-frame` reads this before authoring.
+- `themes/<id>.demo.tsx` — a runnable mini-frame that demonstrates the
   theme. The dev UI's **Themes** panel imports it and renders it as the
   theme's live preview card.
 
@@ -49,12 +49,12 @@ The markdown is free-form. A useful template:
 
 ## Voice
 - Tight, declarative, never coy.
-- One concept per slide.
+- One concept per frame.
 ```
 
-The demo is a normal slide module — same shape as `slides/<id>/index.tsx`,
+The demo is a normal frame module — same shape as `frames/<id>/index.tsx`,
 just placed under `themes/` so the runtime treats it as preview-only (it
-does not appear in the slides list):
+does not appear in the frames list):
 
 ```tsx title="themes/corporate.demo.tsx"
 import type { Page } from '@open-frame/core';
@@ -67,14 +67,14 @@ export default [Cover, Content];
 
 Keep the demo's inline Title/Footer/Eyebrow components verbatim in sync
 with the snippets in the markdown — what authors see in the Themes panel
-should match what `create-slide` will paste into a real slide.
+should match what `create-frame` will paste into a real frame.
 
 ## Using a theme
 
-When you call `/create-slide`, mention the theme by name:
+When you call `/create-frame`, mention the theme by name:
 
 ```text
-/create-slide for "Q3 board update — use the corporate theme"
+/create-frame for "Q3 board update — use the corporate theme"
 ```
 
 The agent loads `themes/corporate.md`, applies the palette and type stack,

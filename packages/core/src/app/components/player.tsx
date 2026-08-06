@@ -6,9 +6,11 @@ import type { DesignSystem } from '../lib/design';
 import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
 import type { Page } from '../lib/sdk';
 import type { EntryDirection, StepAggregate, StepController } from '../lib/step-context';
-import type { SlideTransition } from '../lib/transition';
+import type { FrameTransition } from '../lib/transition';
 import { useIsMobile } from '../lib/use-is-mobile';
 import { usePrefersReducedMotion } from '../lib/use-prefers-reduced-motion';
+import { FrameCanvas } from './frame-canvas';
+import { FrameTransitionLayer } from './frame-transition-layer';
 import { OverviewGrid } from './overview-grid';
 import { PresentBlackoutOverlay } from './present/blackout-overlay';
 import { PresentControlBar } from './present/control-bar';
@@ -24,8 +26,6 @@ import {
   usePresenterChannel,
 } from './present/use-presenter-channel';
 import { useTouchSwipe } from './present/use-touch-swipe';
-import { SlideCanvas } from './slide-canvas';
-import { SlideTransitionLayer } from './slide-transition-layer';
 
 const IDLE_HIDE_MS = 2000;
 const BAR_HOTZONE_PX = 160;
@@ -34,13 +34,13 @@ const MOBILE_CHROME_HIDE_MS = 2200;
 type Props = {
   pages: Page[];
   design?: DesignSystem;
-  transition?: SlideTransition;
+  transition?: FrameTransition;
   index: number;
   onIndexChange: (index: number) => void;
   onExit: () => void;
   allowExit?: boolean;
   controls?: boolean;
-  slideId?: string;
+  frameId?: string;
   /**
    * When true, the Player enters the browser Fullscreen API on mount.
    * When false, it renders as a window-sized overlay (viewport-filling)
@@ -59,7 +59,7 @@ export function Player({
   onExit,
   allowExit = true,
   controls = false,
-  slideId,
+  frameId,
   fullscreen = true,
   canvas = FORMAT_PRESETS.slide,
 }: Props) {
@@ -258,7 +258,7 @@ export function Player({
     [goNext, goPrev, handleIndexChange, pages.length],
   );
 
-  const channel = usePresenterChannel(slideId ?? '__none__', (msg) => {
+  const channel = usePresenterChannel(frameId ?? '__none__', (msg) => {
     if (!controls) return;
     handlePresenterCommand(msg, (m) => channel.send(m));
   });
@@ -350,9 +350,9 @@ export function Player({
       } else if (e.key === 'h' || e.key === 'H' || e.key === '?') {
         e.preventDefault();
         setHelpOpen((v) => !v);
-      } else if ((e.key === 'p' || e.key === 'P') && slideId) {
+      } else if ((e.key === 'p' || e.key === 'P') && frameId) {
         e.preventDefault();
-        openPresenterWindow(slideId);
+        openPresenterWindow(frameId);
       }
     };
     window.addEventListener('keydown', onKey);
@@ -369,7 +369,7 @@ export function Player({
     goPrev,
     handleIndexChange,
     pages.length,
-    slideId,
+    frameId,
   ]);
 
   // The control bar + progress strip only surface when the pointer is in
@@ -404,8 +404,8 @@ export function Player({
       )}
       style={design ? { background: design.palette.bg } : undefined}
     >
-      <SlideCanvas flat design={design} canvas={canvas}>
-        <SlideTransitionLayer
+      <FrameCanvas flat design={design} canvas={canvas}>
+        <FrameTransitionLayer
           pages={pages}
           index={index}
           total={pages.length}
@@ -415,10 +415,10 @@ export function Player({
           entryDirection={entryDirection}
           onStepAggregateChange={handleAggregateChange}
         />
-      </SlideCanvas>
+      </FrameCanvas>
 
       {controls && (
-        <div data-osd-chrome style={{ display: 'contents' }}>
+        <div data-of-chrome style={{ display: 'contents' }}>
           <PresentProgressBar index={index} total={pages.length} visible={chromeVisible} />
           <PresentBlackoutOverlay mode={blackout} />
           <PresentJumpInput pageCount={pages.length} onJump={handleIndexChange} />
@@ -439,7 +439,7 @@ export function Player({
             onOverview={() => setOverviewOpen(true)}
             onBlackout={(mode) => setBlackout((c) => (c === mode ? null : mode))}
             onLaser={() => setLaser((v) => !v)}
-            onPresenter={() => slideId && openPresenterWindow(slideId)}
+            onPresenter={() => frameId && openPresenterWindow(frameId)}
             onToggleFullscreen={toggleFullscreen}
             onHelp={() => setHelpOpen(true)}
             onExit={onExit}
@@ -463,8 +463,8 @@ export function Player({
   );
 }
 
-export function openPresenterWindow(slideId: string) {
+export function openPresenterWindow(frameId: string) {
   if (typeof window === 'undefined') return;
-  const url = `${import.meta.env.BASE_URL}s/${encodeURIComponent(slideId)}/presenter`;
-  window.open(url, `open-frame-presenter-${slideId}`, 'popup,width=1280,height=800');
+  const url = `${import.meta.env.BASE_URL}f/${encodeURIComponent(frameId)}/presenter`;
+  window.open(url, `open-frame-presenter-${frameId}`, 'popup,width=1280,height=800');
 }

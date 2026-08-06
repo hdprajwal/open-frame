@@ -248,7 +248,7 @@ export function Step({ children, duration = 180, _revealed }: InternalStepProps)
 
   return (
     <div
-      data-osd-step={revealed ? 'revealed' : 'pending'}
+      data-of-step={revealed ? 'revealed' : 'pending'}
       style={{
         opacity: revealed ? 1 : 0,
         visibility: revealed ? 'visible' : 'hidden',

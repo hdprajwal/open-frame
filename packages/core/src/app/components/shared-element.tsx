@@ -17,7 +17,7 @@ export type unstable_SharedElementProps = {
 type SharedElementChildProps = {
   className?: string;
   style?: CSSProperties;
-  'data-osd-shared-element'?: string;
+  'data-of-shared-element'?: string;
 };
 
 export function unstable_SharedElement({
@@ -34,14 +34,14 @@ export function unstable_SharedElement({
     typeof child.type === 'string'
   ) {
     return cloneElement(child as ReactElement<SharedElementChildProps>, {
-      'data-osd-shared-element': id,
+      'data-of-shared-element': id,
       className: [child.props.className, className].filter(Boolean).join(' ') || undefined,
       style: style ? { ...child.props.style, ...style } : child.props.style,
     });
   }
 
   return (
-    <div className={className} style={style} data-osd-shared-element={id}>
+    <div className={className} style={style} data-of-shared-element={id}>
       {children}
     </div>
   );

@@ -23,14 +23,14 @@ export type DesignSystem = {
 
 export function designToCssVars(d: DesignSystem): Record<string, string> {
   return {
-    '--osd-bg': d.palette.bg,
-    '--osd-text': d.palette.text,
-    '--osd-accent': d.palette.accent,
-    '--osd-font-display': d.fonts.display,
-    '--osd-font-body': d.fonts.body,
-    '--osd-size-hero': `${d.typeScale.hero}px`,
-    '--osd-size-body': `${d.typeScale.body}px`,
-    '--osd-radius': `${d.radius}px`,
+    '--of-bg': d.palette.bg,
+    '--of-text': d.palette.text,
+    '--of-accent': d.palette.accent,
+    '--of-font-display': d.fonts.display,
+    '--of-font-body': d.fonts.body,
+    '--of-size-hero': `${d.typeScale.hero}px`,
+    '--of-size-body': `${d.typeScale.body}px`,
+    '--of-radius': `${d.radius}px`,
   };
 }
 

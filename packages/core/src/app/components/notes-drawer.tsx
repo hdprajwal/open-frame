@@ -9,19 +9,19 @@ const STORAGE_KEY = 'open-frame:notes-drawer-open';
 const DRAWER_CONTENT_H = 166;
 
 type Props = {
-  slideId: string;
+  frameId: string;
   index: number;
   total: number;
   initial: string | undefined;
 };
 
-export function NotesDrawer({ slideId, index, total, initial }: Props) {
+export function NotesDrawer({ frameId, index, total, initial }: Props) {
   const t = useLocale();
   const [open, setOpen] = useState(() => {
     if (typeof window === 'undefined') return false;
     return window.localStorage.getItem(STORAGE_KEY) === '1';
   });
-  const { value, setValue, status, flush } = useNotes(slideId, index, initial);
+  const { value, setValue, status, flush } = useNotes(frameId, index, initial);
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const { mounted, animVisible } = usePanelMount(open);
 

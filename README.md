@@ -28,12 +28,12 @@ If none of these fit, set a custom `canvas` with any width and height.
 
 Works with any coding agent (Claude Code, Codex, Cursor). The workspace ships with skills the agent reads before writing:
 
-- `/create-slide` drafts a deck end to end. It asks a few scoping questions (topic, format, page count, text density, motion), plans the structure, and writes the pages.
-- `/slide-authoring` is the technical reference for the canvas, type scale, palette, and layout rules for each format.
+- `/create-frame` drafts a deck end to end. It asks a few scoping questions (topic, format, page count, text density, motion), plans the structure, and writes the pages.
+- `/frame-authoring` is the technical reference for the canvas, type scale, palette, and layout rules for each format.
 
 ### In-browser inspector
 
-Click any element in the dev server and attach a comment, like "make this red" or "shrink the headline". Comments are saved as `@slide-comment` markers in the source. Run `/apply-comments` and the agent applies every pending edit and clears the markers.
+Click any element in the dev server and attach a comment, like "make this red" or "shrink the headline". Comments are saved as `@frame-comment` markers in the source. Run `/apply-comments` and the agent applies every pending edit and clears the markers.
 
 ### Assets manager with logo search
 
@@ -41,13 +41,13 @@ Manage images, videos, and fonts per deck through a built-in assets panel. Searc
 
 ### Present mode
 
-Fullscreen playback with keyboard navigation, plus a presenter view with current and next slide, speaker notes, and a timer.
+Fullscreen playback with keyboard navigation, plus a presenter view with current and next frame, speaker notes, and a timer.
 
 ### Exports
 
 Export a deck as a PDF, a PPTX, or PNG images, each sized to the deck's canvas format. You can also export a self-contained static HTML site.
 
-### Slide manager
+### Frame manager
 
 Organize decks into folders with custom emoji and drag and drop to reorder.
 
@@ -66,7 +66,7 @@ pnpm install
 pnpm dev
 ```
 
-`pnpm dev` runs the demo workspace in `apps/demo` against the local core. From there you drive decks through your agent, or edit `slides/<id>/index.tsx` directly.
+`pnpm dev` runs the demo workspace in `apps/demo` against the local core. From there you drive decks through your agent, or edit `frames/<id>/index.tsx` directly.
 
 ## Repo layout
 
@@ -74,7 +74,7 @@ This repo is a pnpm + Turbo monorepo.
 
 | Path | Description |
 | --- | --- |
-| [packages/core](packages/core) | `@open-frame/core`. The runtime (home page, slide viewer, present mode, inspector), the Vite plugin, and the dev/build/preview CLI. |
+| [packages/core](packages/core) | `@open-frame/core`. The runtime (home page, frame viewer, present mode, inspector), the Vite plugin, and the dev/build/preview CLI. |
 | [packages/cli](packages/cli) | `@open-frame/cli`. The `init` scaffolder. It generates a minimal workspace where Vite, React, and tsconfig stay hidden inside core. |
 | [apps/demo](apps/demo) | Example workspace that consumes the local core. Used for developing the framework. |
 | [apps/web](apps/web) | Marketing site (Next.js). |

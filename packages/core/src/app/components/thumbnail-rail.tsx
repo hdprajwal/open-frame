@@ -30,10 +30,10 @@ import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import type { DesignSystem } from '../lib/design';
 import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
-import { SlidePageProvider } from '../lib/page-context';
+import { FramePageProvider } from '../lib/page-context';
 import type { Page } from '../lib/sdk';
-import type { SlideTransition } from '../lib/transition';
-import { SlideCanvas } from './slide-canvas';
+import type { FrameTransition } from '../lib/transition';
+import { FrameCanvas } from './frame-canvas';
 
 type Orientation = 'vertical' | 'horizontal';
 
@@ -53,7 +53,7 @@ type Props = {
   /** Vertical-only: total rail width in px. Thumbnails scale to fit. */
   width?: number;
   /** Deck-level transition default; used to flag pages that inherit a transition. */
-  moduleTransition?: SlideTransition;
+  moduleTransition?: FrameTransition;
   /** When provided, the vertical rail header renders a button that opens the overview grid. */
   onOverview?: () => void;
   canvas?: CanvasSize;
@@ -389,7 +389,7 @@ function HorizontalVirtualThumbList({
           )}
           style={{ width: thumbWidth, height: HORIZONTAL_THUMB_HEIGHT }}
         >
-          <SlideCanvas
+          <FrameCanvas
             scale={scale}
             center={false}
             flat
@@ -397,10 +397,10 @@ function HorizontalVirtualThumbList({
             design={design}
             canvas={canvas}
           >
-            <SlidePageProvider index={i} total={pages.length}>
+            <FramePageProvider index={i} total={pages.length}>
               <PageComp />
-            </SlidePageProvider>
-          </SlideCanvas>
+            </FramePageProvider>
+          </FrameCanvas>
         </div>
       </button>
     );
@@ -593,17 +593,17 @@ function ThumbContents({
   thumbWidth: number;
   height: number;
   canvas: CanvasSize;
-  moduleTransition?: SlideTransition;
+  moduleTransition?: FrameTransition;
 }) {
   const t = useLocale();
   const boxRef = useRef<HTMLDivElement | null>(null);
   const [hasSteps, setHasSteps] = useState(false);
 
   // Steps live in JSX and can't be introspected statically — detect them from
-  // the already-rendered thumbnail DOM, where each Step emits `data-osd-step`.
+  // the already-rendered thumbnail DOM, where each Step emits `data-of-step`.
   // biome-ignore lint/correctness/useExhaustiveDependencies: re-detect when the page at this slot changes (reorder/edit reuses the index)
   useEffect(() => {
-    setHasSteps(boxRef.current?.querySelector('[data-osd-step]') != null);
+    setHasSteps(boxRef.current?.querySelector('[data-of-step]') != null);
   }, [PageComp]);
 
   const hasTransition = Boolean(PageComp.transition ?? moduleTransition);
@@ -640,11 +640,11 @@ function ThumbContents({
         )}
         style={{ width: thumbWidth, height }}
       >
-        <SlideCanvas scale={scale} center={false} flat freezeMotion design={design} canvas={canvas}>
-          <SlidePageProvider index={index} total={total}>
+        <FrameCanvas scale={scale} center={false} flat freezeMotion design={design} canvas={canvas}>
+          <FramePageProvider index={index} total={total}>
             <PageComp />
-          </SlidePageProvider>
-        </SlideCanvas>
+          </FramePageProvider>
+        </FrameCanvas>
         {active && (
           <span
             aria-hidden

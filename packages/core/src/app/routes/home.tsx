@@ -32,13 +32,13 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
-import { FolderIconChip, SLIDE_DND_MIME } from '../components/sidebar/folder-item';
+import { FrameCanvas } from '../components/frame-canvas';
+import { FolderIconChip, FRAME_DND_MIME } from '../components/sidebar/folder-item';
 import { DRAFT_ID } from '../components/sidebar/sidebar';
-import { SlideCanvas } from '../components/slide-canvas';
 import { resolveCanvas } from '../lib/formats';
-import { SlidePageProvider } from '../lib/page-context';
-import type { Folder, FolderIcon, SlideModule } from '../lib/sdk';
-import { loadSlide, slideCreatedAt } from '../lib/slides';
+import { frameCreatedAt, loadFrame } from '../lib/frames';
+import { FramePageProvider } from '../lib/page-context';
+import type { Folder, FolderIcon, FrameModule } from '../lib/sdk';
 import type { HomeOutletContext } from './home-shell';
 
 type SortKey = 'created-desc' | 'created-asc' | 'title-asc' | 'title-desc';
@@ -74,21 +74,21 @@ export function Home() {
   const {
     manifest,
     loading,
-    draftSlides,
-    slidesByFolder,
+    draftFrames,
+    framesByFolder,
     selectedId,
     reportTitle,
     titleMap,
     assign,
-    renameSlide,
-    duplicateSlide,
-    deleteSlide,
+    renameFrame,
+    duplicateFrame,
+    deleteFrame,
   } = useOutletContext<HomeOutletContext>();
   const t = useLocale();
 
   const selectedFolder =
     selectedId === DRAFT_ID ? null : (manifest.folders.find((f) => f.id === selectedId) ?? null);
-  const visibleSlides = selectedId === DRAFT_ID ? draftSlides : (slidesByFolder[selectedId] ?? []);
+  const visibleFrames = selectedId === DRAFT_ID ? draftFrames : (framesByFolder[selectedId] ?? []);
 
   const title = selectedFolder?.name ?? t.home.draft;
   const headerIcon = selectedFolder?.icon ?? {
@@ -101,16 +101,16 @@ export function Home() {
   const [sortKey, setSortKey] = useSortPref();
 
   const trimmedQuery = query.trim().toLowerCase();
-  const filteredSlides = useMemo(() => {
-    if (!trimmedQuery) return visibleSlides;
-    return visibleSlides.filter((id) => {
+  const filteredFrames = useMemo(() => {
+    if (!trimmedQuery) return visibleFrames;
+    return visibleFrames.filter((id) => {
       if (id.toLowerCase().includes(trimmedQuery)) return true;
       const tl = titleMap[id]?.toLowerCase();
       return tl ? tl.includes(trimmedQuery) : false;
     });
-  }, [visibleSlides, titleMap, trimmedQuery]);
-  const sortedSlides = useMemo(() => {
-    const list = filteredSlides.slice();
+  }, [visibleFrames, titleMap, trimmedQuery]);
+  const sortedFrames = useMemo(() => {
+    const list = filteredFrames.slice();
     const titleOf = (id: string) => titleMap[id] ?? id;
     switch (sortKey) {
       case 'title-asc':
@@ -120,13 +120,13 @@ export function Home() {
         list.sort((a, b) => TITLE_COLLATOR.compare(titleOf(b), titleOf(a)));
         break;
       case 'created-asc':
-        list.sort((a, b) => (slideCreatedAt[a] ?? 0) - (slideCreatedAt[b] ?? 0));
+        list.sort((a, b) => (frameCreatedAt[a] ?? 0) - (frameCreatedAt[b] ?? 0));
         break;
       default:
-        list.sort((a, b) => (slideCreatedAt[b] ?? 0) - (slideCreatedAt[a] ?? 0));
+        list.sort((a, b) => (frameCreatedAt[b] ?? 0) - (frameCreatedAt[a] ?? 0));
     }
     return list;
-  }, [filteredSlides, sortKey, titleMap]);
+  }, [filteredFrames, sortKey, titleMap]);
   const isSearching = trimmedQuery.length > 0;
 
   return (
@@ -139,12 +139,12 @@ export function Home() {
           </h1>
           {!loading && (
             <span className="folio ml-1 self-end pb-2">
-              {(isSearching ? filteredSlides.length : visibleSlides.length)
+              {(isSearching ? filteredFrames.length : visibleFrames.length)
                 .toString()
                 .padStart(2, '0')}
               {isSearching && (
                 <span className="opacity-40">
-                  /{visibleSlides.length.toString().padStart(2, '0')}
+                  /{visibleFrames.length.toString().padStart(2, '0')}
                 </span>
               )}
             </span>
@@ -158,35 +158,35 @@ export function Home() {
 
       {loading ? (
         <HomeLoading />
-      ) : visibleSlides.length === 0 ? (
+      ) : visibleFrames.length === 0 ? (
         <EmptyState isDraft={isDraft} folderName={selectedFolder?.name} />
-      ) : filteredSlides.length === 0 ? (
+      ) : filteredFrames.length === 0 ? (
         <NoResultsState query={query} onClear={() => setQuery('')} />
       ) : (
         <ul className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-x-6 gap-y-9 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
-          {sortedSlides.map((id) => (
+          {sortedFrames.map((id) => (
             <li key={id}>
-              <SlideCard
+              <FrameCard
                 id={id}
                 folders={manifest.folders}
                 currentFolderId={manifest.assignments[id] ?? null}
-                onRename={(name) => renameSlide(id, name)}
+                onRename={(name) => renameFrame(id, name)}
                 onDuplicate={async () => {
-                  const slideName = titleMap[id] ?? id;
+                  const frameName = titleMap[id] ?? id;
                   try {
-                    const newSlideId = await duplicateSlide(id);
+                    const newFrameId = await duplicateFrame(id);
                     toast.success(
-                      format(t.home.toastSlideDuplicated, {
-                        slide: slideName,
-                        newSlide: newSlideId,
+                      format(t.home.toastFrameDuplicated, {
+                        frame: frameName,
+                        newFrame: newFrameId,
                       }),
                     );
                   } catch {
-                    toast.error(t.home.toastSlideDuplicateFailed);
+                    toast.error(t.home.toastFrameDuplicateFailed);
                   }
                 }}
                 onMove={(folderId) => assign(id, folderId)}
-                onDelete={() => deleteSlide(id)}
+                onDelete={() => deleteFrame(id)}
                 onTitleResolved={reportTitle}
               />
             </li>
@@ -283,7 +283,7 @@ function HomeLoading() {
             className="line-loader-bar absolute inset-y-[-0.5px] left-0 w-1/4 bg-foreground"
           />
         </div>
-        <span className="eyebrow text-11.5">{t.slide.loadingEyebrow}</span>
+        <span className="eyebrow text-11.5">{t.frame.loadingEyebrow}</span>
       </div>
     </div>
   );
@@ -326,14 +326,14 @@ function EmptyState({ isDraft, folderName }: { isDraft: boolean; folderName?: st
         {isDraft ? (
           <>
             <p className="mt-4 font-heading text-15 font-semibold tracking-tight">
-              {t.home.noSlidesYet}
+              {t.home.noFramesYet}
             </p>
             <p className="mt-1.5 text-13 leading-relaxed text-muted-foreground">
-              {t.home.createSlideHintPrefix}
+              {t.home.createFrameHintPrefix}
               <code className="rounded-4 bg-muted px-1.5 py-0.5 font-mono text-11.5 text-foreground">
-                /create-slide
+                /create-frame
               </code>
-              {t.home.createSlideHintSuffix}
+              {t.home.createFrameHintSuffix}
             </p>
           </>
         ) : (
@@ -396,7 +396,7 @@ function createDragChip(title: string): HTMLElement | null {
 
 type DialogKind = null | 'rename' | 'move' | 'delete';
 
-function SlideCard({
+function FrameCard({
   id,
   folders,
   currentFolderId,
@@ -415,16 +415,16 @@ function SlideCard({
   onDelete: () => Promise<void> | void;
   onTitleResolved?: (id: string, title: string) => void;
 }) {
-  const [slide, setSlide] = useState<SlideModule | null>(null);
+  const [frame, setFrame] = useState<FrameModule | null>(null);
   const [dragging, setDragging] = useState(false);
   const [dialog, setDialog] = useState<DialogKind>(null);
   const tCard = useLocale();
 
   useEffect(() => {
     let cancelled = false;
-    loadSlide(id)
+    loadFrame(id)
       .then((mod) => {
-        if (!cancelled) setSlide(mod);
+        if (!cancelled) setFrame(mod);
       })
       .catch(() => {});
     return () => {
@@ -432,12 +432,12 @@ function SlideCard({
     };
   }, [id]);
 
-  const FirstPage = slide?.default[0];
-  const displayTitle = slide?.meta?.title ?? id;
+  const FirstPage = frame?.default[0];
+  const displayTitle = frame?.meta?.title ?? id;
 
   useEffect(() => {
-    if (slide && onTitleResolved) onTitleResolved(id, displayTitle);
-  }, [id, slide, displayTitle, onTitleResolved]);
+    if (frame && onTitleResolved) onTitleResolved(id, displayTitle);
+  }, [id, frame, displayTitle, onTitleResolved]);
 
   return (
     <>
@@ -445,7 +445,7 @@ function SlideCard({
       <div
         draggable
         onDragStart={(e) => {
-          e.dataTransfer.setData(SLIDE_DND_MIME, id);
+          e.dataTransfer.setData(FRAME_DND_MIME, id);
           e.dataTransfer.effectAllowed = 'move';
           const chip = createDragChip(displayTitle);
           if (chip) {
@@ -457,21 +457,21 @@ function SlideCard({
         onDragEnd={() => setDragging(false)}
         className={cn('group relative motion-safe:transition-opacity', dragging && 'opacity-40')}
       >
-        <Link to={`/s/${id}`} className="block focus-visible:outline-none">
-          {/* Slide thumb — tight border, grey baseboard, no shadcn rounded-xl */}
+        <Link to={`/f/${id}`} className="block focus-visible:outline-none">
+          {/* Frame thumb — tight border, grey baseboard, no shadcn rounded-xl */}
           <div className="relative aspect-video overflow-hidden rounded-6 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
             {FirstPage ? (
               <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
-                <SlideCanvas
+                <FrameCanvas
                   flat
                   freezeMotion
-                  design={slide?.design}
-                  canvas={resolveCanvas(slide?.meta)}
+                  design={frame?.design}
+                  canvas={resolveCanvas(frame?.meta)}
                 >
-                  <SlidePageProvider index={0} total={slide?.default.length ?? 1}>
+                  <FramePageProvider index={0} total={frame?.default.length ?? 1}>
                     <FirstPage />
-                  </SlidePageProvider>
-                </SlideCanvas>
+                  </FramePageProvider>
+                </FrameCanvas>
               </div>
             ) : (
               <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
@@ -481,18 +481,18 @@ function SlideCard({
           </div>
         </Link>
         <div className="mt-3 flex items-center gap-2">
-          <Link to={`/s/${id}`} className="min-w-0 flex-1 focus-visible:outline-none">
+          <Link to={`/f/${id}`} className="min-w-0 flex-1 focus-visible:outline-none">
             <h3 className="min-w-0 truncate font-heading text-14 font-medium tracking-tight">
               {displayTitle}
             </h3>
           </Link>
-          {slide?.meta?.theme && (
+          {frame?.meta?.theme && (
             <Link
-              to={`/themes/${encodeURIComponent(slide.meta.theme)}`}
+              to={`/themes/${encodeURIComponent(frame.meta.theme)}`}
               className="inline-flex shrink-0 items-center gap-1 text-11 text-muted-foreground hover:text-foreground"
             >
               <Palette className="size-3" aria-hidden />
-              <span className="max-w-[120px] truncate">{slide.meta.theme}</span>
+              <span className="max-w-[120px] truncate">{frame.meta.theme}</span>
             </Link>
           )}
         </div>
@@ -508,7 +508,7 @@ function SlideCard({
                     e.preventDefault();
                   }}
                   className="flex size-7 items-center justify-center rounded-5 bg-card/90 text-foreground shadow-edge ring-1 ring-border opacity-0 backdrop-blur hover:bg-card group-hover:opacity-100 aria-expanded:opacity-100 motion-safe:transition-opacity"
-                  aria-label={tCard.home.slideActions}
+                  aria-label={tCard.home.frameActions}
                 >
                   <MoreHorizontal className="size-3.5" />
                 </button>
@@ -547,7 +547,7 @@ function SlideCard({
       />
       <MoveDialog
         open={dialog === 'move'}
-        slideName={displayTitle}
+        frameName={displayTitle}
         folders={folders}
         currentFolderId={currentFolderId}
         onOpenChange={(v) => setDialog(v ? 'move' : null)}
@@ -558,7 +558,7 @@ function SlideCard({
       />
       <DeleteDialog
         open={dialog === 'delete'}
-        slideName={displayTitle}
+        frameName={displayTitle}
         onOpenChange={(v) => setDialog(v ? 'delete' : null)}
         onConfirm={async () => {
           await onDelete();
@@ -630,7 +630,7 @@ function RenameDialog({
             }
           }}
           maxLength={80}
-          placeholder={t.home.slideNamePlaceholder}
+          placeholder={t.home.frameNamePlaceholder}
           className="h-9 w-full rounded-6 border border-border bg-background px-3 text-13 outline-none focus-visible:border-foreground/40 focus-visible:ring-2 focus-visible:ring-ring/30"
         />
         <DialogFooter>
@@ -648,14 +648,14 @@ function RenameDialog({
 
 function MoveDialog({
   open,
-  slideName,
+  frameName,
   folders,
   currentFolderId,
   onOpenChange,
   onSubmit,
 }: {
   open: boolean;
-  slideName: string;
+  frameName: string;
   folders: Folder[];
   currentFolderId: string | null;
   onOpenChange: (open: boolean) => void;
@@ -693,7 +693,7 @@ function MoveDialog({
           <DialogTitle>{t.home.moveDialogTitle}</DialogTitle>
           <DialogDescription>
             {t.home.moveDialogDescriptionPrefix}
-            <span className="font-medium text-foreground">{slideName}</span>
+            <span className="font-medium text-foreground">{frameName}</span>
             {t.home.moveDialogDescriptionSuffix}
           </DialogDescription>
         </DialogHeader>
@@ -762,12 +762,12 @@ function FolderOption({
 
 function DeleteDialog({
   open,
-  slideName,
+  frameName,
   onOpenChange,
   onConfirm,
 }: {
   open: boolean;
-  slideName: string;
+  frameName: string;
   onOpenChange: (open: boolean) => void;
   onConfirm: () => Promise<void> | void;
 }) {
@@ -795,7 +795,7 @@ function DeleteDialog({
           <DialogTitle>{t.home.deleteDialogTitle}</DialogTitle>
           <DialogDescription>
             {t.home.deleteDialogDescriptionPrefix}
-            <span className="font-medium text-foreground">{slideName}</span>
+            <span className="font-medium text-foreground">{frameName}</span>
             {t.home.deleteDialogDescriptionMid}
             {t.home.deleteDialogDescriptionSuffix}
           </DialogDescription>

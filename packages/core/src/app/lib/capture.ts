@@ -2,9 +2,9 @@ import { createElement } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { designToCssVars } from './design';
 import type { CanvasSize } from './formats';
-import { SlidePageProvider } from './page-context';
+import { FramePageProvider } from './page-context';
 import { isFrameAnimationSettled, waitForDataWaitfor, waitForFonts } from './print-ready';
-import type { SlideModule } from './sdk';
+import type { FrameModule } from './sdk';
 
 const CAPTURE_PIXEL_RATIO = 2;
 
@@ -19,11 +19,11 @@ const CAPTURE_STYLE_ID = 'os-pptx-capture-style';
 const FROZEN_PROPS = ['opacity', 'transform', 'filter', 'clip-path'] as const;
 
 export async function capturePagesAsPng(
-  slide: SlideModule,
+  frame: FrameModule,
   canvas: CanvasSize,
   onPage?: (captured: number, total: number) => void,
 ): Promise<Uint8Array[]> {
-  const pages = slide.default ?? [];
+  const pages = frame.default ?? [];
   if (pages.length === 0) return [];
 
   const total = pages.length;
@@ -55,7 +55,7 @@ export async function capturePagesAsPng(
   }`;
   document.head.appendChild(captureStyle);
 
-  const designVars = slide.design ? designToCssVars(slide.design) : null;
+  const designVars = frame.design ? designToCssVars(frame.design) : null;
 
   const reactRoots: Root[] = [];
   const frames: HTMLElement[] = [];
@@ -63,7 +63,7 @@ export async function capturePagesAsPng(
     const Page = pages[i];
     if (!Page) continue;
     const host = document.createElement('div');
-    host.setAttribute('data-osd-canvas', '');
+    host.setAttribute('data-of-canvas', '');
     host.style.width = `${canvas.width}px`;
     host.style.height = `${canvas.height}px`;
     host.style.overflow = 'hidden';
@@ -75,7 +75,7 @@ export async function capturePagesAsPng(
     frames.push(host);
     const r = createRoot(host);
     r.render(
-      createElement(SlidePageProvider, { index: i, total: pages.length }, createElement(Page)),
+      createElement(FramePageProvider, { index: i, total: pages.length }, createElement(Page)),
     );
     reactRoots.push(r);
   }

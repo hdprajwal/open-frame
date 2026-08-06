@@ -21,7 +21,7 @@
     "node": ">=18"
   },
   "keywords": [
-    "slides",
+    "frames",
     "presentation",
     "claude-code",
     "scaffold"

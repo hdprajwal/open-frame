@@ -1,9 +1,9 @@
-declare module 'virtual:open-frame/slides' {
-  import type { SlideModule } from './lib/sdk';
-  export const slideIds: string[];
-  export const slideThemes: Record<string, string>;
-  export const slideCreatedAt: Record<string, number>;
-  export function loadSlide(id: string): Promise<SlideModule>;
+declare module 'virtual:open-frame/frames' {
+  import type { FrameModule } from './lib/sdk';
+  export const frameIds: string[];
+  export const frameThemes: Record<string, string>;
+  export const frameCreatedAt: Record<string, number>;
+  export function loadFrame(id: string): Promise<FrameModule>;
 }
 
 declare module 'virtual:open-frame/config' {
@@ -11,13 +11,13 @@ declare module 'virtual:open-frame/config' {
 
   const config: {
     base?: string;
-    slidesDir?: string;
+    framesDir?: string;
     port?: number;
     locale?: Locale;
     version: string;
     build: {
-      showSlideBrowser: boolean;
-      showSlideUi: boolean;
+      showFrameBrowser: boolean;
+      showFrameUi: boolean;
       allowHtmlDownload: boolean;
     };
   };

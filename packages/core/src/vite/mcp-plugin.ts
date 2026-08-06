@@ -15,7 +15,7 @@ export const MAX_SESSIONS = 32;
 
 export type McpPluginOptions = {
   userCwd: string;
-  slidesDir?: string;
+  framesDir?: string;
   assetsDir?: string;
   coreVersion: string;
 };
@@ -68,7 +68,7 @@ export function checkMcpRequest(
 function makeToolContext(server: ViteDevServer, opts: McpPluginOptions): McpToolContext {
   return {
     userCwd: path.resolve(opts.userCwd),
-    slidesDir: opts.slidesDir ?? 'slides',
+    framesDir: opts.framesDir ?? 'frames',
     assetsDir: opts.assetsDir ?? 'assets',
     coreVersion: opts.coreVersion,
     server,

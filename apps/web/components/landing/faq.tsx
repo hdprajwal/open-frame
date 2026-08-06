@@ -5,7 +5,7 @@ export type QA = { q: string; a: string };
 export const faqs: QA[] = [
   {
     q: 'What is open-frame?',
-    a: 'open-frame is a studio for making slides, LinkedIn carousels, story graphics, YouTube thumbnails, OG images, and X post images with React and a coding agent. Every page is a .tsx file rendered on a canvas sized for its format. Decks live in your repo, so they are versioned, reviewable in pull requests, and yours.',
+    a: 'open-frame is a studio for making slides, LinkedIn carousels, story graphics, YouTube thumbnails, OG images, and X post images with React and a coding agent. Every page is a .tsx file rendered on a canvas sized for its format. Your project lives in your repo, so it is versioned, reviewable in pull requests, and yours.',
   },
   {
     q: 'What formats does open-frame support?',

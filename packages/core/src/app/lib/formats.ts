@@ -1,4 +1,4 @@
-import type { SlideMeta } from './sdk.ts';
+import type { FrameMeta } from './sdk.ts';
 
 export type FormatPreset =
   | 'slide'
@@ -25,16 +25,16 @@ function isValidDimension(value: unknown): value is number {
   return typeof value === 'number' && Number.isFinite(value) && value > 0;
 }
 
-function describeSlide(slideId: string | undefined): string {
-  return slideId ? ` for slide "${slideId}"` : '';
+function describeFrame(frameId: string | undefined): string {
+  return frameId ? ` for frame "${frameId}"` : '';
 }
 
-export function resolveCanvas(meta: SlideMeta | undefined, slideId?: string): CanvasSize {
+export function resolveCanvas(meta: FrameMeta | undefined, frameId?: string): CanvasSize {
   if (meta?.canvas) {
     const { canvas } = meta;
     if (!isValidDimension(canvas.width) || !isValidDimension(canvas.height)) {
       throw new Error(
-        `Invalid canvas${describeSlide(slideId)}: width and height must be finite numbers greater than 0 (got ${JSON.stringify(canvas)}).`,
+        `Invalid canvas${describeFrame(frameId)}: width and height must be finite numbers greater than 0 (got ${JSON.stringify(canvas)}).`,
       );
     }
     return { width: canvas.width, height: canvas.height };
@@ -45,7 +45,7 @@ export function resolveCanvas(meta: SlideMeta | undefined, slideId?: string): Ca
     if (!preset) {
       const validPresets = Object.keys(FORMAT_PRESETS).join(', ');
       throw new Error(
-        `Unknown format "${meta.format}"${describeSlide(slideId)}. Valid presets: ${validPresets}.`,
+        `Unknown format "${meta.format}"${describeFrame(frameId)}. Valid presets: ${validPresets}.`,
       );
     }
     return { width: preset.width, height: preset.height };

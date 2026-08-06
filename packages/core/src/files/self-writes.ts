@@ -78,7 +78,7 @@ export const selfWrites: SelfWriteTracker = createSelfWriteTracker();
 
 const writeChains = new Map<string, Promise<void>>();
 
-// Every dev-server write to a slide entry file has to go through here. A write
+// Every dev-server write to a frame entry file has to go through here. A write
 // the tracker never saw is indistinguishable from an editor saving the file,
 // and reaches the client as a spurious external edit.
 // Writes to one file are chained rather than run concurrently, so the last

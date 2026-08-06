@@ -5,7 +5,7 @@ import { type DesignSystem, defaultDesign } from '../app/lib/design.ts';
 import type { AstNode } from '../editing/babel-walk.ts';
 import { writeTrackedFile } from '../files/self-writes.ts';
 import { validateMutationRequest } from '../http/request-guard.ts';
-import { json, readBody, resolveSlidePath } from './routes/context.ts';
+import { json, readBody, resolveFramePath } from './routes/context.ts';
 
 function parseSource(source: string): AstNode | null {
   try {
@@ -180,14 +180,14 @@ export function serializeDesign(design: DesignSystem): string {
   return serializeValue(design as unknown as Record<string, unknown>, 0);
 }
 
-export type ParsedSlideDesign =
+export type ParsedFrameDesign =
   | { ok: true; design: DesignSystem; loc: DesignDeclLocation }
   | { ok: false; exists: false }
   | { ok: false; exists: true; error: string };
 
-export function parseSlideDesign(source: string): ParsedSlideDesign {
+export function parseFrameDesign(source: string): ParsedFrameDesign {
   const ast = parseSource(source);
-  if (!ast) return { ok: false, exists: true, error: 'could not parse slide source' };
+  if (!ast) return { ok: false, exists: true, error: 'could not parse frame source' };
   const loc = findDesignDecl(ast);
   if (!loc) return { ok: false, exists: false };
   const objectNode = findDesignObjectNode(ast);
@@ -309,7 +309,7 @@ export function applyDesignWrite(source: string, next: DesignSystem): WriteResul
   }
 
   const ast = parseSource(source);
-  if (!ast) return { ok: false, status: 422, error: 'could not parse slide source' };
+  if (!ast) return { ok: false, status: 422, error: 'could not parse frame source' };
 
   const loc = findDesignDecl(ast);
   if (loc) {
@@ -330,12 +330,12 @@ export function applyDesignWrite(source: string, next: DesignSystem): WriteResul
 
 export type DesignPluginOptions = {
   userCwd: string;
-  slidesDir?: string;
+  framesDir?: string;
 };
 
 export function designPlugin(opts: DesignPluginOptions): Plugin {
   const userCwd = opts.userCwd;
-  const slidesDir = opts.slidesDir ?? 'slides';
+  const framesDir = opts.framesDir ?? 'frames';
 
   return {
     name: 'open-frame:design',
@@ -344,9 +344,9 @@ export function designPlugin(opts: DesignPluginOptions): Plugin {
       server.middlewares.use('/__design', async (req, res, next) => {
         const url = new URL(req.url ?? '/', 'http://local');
         const method = req.method ?? 'GET';
-        const slideId = url.searchParams.get('slideId') ?? '';
-        const file = resolveSlidePath(userCwd, slidesDir, slideId);
-        if (!file) return json(res, 400, { error: 'invalid slideId' });
+        const frameId = url.searchParams.get('frameId') ?? '';
+        const file = resolveFramePath(userCwd, framesDir, frameId);
+        if (!file) return json(res, 400, { error: 'invalid frameId' });
 
         try {
           if (method === 'GET' && url.pathname === '/') {
@@ -354,9 +354,9 @@ export function designPlugin(opts: DesignPluginOptions): Plugin {
             try {
               source = await fs.readFile(file, 'utf8');
             } catch {
-              return json(res, 404, { error: 'slide not found' });
+              return json(res, 404, { error: 'frame not found' });
             }
-            const parsed = parseSlideDesign(source);
+            const parsed = parseFrameDesign(source);
             if (parsed.ok) {
               return json(res, 200, { design: parsed.design, exists: true, warning: null });
             }
@@ -380,9 +380,9 @@ export function designPlugin(opts: DesignPluginOptions): Plugin {
             try {
               source = await fs.readFile(file, 'utf8');
             } catch {
-              return json(res, 404, { error: 'slide not found' });
+              return json(res, 404, { error: 'frame not found' });
             }
-            const parsed = parseSlideDesign(source);
+            const parsed = parseFrameDesign(source);
             const baseDesign = parsed.ok ? parsed.design : defaultDesign;
             if (!parsed.ok && parsed.exists) {
               return json(res, 422, { error: parsed.error });
@@ -403,7 +403,7 @@ export function designPlugin(opts: DesignPluginOptions): Plugin {
             try {
               source = await fs.readFile(file, 'utf8');
             } catch {
-              return json(res, 404, { error: 'slide not found' });
+              return json(res, 404, { error: 'frame not found' });
             }
             const written = applyDesignWrite(source, defaultDesign);
             if (!written.ok) return json(res, written.status, { error: written.error });

@@ -1,6 +1,6 @@
 # open-frame workspace
 
-Slides as React components. Each slide lives under `slides/<id>/index.tsx` and default-exports an array of page components. The `@open-frame/core` runtime handles layout, scaling, navigation, thumbnails, and fullscreen play mode — you just write the pages.
+Frames as React components. Each frame lives under `frames/<id>/index.tsx` and default-exports an array of page components. The `@open-frame/core` runtime handles layout, scaling, navigation, thumbnails, and fullscreen play mode — you just write the pages.
 
 ## Getting started
 
@@ -9,7 +9,7 @@ pnpm install
 pnpm dev
 ```
 
-Then open the dev server and create a new slide at `slides/<your-slide>/index.tsx`.
+Then open the dev server and create a new frame at `frames/<your-frame>/index.tsx`.
 
 ## Scripts
 
@@ -19,21 +19,21 @@ Then open the dev server and create a new slide at `slides/<your-slide>/index.ts
 | `pnpm build` | Build a static bundle you can deploy. |
 | `pnpm preview` | Preview the built bundle locally. |
 
-## Authoring a slide
+## Authoring a frame
 
 ```tsx
-// slides/my-slide/index.tsx
-import type { Page, SlideMeta } from '@open-frame/core';
+// frames/my-frame/index.tsx
+import type { Page, FrameMeta } from '@open-frame/core';
 
 const Cover: Page = () => (
   <div style={{ width: '100%', height: '100%' }}>Hello</div>
 );
 
-export const meta: SlideMeta = { title: 'My slide' };
+export const meta: FrameMeta = { title: 'My frame' };
 export default [Cover] satisfies Page[];
 ```
 
-Every page renders into a fixed **1920 × 1080** canvas — design with absolute pixel values. Put images, videos, and fonts under `slides/<id>/assets/` and import them directly.
+Every page renders into a fixed **1920 × 1080** canvas — design with absolute pixel values. Put images, videos, and fonts under `frames/<id>/assets/` and import them directly.
 
 See [`CLAUDE.md`](./CLAUDE.md) for the full authoring guide.
 
@@ -45,7 +45,7 @@ See [`CLAUDE.md`](./CLAUDE.md) for the full authoring guide.
 
 ## Claude Code integration
 
-This workspace ships with Claude Code skills preconfigured under `.claude/skills/` and `.agents/skills/`. Ask Claude Code to "make slides about X" and the `create-slide` skill takes over. Use `apply-comments` to iterate via inspector-style markers inside your source.
+This workspace ships with Claude Code skills preconfigured under `.claude/skills/` and `.agents/skills/`. Ask Claude Code to "make frames about X" and the `create-frame` skill takes over. Use `apply-comments` to iterate via inspector-style markers inside your source.
 
 ## Config
 
@@ -61,4 +61,4 @@ const openFrameConfig: OpenFrameConfig = {
 export default openFrameConfig;
 ```
 
-Supported fields: `slidesDir`, `port`.
+Supported fields: `framesDir`, `port`.

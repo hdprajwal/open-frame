@@ -12,13 +12,13 @@ import { useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import { IconPicker } from './icon-picker';
 
-export const SLIDE_DND_MIME = 'application/x-slide-id';
+export const FRAME_DND_MIME = 'application/x-frame-id';
 
-function useSlideDragActive() {
+function useFrameDragActive() {
   const [active, setActive] = useState(false);
   useEffect(() => {
     const onStart = (e: DragEvent) => {
-      if (e.dataTransfer?.types?.includes(SLIDE_DND_MIME)) setActive(true);
+      if (e.dataTransfer?.types?.includes(FRAME_DND_MIME)) setActive(true);
     };
     const onEnd = () => setActive(false);
     document.addEventListener('dragstart', onStart);
@@ -99,47 +99,47 @@ export function FolderItem({
   count,
   selected,
   onSelect,
-  onDropSlide,
+  onDropFrame,
 }: {
   row: Row;
   count: number;
   selected: boolean;
   onSelect: () => void;
-  onDropSlide: (slideId: string) => void;
+  onDropFrame: (frameId: string) => void;
 }) {
   const [renaming, setRenaming] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const dragDepth = useRef(0);
   const [draftName, setDraftName] = useState(row.kind === 'folder' ? row.folder.name : '');
-  const slideDragActive = useSlideDragActive();
+  const frameDragActive = useFrameDragActive();
   const t = useLocale();
 
-  const acceptsSlideDrop = row.kind !== 'themes' && row.kind !== 'assets';
-  const isSlideDrag = (e: React.DragEvent) =>
-    acceptsSlideDrop && e.dataTransfer.types.includes(SLIDE_DND_MIME);
+  const acceptsFrameDrop = row.kind !== 'themes' && row.kind !== 'assets';
+  const isFrameDrag = (e: React.DragEvent) =>
+    acceptsFrameDrop && e.dataTransfer.types.includes(FRAME_DND_MIME);
   const handleDragEnter = (e: React.DragEvent) => {
-    if (!isSlideDrag(e)) return;
+    if (!isFrameDrag(e)) return;
     dragDepth.current += 1;
     if (dragDepth.current === 1) setDragOver(true);
   };
   const handleDragOver = (e: React.DragEvent) => {
-    if (!isSlideDrag(e)) return;
+    if (!isFrameDrag(e)) return;
     e.preventDefault();
     e.dataTransfer.dropEffect = 'move';
   };
   const handleDragLeave = (e: React.DragEvent) => {
-    if (!isSlideDrag(e)) return;
+    if (!isFrameDrag(e)) return;
     dragDepth.current = Math.max(0, dragDepth.current - 1);
     if (dragDepth.current === 0) setDragOver(false);
   };
   const handleDrop = (e: React.DragEvent) => {
-    if (!acceptsSlideDrop) return;
-    const slideId = e.dataTransfer.getData(SLIDE_DND_MIME);
+    if (!acceptsFrameDrop) return;
+    const frameId = e.dataTransfer.getData(FRAME_DND_MIME);
     dragDepth.current = 0;
     setDragOver(false);
-    if (!slideId) return;
+    if (!frameId) return;
     e.preventDefault();
-    onDropSlide(slideId);
+    onDropFrame(frameId);
   };
 
   const icon: FolderIcon =
@@ -174,7 +174,7 @@ export function FolderItem({
         selected
           ? 'bg-muted text-foreground before:absolute before:inset-y-1.5 before:-left-0.5 before:w-[2px] before:rounded-full before:bg-brand'
           : 'text-foreground/70 hover:bg-muted/60 hover:text-foreground',
-        slideDragActive && acceptsSlideDrop && !dragOver && 'ring-1 ring-foreground/10',
+        frameDragActive && acceptsFrameDrop && !dragOver && 'ring-1 ring-foreground/10',
         dragOver &&
           'bg-brand/10 text-foreground ring-1 ring-brand ring-offset-1 ring-offset-sidebar motion-safe:scale-[1.01] motion-safe:transition-transform',
       )}

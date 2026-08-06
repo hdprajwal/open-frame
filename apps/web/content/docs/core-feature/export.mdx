@@ -21,13 +21,13 @@ GitHub Pages — anything that hosts files.
 The dev server can print the active deck to PDF via the browser's native
 print pipeline. From the toolbar pick **Export → PDF**, or open the deck at
 `?print=1` and use Cmd/Ctrl-P. The runtime sets paper size to 1920×1080
-landscape so each slide is exactly one page.
+landscape so each frame is exactly one page.
 
 ## What gets shipped
 
 The build pipeline only includes:
 
-- The decks under `slides/`.
+- The decks under `frames/`.
 - The assets each deck imports.
 - The runtime — viewer, scaler, present mode (configurable; see below).
 
@@ -39,8 +39,8 @@ import type { OpenFrameConfig } from '@open-frame/core';
 
 const config: OpenFrameConfig = {
   build: {
-    showSlideBrowser: false,    // hide the deck index
-    showSlideUi: false,         // hide on-canvas UI (toolbar etc.)
+    showFrameBrowser: false,    // hide the deck index
+    showFrameUi: false,         // hide on-canvas UI (toolbar etc.)
     allowHtmlDownload: false,   // hide the "download HTML" button
   },
 };

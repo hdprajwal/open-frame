@@ -1,7 +1,7 @@
 import { capturePagesAsPng } from './capture';
 import { downloadBlob } from './download';
 import { resolveCanvas } from './formats';
-import type { SlideModule } from './sdk';
+import type { FrameModule } from './sdk';
 
 // 6350 EMU per CSS px at 96dpi (914400 EMU/in ÷ 96 px/in).
 const EMU_PER_PX = 6350;
@@ -15,22 +15,22 @@ export type PptxExportProgress = {
   percent: number;
 };
 
-export async function exportSlideAsImagePptx(
-  slide: SlideModule,
-  slideId: string,
+export async function exportFrameAsImagePptx(
+  frame: FrameModule,
+  frameId: string,
   onProgress?: (progress: PptxExportProgress) => void,
 ): Promise<void> {
-  const pages = slide.default ?? [];
+  const pages = frame.default ?? [];
   if (pages.length === 0) return;
 
   const total = pages.length;
-  const canvas = resolveCanvas(slide.meta, slideId);
+  const canvas = resolveCanvas(frame.meta, frameId);
   const emuW = Math.round(canvas.width * EMU_PER_PX);
   const emuH = Math.round(canvas.height * EMU_PER_PX);
   onProgress?.({ phase: 'processing', current: 0, total, percent: 0 });
 
   try {
-    const images = await capturePagesAsPng(slide, canvas, (captured) => {
+    const images = await capturePagesAsPng(frame, canvas, (captured) => {
       onProgress?.({
         phase: 'processing',
         current: captured,
@@ -45,7 +45,7 @@ export async function exportSlideAsImagePptx(
       new Blob([pptx as BlobPart], {
         type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
       }),
-      `${slideId}.pptx`,
+      `${frameId}.pptx`,
     );
   } finally {
     onProgress?.({ phase: 'done', current: total, total, percent: 100 });

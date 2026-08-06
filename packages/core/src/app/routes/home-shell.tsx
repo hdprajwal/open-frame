@@ -7,23 +7,23 @@ import { format, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import { MobileFolderPill } from '../components/sidebar/mobile-pill';
 import { ASSETS_ID, DRAFT_ID, Sidebar, THEMES_ID } from '../components/sidebar/sidebar';
+import { frameIds } from '../lib/frames';
 import type { FoldersManifest } from '../lib/sdk';
-import { slideIds } from '../lib/slides';
 import { themes as themeRegistry } from '../lib/themes';
 
 export type HomeOutletContext = {
   manifest: FoldersManifest;
   loading: boolean;
-  draftSlides: string[];
-  slidesByFolder: Record<string, string[]>;
+  draftFrames: string[];
+  framesByFolder: Record<string, string[]>;
   /** Selected folder id when on `/`; equals DRAFT_ID, a folder id, or THEMES_ID. */
   selectedId: string;
-  reportTitle: (slideId: string, title: string) => void;
+  reportTitle: (frameId: string, title: string) => void;
   titleMap: Record<string, string>;
-  assign: (slideId: string, folderId: string | null) => Promise<void>;
-  renameSlide: (slideId: string, name: string) => Promise<void>;
-  duplicateSlide: (slideId: string, newId?: string) => Promise<string>;
-  deleteSlide: (slideId: string) => Promise<void>;
+  assign: (frameId: string, folderId: string | null) => Promise<void>;
+  renameFrame: (frameId: string, name: string) => Promise<void>;
+  duplicateFrame: (frameId: string, newId?: string) => Promise<string>;
+  deleteFrame: (frameId: string) => Promise<void>;
 };
 
 function pathToSelectedId(pathname: string, search: URLSearchParams): string {
@@ -41,9 +41,9 @@ export function HomeShell() {
     remove,
     reorder,
     assign,
-    renameSlide,
-    duplicateSlide,
-    deleteSlide,
+    renameFrame,
+    duplicateFrame,
+    deleteFrame,
   } = useFolders();
   const navigate = useNavigate();
   const location = useLocation();
@@ -53,9 +53,9 @@ export function HomeShell() {
   const selectedId = pathToSelectedId(location.pathname, searchParams);
 
   const [titleMap, setTitleMap] = useState<Record<string, string>>({});
-  const reportTitle = useCallback((slideId: string, slideTitle: string) => {
+  const reportTitle = useCallback((frameId: string, frameTitle: string) => {
     setTitleMap((prev) =>
-      prev[slideId] === slideTitle ? prev : { ...prev, [slideId]: slideTitle },
+      prev[frameId] === frameTitle ? prev : { ...prev, [frameId]: frameTitle },
     );
   }, []);
 
@@ -72,11 +72,11 @@ export function HomeShell() {
   const { assets: globalAssets } = useAssets('@global');
   const isAssetsRoute = location.pathname === '/assets';
 
-  const { draftSlides, slidesByFolder } = useMemo(() => {
+  const { draftFrames, framesByFolder } = useMemo(() => {
     const byFolder: Record<string, string[]> = {};
     const draft: string[] = [];
     const known = new Set(manifest.folders.map((f) => f.id));
-    for (const id of slideIds) {
+    for (const id of frameIds) {
       const folderId = manifest.assignments[id];
       if (folderId && known.has(folderId)) {
         byFolder[folderId] ??= [];
@@ -85,25 +85,25 @@ export function HomeShell() {
         draft.push(id);
       }
     }
-    return { draftSlides: draft, slidesByFolder: byFolder };
+    return { draftFrames: draft, framesByFolder: byFolder };
   }, [manifest]);
 
   const countFor = (folderId: string | null) =>
-    folderId === null ? draftSlides.length : (slidesByFolder[folderId]?.length ?? 0);
+    folderId === null ? draftFrames.length : (framesByFolder[folderId]?.length ?? 0);
 
-  const moveSlideWithToast = useCallback(
-    async (slideId: string, folderId: string | null) => {
-      if (manifest.assignments[slideId] === (folderId ?? undefined)) return;
-      const slideName = titleMap[slideId] ?? slideId;
+  const moveFrameWithToast = useCallback(
+    async (frameId: string, folderId: string | null) => {
+      if (manifest.assignments[frameId] === (folderId ?? undefined)) return;
+      const frameName = titleMap[frameId] ?? frameId;
       const folderName =
         folderId === null
           ? t.home.draft
           : (manifest.folders.find((f) => f.id === folderId)?.name ?? folderId);
       try {
-        await assign(slideId, folderId);
-        toast.success(format(t.home.toastSlideMoved, { slide: slideName, folder: folderName }));
+        await assign(frameId, folderId);
+        toast.success(format(t.home.toastFrameMoved, { frame: frameName, folder: folderName }));
       } catch {
-        toast.error(t.home.toastSlideMoveFailed);
+        toast.error(t.home.toastFrameMoveFailed);
       }
     },
     [assign, manifest, titleMap, t],
@@ -112,15 +112,15 @@ export function HomeShell() {
   const ctx: HomeOutletContext = {
     manifest,
     loading,
-    draftSlides,
-    slidesByFolder,
+    draftFrames,
+    framesByFolder,
     selectedId,
     reportTitle,
     titleMap,
     assign,
-    renameSlide,
-    duplicateSlide,
-    deleteSlide,
+    renameFrame,
+    duplicateFrame,
+    deleteFrame,
   };
 
   return (
@@ -146,8 +146,8 @@ export function HomeShell() {
               toast.error(t.home.toastFolderDeleteFailed);
             }
           }}
-          onDropToFolder={(folderId, slideId) => moveSlideWithToast(slideId, folderId)}
-          onDropToDraft={(slideId) => moveSlideWithToast(slideId, null)}
+          onDropToFolder={(folderId, frameId) => moveFrameWithToast(frameId, folderId)}
+          onDropToDraft={(frameId) => moveFrameWithToast(frameId, null)}
           onReorder={async (ids) => {
             try {
               await reorder(ids);

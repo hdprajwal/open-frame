@@ -18,10 +18,10 @@ export default config;
 
 ```ts
 type OpenFrameBuildConfig = {
-  /** Show the deck index (the slide browser) in the static build. */
-  showSlideBrowser?: boolean;
+  /** Show the deck index (the frame browser) in the static build. */
+  showFrameBrowser?: boolean;
   /** Show on-canvas UI (toolbar, hints) in the static build. */
-  showSlideUi?: boolean;
+  showFrameUi?: boolean;
   /** Show the "download as HTML" button in the static build. */
   allowHtmlDownload?: boolean;
 };
@@ -29,8 +29,8 @@ type OpenFrameBuildConfig = {
 type OpenFrameConfig = {
   /** Base public path for subpath hosting (leading + trailing slash). Default: '/'. */
   base?: string;
-  /** Folder that contains your decks. Default: 'slides'. */
-  slidesDir?: string;
+  /** Folder that contains your decks. Default: 'frames'. */
+  framesDir?: string;
   /** Folder that holds theme markdown + demo files. Default: 'themes'. */
   themesDir?: string;
   /** Folder for global assets shared across decks. Default: 'assets'. */
@@ -51,8 +51,8 @@ type OpenFrameConfig = {
 ```ts
 const config: OpenFrameConfig = {
   build: {
-    showSlideBrowser: false,
-    showSlideUi: false,
+    showFrameBrowser: false,
+    showFrameUi: false,
     allowHtmlDownload: false,
   },
 };
@@ -66,7 +66,7 @@ Use a leading and trailing slash:
 
 ```ts
 const config: OpenFrameConfig = {
-  base: '/my-slides/',
+  base: '/my-frames/',
 };
 ```
 
@@ -75,7 +75,7 @@ The value is passed straight to Vite's `base` and to React Router's
 
 ### Multiple deck folders
 
-`slidesDir` is a single path today. If you want multiple roots, group them
+`framesDir` is a single path today. If you want multiple roots, group them
 under one folder and use subfolder ids.
 
 ### Switch the UI language

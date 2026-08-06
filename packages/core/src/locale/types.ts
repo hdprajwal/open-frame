@@ -15,7 +15,7 @@ export type Locale = {
     close: string;
     loading: string;
     loadFailed: string;
-    failedToLoadSlide: string;
+    failedToLoadFrame: string;
     home: string;
     backToHome: string;
     preview: string;
@@ -63,17 +63,17 @@ export type Locale = {
     noMatches: string;
     nothingMatchesPrefix: string;
     nothingMatchesSuffix: string;
-    noSlidesYet: string;
-    createSlideHintPrefix: string;
-    createSlideHintSuffix: string;
+    noFramesYet: string;
+    createFrameHintPrefix: string;
+    createFrameHintSuffix: string;
     folderEmptyTitle: string;
     folderEmptyHint: string;
-    slideActions: string;
+    frameActions: string;
     moveToFolder: string;
     renameDialogEyebrow: string;
     renameDialogTitle: string;
     renameDialogDescription: string;
-    slideNamePlaceholder: string;
+    frameNamePlaceholder: string;
     moveDialogEyebrow: string;
     moveDialogTitle: string;
     moveDialogDescriptionPrefix: string;
@@ -86,12 +86,12 @@ export type Locale = {
     /** template: "Created folder “{name}”" */
     toastFolderCreated: string;
     toastFolderCreateFailed: string;
-    /** template: "Duplicated “{slide}” as {newSlide}" */
-    toastSlideDuplicated: string;
-    toastSlideDuplicateFailed: string;
-    /** template: "Moved “{slide}” to {folder}" */
-    toastSlideMoved: string;
-    toastSlideMoveFailed: string;
+    /** template: "Duplicated “{frame}” as {newFrame}" */
+    toastFrameDuplicated: string;
+    toastFrameDuplicateFailed: string;
+    /** template: "Moved “{frame}” to {folder}" */
+    toastFrameMoved: string;
+    toastFrameMoveFailed: string;
     /** template: "Deleted folder “{name}”" */
     toastFolderDeleted: string;
     toastFolderDeleteFailed: string;
@@ -99,7 +99,7 @@ export type Locale = {
     pickIcon: string;
   };
 
-  slide: {
+  frame: {
     home: string;
     backToHome: string;
     agentConnected: string;
@@ -127,9 +127,9 @@ export type Locale = {
     presentInWindow: string;
     presentFullscreen: string;
     presentPresenter: string;
-    slidesTab: string;
+    framesTab: string;
     assetsTab: string;
-    renameSlide: string;
+    renameFrame: string;
     loadingEyebrow: string;
     emptyEyebrow: string;
     nothingToShow: string;
@@ -143,7 +143,7 @@ export type Locale = {
     notLinked: string;
     nowShowing: string;
     upNext: string;
-    lastSlide: string;
+    lastFrame: string;
     endOfDeck: string;
     speakerNotes: string;
     noNotesPrefix: string;
@@ -159,13 +159,13 @@ export type Locale = {
     currentTime: string;
     elapsed: string;
     jump: string;
-    /** template: "Loading {slideId}…" */
-    loadingSlide: string;
+    /** template: "Loading {frameId}…" */
+    loadingFrame: string;
   };
 
   present: {
-    prevSlideAria: string;
-    nextSlideAria: string;
+    prevFrameAria: string;
+    nextFrameAria: string;
     overviewAria: string;
     blackoutAria: string;
     whiteoutAria: string;
@@ -191,7 +191,7 @@ export type Locale = {
     shortcutCloseExit: string;
     overviewDialogAria: string;
     overviewEyebrow: string;
-    /** template: "Go to slide {n}" */
+    /** template: "Go to frame {n}" */
     overviewGoToAria: string;
     nowBadge: string;
   };
@@ -287,7 +287,7 @@ export type Locale = {
     devOnlyMessage: string;
     sectionAria: string;
     eyebrow: string;
-    scopeSlide: string;
+    scopeFrame: string;
     scopeGlobal: string;
     /** templates: "{count} file" / "{count} files" */
     fileCount: Plural;
@@ -313,13 +313,13 @@ export type Locale = {
     conflictReplace: string;
     conflictRenameCopy: string;
     deleteAssetTitle: string;
-    /** template: "Delete {name}? Imports referencing this file in the slide will break." */
+    /** template: "Delete {name}? Imports referencing this file in the frame will break." */
     deleteAssetDescription: string;
-    /** template: "{name} is used in {count} place across {slides} slide." (singular/plural via {count}/{slides}) */
+    /** template: "{name} is used in {count} place across {frames} frame." (singular/plural via {count}/{frames}) */
     deleteAssetInUseDescription: string;
     deleteAssetInUseHint: string;
     deleteAndRevert: string;
-    /** template: "Couldn't revert usage in {slideId}." */
+    /** template: "Couldn't revert usage in {frameId}." */
     toastRevertFailed: string;
     /** template: "Deleted {name} and reverted {count} usage." */
     toastDeletedWithRevert: string;

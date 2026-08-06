@@ -4,11 +4,11 @@ import * as t from '@babel/types';
 import type { Plugin } from 'vite';
 import { walkJsx } from '../editing/babel-walk.ts';
 
-// Inject `data-slide-loc="<line>:<col>"` onto every host JSX element in
-// slide source files so the inspector can map a click straight to a
+// Inject `data-frame-loc="<line>:<col>"` onto every host JSX element in
+// frame source files so the inspector can map a click straight to a
 // source location, sidestepping HMR-stale `_debugSource` on fibers.
 
-// Capitalized components that explicitly forward `data-slide-loc` to a
+// Capitalized components that explicitly forward `data-frame-loc` to a
 // host root, so the inspector can target them like a host element.
 const FORWARDING_COMPONENTS = new Set(['ImagePlaceholder']);
 
@@ -20,7 +20,7 @@ function isTaggableJsxName(name: t.JSXOpeningElement['name']): name is t.JSXIden
 function alreadyTagged(opening: t.JSXOpeningElement): boolean {
   return opening.attributes.some(
     (attr) =>
-      t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name) && attr.name.name === 'data-slide-loc',
+      t.isJSXAttribute(attr) && t.isJSXIdentifier(attr.name) && attr.name.name === 'data-frame-loc',
   );
 }
 
@@ -44,7 +44,7 @@ export function injectLocTags(code: string): string | null {
     if (!isTaggableJsxName(name) || alreadyTagged(opening)) return;
     insertions.push({
       offset: name.end ?? 0,
-      text: ` data-slide-loc="${node.loc.start.line}:${node.loc.start.column}"`,
+      text: ` data-frame-loc="${node.loc.start.line}:${node.loc.start.column}"`,
     });
   });
 
@@ -59,24 +59,24 @@ export function injectLocTags(code: string): string | null {
 
 export type LocTagsPluginOptions = {
   userCwd: string;
-  slidesDir?: string;
+  framesDir?: string;
 };
 
 // Vite normally hands `id` to plugins with forward slashes, but other
 // plugins or virtual modules can pass through Windows-style paths.
 // Compare both sides in POSIX shape so the match doesn't depend on
 // which separator the caller happened to use.
-function isSlideSourceFile(id: string, slidesRootPosix: string): boolean {
+function isFrameSourceFile(id: string, framesRootPosix: string): boolean {
   const filePath = id.split(/[?#]/)[0].replace(/\\/g, '/');
-  if (!filePath.startsWith(`${slidesRootPosix}/`)) return false;
+  if (!filePath.startsWith(`${framesRootPosix}/`)) return false;
   if (!filePath.endsWith('.tsx')) return false;
   if (filePath.endsWith('.d.ts') || filePath.endsWith('.test.tsx')) return false;
-  const rel = filePath.slice(slidesRootPosix.length + 1);
+  const rel = filePath.slice(framesRootPosix.length + 1);
   return rel.includes('/');
 }
 
 export function locTagsPlugin(opts: LocTagsPluginOptions): Plugin {
-  const slidesRoot = path.resolve(opts.userCwd, opts.slidesDir ?? 'slides').replace(/\\/g, '/');
+  const framesRoot = path.resolve(opts.userCwd, opts.framesDir ?? 'frames').replace(/\\/g, '/');
   return {
     name: 'open-frame:loc-tags',
     apply: 'serve',
@@ -84,7 +84,7 @@ export function locTagsPlugin(opts: LocTagsPluginOptions): Plugin {
     // sees our injected attributes.
     enforce: 'pre',
     transform(code, id) {
-      if (!isSlideSourceFile(id, slidesRoot)) return null;
+      if (!isFrameSourceFile(id, framesRoot)) return null;
       const next = injectLocTags(code);
       if (next === null) return null;
       return { code: next, map: null };

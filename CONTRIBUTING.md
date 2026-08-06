@@ -2,7 +2,7 @@
 
 Thanks for your interest in improving open-frame! This guide covers the workflow for contributing to the framework itself — the `@open-frame/core` runtime, the `@open-frame/cli` scaffolder, and the supporting apps.
 
-If you're authoring slides inside a scaffolded project, you don't need this file — drive your deck through your coding agent or edit `slides/<id>/index.tsx` directly.
+If you're authoring frames inside a scaffolded project, you don't need this file — drive your deck through your coding agent or edit `frames/<id>/index.tsx` directly.
 
 ## Ways to contribute
 
@@ -88,7 +88,7 @@ pnpm cli <script>
 
    Keep the description **short and direct** — one line, present-tense, what changed from a user's perspective. Match the tone of existing `.changeset/*.md` files. No paragraphs, no rationale, no "this PR…".
 
-   > Good: `Replace spinner with a hairline + sliding bar for slide and presenter loading states.`
+   > Good: `Replace spinner with a hairline + sliding bar for frame and presenter loading states.`
    >
    > Bad: `This change introduces a new loading indicator because the previous spinner felt heavy…`
 

@@ -3,17 +3,17 @@ title: Transition
 description: Enter, exit, and shared-element motion between pages.
 ---
 
-`SlideTransition` describes what happens when the active `Page` changes. There
+`FrameTransition` describes what happens when the active `Page` changes. There
 is no default animation: pages snap unless the deck exports a transition or an
 incoming page defines its own override.
 
-```tsx title="slides/q2-launch/index.tsx"
-import type { Page, SlideTransition } from '@open-frame/core';
+```tsx title="frames/q2-launch/index.tsx"
+import type { Page, FrameTransition } from '@open-frame/core';
 
 const Cover: Page = () => <section>…</section>;
 const Agenda: Page = () => <section>…</section>;
 
-export const transition: SlideTransition = {
+export const transition: FrameTransition = {
   duration: 220,
   exit: {
     duration: 140,
@@ -43,7 +43,7 @@ export default [Cover, Agenda] satisfies Page[];
 
 There are two declaration surfaces:
 
-- `export const transition` in the slide module sets the deck default.
+- `export const transition` in the frame module sets the deck default.
 - `Page.transition = …` sets an override for one page.
 
 The incoming page wins. Navigating `Cover → Agenda` uses
@@ -55,7 +55,7 @@ are returning to.
 const Cover: Page = () => <section>…</section>;
 const Agenda: Page = () => <section>…</section>;
 
-export const transition: SlideTransition = {
+export const transition: FrameTransition = {
   duration: 220,
   enter: {
     keyframes: [{ opacity: 0 }, { opacity: 1 }],
@@ -79,14 +79,14 @@ During a page transition, the wrapper exposes:
 
 | Surface | Forward | Backward |
 | --- | --- | --- |
-| `--osd-dir` | `1` | `-1` |
-| `data-osd-dir` | `forward` | `backward` |
+| `--of-dir` | `1` | `-1` |
+| `data-of-dir` | `forward` | `backward` |
 
 Use it when motion has a literal direction:
 
 ```tsx
 {
-  transform: 'translateX(calc(var(--osd-dir, 1) * 8px))',
+  transform: 'translateX(calc(var(--of-dir, 1) * 8px))',
 }
 ```
 
@@ -96,11 +96,11 @@ every page.
 
 ## Shared Elements
 
-`SlideTransition.sharedElements` enables [SharedElement](/docs/primitive/shared-element)
+`FrameTransition.sharedElements` enables [SharedElement](/docs/primitive/shared-element)
 matching for objects that should visually continue across two pages.
 
 ```ts
-export const transition: SlideTransition = {
+export const transition: FrameTransition = {
   duration: 600,
   sharedElements: {
     duration: 600,
@@ -110,4 +110,4 @@ export const transition: SlideTransition = {
 ```
 
 For the full schema and a reusable family of examples, see
-[SlideTransition](/docs/reference/slide-transitions).
+[FrameTransition](/docs/reference/frame-transitions).

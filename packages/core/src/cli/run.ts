@@ -93,7 +93,7 @@ export async function run(argv: string[]): Promise<void> {
   const program = new Command();
   program
     .name('open-frame')
-    .description('Author slides — we handle the Vite/React stack.')
+    .description('Author frames — we handle the Vite/React stack.')
     .version(version, '-v, --version', 'print version')
     .helpOption('-h, --help', 'show help')
     .showHelpAfterError(chalk.dim('(run `open-frame --help` for usage)'));

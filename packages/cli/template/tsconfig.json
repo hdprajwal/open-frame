@@ -13,5 +13,5 @@
     "skipLibCheck": true,
     "types": ["@open-frame/core/env"]
   },
-  "include": ["slides/**/*", "open-frame.config.ts"]
+  "include": ["frames/**/*", "open-frame.config.ts"]
 }

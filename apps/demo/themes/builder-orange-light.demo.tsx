@@ -1,4 +1,4 @@
-import { type DesignSystem, type Page, useSlidePageNumber } from '@open-frame/core';
+import { type DesignSystem, type Page, useFramePageNumber } from '@open-frame/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#ffffff', text: '#0b0b0c', accent: '#fc4c02' },
@@ -19,11 +19,11 @@ const hairline = '#e9e9ec';
 const fill = {
   width: '100%',
   height: '100%',
-  backgroundColor: 'var(--osd-bg)',
+  backgroundColor: 'var(--of-bg)',
   backgroundImage: 'radial-gradient(rgba(0,0,0,.05) 1px, transparent 1px)',
   backgroundSize: '46px 46px',
-  color: 'var(--osd-text)',
-  fontFamily: 'var(--osd-font-body)',
+  color: 'var(--of-text)',
+  fontFamily: 'var(--of-font-body)',
   display: 'flex',
   flexDirection: 'column' as const,
   padding: 88,
@@ -38,7 +38,7 @@ const Cube = ({ size = 260 }: { size?: number }) => (
     height={size}
     viewBox="0 0 200 200"
     fill="none"
-    style={{ color: 'var(--osd-accent)' }}
+    style={{ color: 'var(--of-accent)' }}
     aria-hidden
   >
     <g stroke="currentColor" strokeWidth={2} strokeLinejoin="round" strokeLinecap="round">
@@ -59,7 +59,7 @@ const Cube = ({ size = 260 }: { size?: number }) => (
 );
 
 const BrandMini = ({ ctx = 'building in public' }: { ctx?: string }) => {
-  const { current } = useSlidePageNumber();
+  const { current } = useFramePageNumber();
   return (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
@@ -80,7 +80,7 @@ const BrandMini = ({ ctx = 'building in public' }: { ctx?: string }) => {
         >
           PH
         </div>
-        <span style={{ fontFamily: 'var(--osd-font-display)', fontWeight: 700, fontSize: 26 }}>
+        <span style={{ fontFamily: 'var(--of-font-display)', fontWeight: 700, fontSize: 26 }}>
           Prajwal HD
         </span>
       </div>
@@ -94,13 +94,13 @@ const BrandMini = ({ ctx = 'building in public' }: { ctx?: string }) => {
 const Title = ({ children, size = 112 }: { children: React.ReactNode; size?: number }) => (
   <h1
     style={{
-      fontFamily: 'var(--osd-font-display)',
+      fontFamily: 'var(--of-font-display)',
       fontWeight: 800,
       fontSize: size,
       lineHeight: 1.0,
       letterSpacing: '-0.035em',
       margin: 0,
-      color: 'var(--osd-text)',
+      color: 'var(--of-text)',
     }}
   >
     {children}
@@ -108,7 +108,7 @@ const Title = ({ children, size = 112 }: { children: React.ReactNode; size?: num
 );
 
 const Em = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: 'var(--osd-accent)' }}>{children}</span>
+  <span style={{ color: 'var(--of-accent)' }}>{children}</span>
 );
 
 const Footer = ({ chips = [], src }: { chips?: string[]; src?: React.ReactNode }) => (
@@ -161,7 +161,7 @@ const Callout = ({ value, children }: { value: string; children: React.ReactNode
       gap: 20,
       background: surface,
       border: `1px solid ${hairline}`,
-      borderLeft: '4px solid var(--osd-accent)',
+      borderLeft: '4px solid var(--of-accent)',
       borderRadius: 14,
       padding: '22px 28px',
     }}
@@ -171,7 +171,7 @@ const Callout = ({ value, children }: { value: string; children: React.ReactNode
         fontFamily: mono,
         fontSize: 34,
         fontWeight: 600,
-        color: 'var(--osd-accent)',
+        color: 'var(--of-accent)',
         flexShrink: 0,
       }}
     >
@@ -264,7 +264,7 @@ const Content: Page = () => (
       </p>
       <div style={{ marginTop: 36, display: 'flex', flexDirection: 'column', gap: 20 }}>
         <Terminal>
-          <span style={{ color: 'var(--osd-accent)' }}>$</span> ./infra run --watch{'\n'}
+          <span style={{ color: 'var(--of-accent)' }}>$</span> ./infra run --watch{'\n'}
           <span style={{ color: '#27c93f' }}>✓</span> All systems go. p99 128ms
         </Terminal>
         <Callout value="0.02%">error rate after the boring parts were finally handled.</Callout>

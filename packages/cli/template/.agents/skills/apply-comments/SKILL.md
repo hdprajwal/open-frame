@@ -1,20 +1,20 @@
 ---
 name: apply-comments
-description: Apply pending @slide-comment markers written by the open-frame inspector tool. Use when the user asks to "apply comments", "process slide comments", "apply the inspector comments", or references markers left inside `slides/<id>/index.tsx`.
+description: Apply pending @frame-comment markers written by the open-frame inspector tool. Use when the user asks to "apply comments", "process frame comments", "apply the inspector comments", or references markers left inside `frames/<id>/index.tsx`.
 ---
 
-# Apply slide comments
+# Apply frame comments
 
-The open-frame editor has an inspector tool that lets the user click on a rendered page element and attach a textual comment (e.g. *"make this red"*, *"change to 'Open Slide Rocks'"*). Each comment is persisted as an in-source JSX marker inside `slides/<slideId>/index.tsx`.
+The open-frame editor has an inspector tool that lets the user click on a rendered page element and attach a textual comment (e.g. *"make this red"*, *"change to 'Open Frame Rocks'"*). Each comment is persisted as an in-source JSX marker inside `frames/<frameId>/index.tsx`.
 
 Your job: read those markers, perform the described edits, and delete the markers.
 
-> **Before making any page edit**, consult the **`slide-authoring`** skill — it is the technical reference for how `slides/<id>/index.tsx` is structured (canvas, type scale, palette, assets, file contract). A comment like *"make this bigger"* or *"change the accent colour"* should be applied in a way that stays consistent with those rules.
+> **Before making any page edit**, consult the **`frame-authoring`** skill — it is the technical reference for how `frames/<id>/index.tsx` is structured (canvas, type scale, palette, assets, file contract). A comment like *"make this bigger"* or *"change the accent colour"* should be applied in a way that stays consistent with those rules.
 
 ## Marker format
 
 ```
-{/* @slide-comment id="c-<8hex>" ts="<ISO>" text="<base64url(JSON)>" */}
+{/* @frame-comment id="c-<8hex>" ts="<ISO>" text="<base64url(JSON)>" */}
 ```
 
 - Always sits on its own line as the **first child inside** the JSX element it refers to (i.e. between that element's opening `>` and its other children). The marker is dropped *into* its target, not floated above it.
@@ -22,14 +22,14 @@ Your job: read those markers, perform the described edits, and delete the marker
 - Detection regex (authoritative — use exactly this):
 
   ```
-  /\{\/\*\s*@slide-comment\s+id="(c-[a-f0-9]+)"\s+ts="([^"]+)"\s+text="([A-Za-z0-9_\-]+={0,2})"\s*\*\/\}/g
+  /\{\/\*\s*@frame-comment\s+id="(c-[a-f0-9]+)"\s+ts="([^"]+)"\s+text="([A-Za-z0-9_\-]+={0,2})"\s*\*\/\}/g
   ```
 
 ## Procedure
 
-1. **Identify the target slide(s).**
-   - If the user names one (`example-slide`, `youbike-3-survey`, etc.), work on that single `slides/<slideId>/index.tsx`.
-   - If they say "all" or don't specify, scan every `slides/*/index.tsx`. Process each slide one at a time.
+1. **Identify the target frame(s).**
+   - If the user names one (`example-frame`, `youbike-3-survey`, etc.), work on that single `frames/<frameId>/index.tsx`.
+   - If they say "all" or don't specify, scan every `frames/*/index.tsx`. Process each frame one at a time.
 
 2. **Read the file and find all markers.**
    - Run the regex above against the whole file.
@@ -55,7 +55,7 @@ Your job: read those markers, perform the described edits, and delete the marker
    - Run `pnpm tsc --noEmit` and `pnpm biome check` (or `pnpm lint`). Fix any introduced errors.
 
 7. **Report.**
-   - Summarise: `N applied, 0 remaining` plus a one-line description of each change (including the slide id).
+   - Summarise: `N applied, 0 remaining` plus a one-line description of each change (including the frame id).
 
 ## base64url decoding helper
 
@@ -78,6 +78,6 @@ You can run this inline via `node -e '...'` if you need to inspect a payload; ot
 
 ## Do not
 
-- Do not touch `package.json`, `open-frame.config.ts`, or files outside `slides/`.
+- Do not touch `package.json`, `open-frame.config.ts`, or files outside `frames/`.
 - Do not add dependencies.
 - Do not re-introduce markers or leave `TODO` breadcrumbs — the user already has a record in git.

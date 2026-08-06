@@ -7,7 +7,7 @@ export type TransitionPhase = {
   delay?: number;
 };
 
-export type SlideTransition = {
+export type FrameTransition = {
   duration: number;
   easing?: string;
   enter?: TransitionPhase;
@@ -24,7 +24,7 @@ export type SharedElementTransition = {
 export function resolveTransition(
   pages: Page[],
   index: number,
-  moduleDefault?: SlideTransition,
-): SlideTransition | undefined {
+  moduleDefault?: FrameTransition,
+): FrameTransition | undefined {
   return pages[index]?.transition ?? moduleDefault;
 }

@@ -1,4 +1,4 @@
-import { type DesignSystem, type Page, useSlidePageNumber } from '@open-frame/core';
+import { type DesignSystem, type Page, useFramePageNumber } from '@open-frame/core';
 import type { ReactNode } from 'react';
 
 export const design: DesignSystem = {
@@ -31,9 +31,9 @@ const fontMono = "'Geist Mono', 'SF Mono', Menlo, Consolas, monospace";
 const fill = {
   width: '100%',
   height: '100%',
-  background: 'var(--osd-bg)',
-  color: 'var(--osd-text)',
-  fontFamily: 'var(--osd-font-body)',
+  background: 'var(--of-bg)',
+  color: 'var(--of-text)',
+  fontFamily: 'var(--of-font-body)',
   position: 'relative' as const,
   overflow: 'hidden' as const,
   boxSizing: 'border-box' as const,
@@ -52,7 +52,7 @@ const Style = () => (
 );
 
 const Logo = ({ size = 28 }: { size?: number }) => (
-  <div style={{ display: 'flex', alignItems: 'center', gap: size * 0.5, color: 'var(--osd-text)' }}>
+  <div style={{ display: 'flex', alignItems: 'center', gap: size * 0.5, color: 'var(--of-text)' }}>
     <svg
       width={size * 0.95}
       height={size * 0.82}
@@ -90,7 +90,7 @@ const Footer = ({
 }: {
   label?: string;
 }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{
@@ -126,7 +126,7 @@ const Code = ({ children, fontSize = 20 }: { children: ReactNode; fontSize?: num
       padding: 24,
       background: palette.surface,
       border: `1px solid ${palette.border}`,
-      borderRadius: 'var(--osd-radius)',
+      borderRadius: 'var(--of-radius)',
       fontFamily: fontMono,
       fontSize,
       lineHeight: 1.45,
@@ -161,7 +161,7 @@ const GradientBar = () => (
 
 // ── Demo pages ────────────────────────────────────────────────────────────────
 const Cover: Page = () => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{
@@ -203,7 +203,7 @@ const Cover: Page = () => {
         </div>
         <h1
           style={{
-            fontSize: 'var(--osd-size-hero)',
+            fontSize: 'var(--of-size-hero)',
             fontWeight: 700,
             margin: 0,
             lineHeight: 0.92,
@@ -352,7 +352,7 @@ const Concept: Page = () => {
         </h2>
         <p
           style={{
-            fontSize: 'var(--osd-size-body)',
+            fontSize: 'var(--of-size-body)',
             color: palette.muted,
             margin: '24px 0 0',
             maxWidth: 1300,
@@ -405,7 +405,7 @@ const CodePage: Page = () => (
       </h2>
       <p
         style={{
-          fontSize: 'var(--osd-size-body)',
+          fontSize: 'var(--of-size-body)',
           color: palette.muted,
           margin: '24px 0 0',
           maxWidth: 1300,

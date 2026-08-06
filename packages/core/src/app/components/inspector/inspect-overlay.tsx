@@ -2,12 +2,12 @@ import { Crop, ImageIcon } from 'lucide-react';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { PANEL_TRANSITION_MS } from '@/components/panel/panel-shell';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { findSlideSource, type SlideSourceHit } from '@/lib/inspector/fiber';
+import { type FrameSourceHit, findFrameSource } from '@/lib/inspector/fiber';
 import { useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import { useInspector } from './inspector-provider';
 
-type Highlight = { hit: SlideSourceHit };
+type Highlight = { hit: FrameSourceHit };
 
 type RelRect = { left: number; top: number; width: number; height: number };
 
@@ -16,7 +16,7 @@ const FRAME_MORPH_MS = 180;
 const LAYOUT_TRACK_MS = PANEL_TRANSITION_MS + FRAME_MORPH_MS;
 
 export function InspectOverlay() {
-  const { active, activate, slideId, selected, setSelected, cancel, openCrop } = useInspector();
+  const { active, activate, frameId, selected, setSelected, cancel, openCrop } = useInspector();
   const overlayRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<Highlight | null>(null);
 
@@ -35,7 +35,7 @@ export function InspectOverlay() {
       if (e.target instanceof Element && e.target.closest('[data-inspector-ui]')) {
         return setHover(null);
       }
-      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, slideId);
+      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, frameId);
       if (!hit) return setHover(null);
       setHover({ hit });
     };
@@ -43,7 +43,7 @@ export function InspectOverlay() {
     const onMouseDown = (e: MouseEvent) => {
       if (!active && e.detail < 2) return;
       if (e.target instanceof Element && e.target.closest('[data-inspector-ui]')) return;
-      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, slideId);
+      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, frameId);
       if (!hit) return;
       e.preventDefault();
     };
@@ -51,7 +51,7 @@ export function InspectOverlay() {
     const onClick = (e: MouseEvent) => {
       if (!active) return;
       if (e.target instanceof Element && e.target.closest('[data-inspector-ui]')) return;
-      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, slideId);
+      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, frameId);
       if (!hit) return;
       e.preventDefault();
       e.stopPropagation();
@@ -63,7 +63,7 @@ export function InspectOverlay() {
 
     const onDblClick = (e: MouseEvent) => {
       if (e.target instanceof Element && e.target.closest('[data-inspector-ui]')) return;
-      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, slideId);
+      const hit = findInspectorHitAtPoint(e.clientX, e.clientY, frameId);
       if (!hit) return;
       e.preventDefault();
       e.stopPropagation();
@@ -86,7 +86,7 @@ export function InspectOverlay() {
       window.removeEventListener('dblclick', onDblClick, true);
       window.removeEventListener('keydown', onKey, true);
     };
-  }, [active, activate, slideId, setSelected, cancel, openCrop]);
+  }, [active, activate, frameId, setSelected, cancel, openCrop]);
 
   useEffect(() => {
     if (!active) setHover(null);
@@ -329,10 +329,10 @@ function pickElement(x: number, y: number): HTMLElement | null {
   return null;
 }
 
-function findInspectorHitAtPoint(x: number, y: number, slideId: string): SlideSourceHit | null {
+function findInspectorHitAtPoint(x: number, y: number, frameId: string): FrameSourceHit | null {
   const el = pickInspectorTarget(pickElement(x, y));
   if (!el) return null;
-  return findSlideSource(el, slideId, { hostOnly: true });
+  return findFrameSource(el, frameId, { hostOnly: true });
 }
 
 function clearTextSelection() {

@@ -4,12 +4,12 @@ description: Translate the runtime UI — home, inspector, presenter, toasts.
 ---
 
 The runtime ships with four built-in dictionaries. Switch between them from
-the language picker in the slide UI (next to the theme toggle) — your choice
+the language picker in the frame UI (next to the theme toggle) — your choice
 is remembered in the browser.
 
 The locale only affects the **runtime UI** that open-frame renders around
-your slides (the home screen, slide browser, inspector, asset panel,
-presenter mode, toasts, etc.). It does **not** translate slide content —
+your frames (the home screen, frame browser, inspector, asset panel,
+presenter mode, toasts, etc.). It does **not** translate frame content —
 that lives in your own React code.
 
 ## Picking a language
@@ -92,8 +92,8 @@ forms (`{ one, other }`). They are flagged in the type definition with
 JSDoc, e.g.:
 
 ```ts
-/** template: "Loading {slideId}…" */
-loadingSlide: string;
+/** template: "Loading {frameId}…" */
+loadingFrame: string;
 
 /** templates: "{count} unsaved change" / "{count} unsaved changes" */
 unsavedChanges: Plural;

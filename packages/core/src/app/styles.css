@@ -382,7 +382,7 @@
  * glides back and forth. Used for full-screen loading states in place of
  * a spinner; quieter, more typographic, easier on the eye.
  */
-@keyframes osd-line-loader {
+@keyframes of-line-loader {
   0% {
     transform: translateX(0%);
   }
@@ -395,7 +395,7 @@
 }
 
 .line-loader-bar {
-  animation: osd-line-loader 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  animation: of-line-loader 1.4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -405,23 +405,23 @@
   }
 }
 
-[data-osd-freeze-motion],
-[data-osd-freeze-motion] *,
-[data-osd-freeze-motion] *::before,
-[data-osd-freeze-motion] *::after {
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+[data-of-freeze-motion],
+[data-of-freeze-motion] *,
+[data-of-freeze-motion] *::before,
+[data-of-freeze-motion] *::after {
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   animation-duration: 1ms !important;
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   animation-delay: 0s !important;
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   animation-iteration-count: 1 !important;
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   animation-fill-mode: forwards !important;
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   transition: none !important;
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   scroll-behavior: auto !important;
-  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary slide-authored motion, including inline styles. */
+  /* biome-ignore lint/complexity/noImportantStyles: Thumbnail previews must override arbitrary frame-authored motion, including inline styles. */
   view-transition-name: none !important;
 }
 

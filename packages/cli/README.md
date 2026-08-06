@@ -1,23 +1,23 @@
 # @open-frame/cli
 
-Scaffold a workspace for [open-frame](https://github.com/hdprajwal/open-frame) — a React-based slide framework with Claude Code skills preconfigured.
+Scaffold a workspace for [open-frame](https://github.com/hdprajwal/open-frame) — a React-based multi-format content framework with Claude Code skills preconfigured.
 
 ## Usage
 
 ```bash
-npx @open-frame/cli init my-slide
-cd my-slide
+npx @open-frame/cli init my-frames
+cd my-frames
 pnpm install
 pnpm dev
 ```
 
 This creates a workspace containing:
 
-- `slides/getting-started/` — a starter slide you can edit or delete.
-- `package.json` — depends on `@open-frame/core`, which provides the runtime (home page, slide viewer, fullscreen mode) and the `open-frame` CLI.
-- `open-frame.config.ts` — optional typed config (slidesDir, port).
-- `.claude/skills/` and `.agents/skills/` — Claude Code skills (`create-slide`, `apply-comments`, …).
-- `CLAUDE.md` — agent guide for authoring slides.
+- `frames/getting-started/` — a starter frame you can edit or delete.
+- `package.json` — depends on `@open-frame/core`, which provides the runtime (home page, frame viewer, fullscreen mode) and the `open-frame` CLI.
+- `open-frame.config.ts` — optional typed config (framesDir, port).
+- `.claude/skills/` and `.agents/skills/` — Claude Code skills (`create-frame`, `apply-comments`, …).
+- `CLAUDE.md` — agent guide for authoring frames.
 
 You won't see any Vite, React, or tsconfig files in the workspace. They live inside `@open-frame/core` and you never touch them.
 
@@ -33,6 +33,6 @@ You won't see any Vite, React, or tsconfig files in the workspace. They live ins
 
 ## Authoring
 
-Inside the scaffolded workspace, slides live under `slides/<kebab-case-id>/index.tsx` and default-export an array of `Page` components. Each page renders into a fixed 1920×1080 canvas; the framework handles scaling.
+Inside the scaffolded workspace, frames live under `frames/<kebab-case-id>/index.tsx` and default-export an array of `Page` components. Each page renders into a fixed 1920×1080 canvas; the framework handles scaling.
 
-Ask Claude Code to "make slides about X" and the `create-slide` skill will take it from there.
+Ask Claude Code to "make frames about X" and the `create-frame` skill will take it from there.

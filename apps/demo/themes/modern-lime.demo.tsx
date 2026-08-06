@@ -1,4 +1,4 @@
-import { type DesignSystem, type Page, useSlidePageNumber } from '@open-frame/core';
+import { type DesignSystem, type Page, useFramePageNumber } from '@open-frame/core';
 
 export const design: DesignSystem = {
   palette: { bg: '#000000', text: '#ffffff', accent: '#c9f224' },
@@ -19,9 +19,9 @@ const mono = '"JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace';
 const fill = {
   width: '100%',
   height: '100%',
-  background: 'var(--osd-bg)',
-  color: 'var(--osd-text)',
-  fontFamily: 'var(--osd-font-body)',
+  background: 'var(--of-bg)',
+  color: 'var(--of-text)',
+  fontFamily: 'var(--of-font-body)',
   display: 'flex',
   flexDirection: 'column' as const,
   padding: 88,
@@ -33,26 +33,26 @@ const Badge = () => (
   <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1.2, opacity: 0.55 }}>
     <span
       style={{
-        fontFamily: 'var(--osd-font-display)',
+        fontFamily: 'var(--of-font-display)',
         fontWeight: 700,
         fontSize: 22,
-        color: 'var(--osd-text)',
+        color: 'var(--of-text)',
       }}
     >
       Prajwal
     </span>
-    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--osd-accent)' }}>hdprajwal</span>
+    <span style={{ fontFamily: mono, fontSize: 18, color: 'var(--of-accent)' }}>hdprajwal</span>
   </div>
 );
 
 const Eyebrow = ({ children }: { children: React.ReactNode }) => (
   <div
     style={{
-      fontFamily: 'var(--osd-font-display)',
+      fontFamily: 'var(--of-font-display)',
       fontStyle: 'italic',
       fontWeight: 700,
       fontSize: 30,
-      color: 'var(--osd-accent)',
+      color: 'var(--of-accent)',
       marginBottom: 18,
     }}
   >
@@ -63,13 +63,13 @@ const Eyebrow = ({ children }: { children: React.ReactNode }) => (
 const Title = ({ children, size = 84 }: { children: React.ReactNode; size?: number }) => (
   <h1
     style={{
-      fontFamily: 'var(--osd-font-display)',
+      fontFamily: 'var(--of-font-display)',
       fontWeight: 900,
       fontSize: size,
       lineHeight: 1.02,
       letterSpacing: '-0.035em',
       margin: 0,
-      color: 'var(--osd-text)',
+      color: 'var(--of-text)',
     }}
   >
     {children}
@@ -77,7 +77,7 @@ const Title = ({ children, size = 84 }: { children: React.ReactNode; size?: numb
 );
 
 const Hl = ({ children }: { children: React.ReactNode }) => (
-  <span style={{ color: 'var(--osd-accent)' }}>{children}</span>
+  <span style={{ color: 'var(--of-accent)' }}>{children}</span>
 );
 
 const Arrow = () => (
@@ -93,7 +93,7 @@ const Arrow = () => (
 );
 
 const Footer = ({ end }: { end?: React.ReactNode }) => {
-  const { current, total } = useSlidePageNumber();
+  const { current, total } = useFramePageNumber();
   return (
     <div
       style={{
@@ -108,7 +108,7 @@ const Footer = ({ end }: { end?: React.ReactNode }) => {
           fontFamily: mono,
           fontSize: 20,
           fontWeight: 700,
-          color: 'var(--osd-accent)',
+          color: 'var(--of-accent)',
           letterSpacing: '0.04em',
         }}
       >
@@ -125,11 +125,11 @@ const SwipePill = () => (
       display: 'inline-flex',
       alignItems: 'center',
       gap: 14,
-      background: 'var(--osd-accent)',
+      background: 'var(--of-accent)',
       color: '#000',
       borderRadius: 100,
       padding: '12px 26px',
-      fontFamily: 'var(--osd-font-display)',
+      fontFamily: 'var(--of-font-display)',
       fontWeight: 800,
       fontSize: 20,
       letterSpacing: '0.04em',
@@ -197,7 +197,7 @@ const Content: Page = () => (
       >
         <span style={{ color: '#c2a8ff' }}>const</span> verdict ={' '}
         <span style={{ color: '#c2a8ff' }}>await</span>{' '}
-        <span style={{ color: 'var(--osd-accent)' }}>hook</span>
+        <span style={{ color: 'var(--of-accent)' }}>hook</span>
       </div>
       <div style={{ fontSize: 28, color: muted, lineHeight: 1.55, marginTop: 28 }}>
         One highlight per headline. Short body lines.
@@ -214,7 +214,7 @@ const Closer: Page = () => (
     <Badge />
     <div style={{ marginTop: 'auto', marginBottom: 'auto' }}>
       <Title size={92}>
-        <span style={{ fontStyle: 'italic', color: 'var(--osd-accent)' }}>Save this</span>
+        <span style={{ fontStyle: 'italic', color: 'var(--of-accent)' }}>Save this</span>
         <br />
         for your next deck.
       </Title>

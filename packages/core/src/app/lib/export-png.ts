@@ -1,7 +1,7 @@
 import { capturePagesAsPng } from './capture';
 import { downloadBlob } from './download';
 import { resolveCanvas } from './formats';
-import type { SlideModule } from './sdk';
+import type { FrameModule } from './sdk';
 
 export type PngExportProgress = {
   phase: 'processing' | 'generating' | 'done';
@@ -10,20 +10,20 @@ export type PngExportProgress = {
   percent: number;
 };
 
-export async function exportSlideAsPng(
-  slide: SlideModule,
-  slideId: string,
+export async function exportFrameAsPng(
+  frame: FrameModule,
+  frameId: string,
   onProgress?: (progress: PngExportProgress) => void,
 ): Promise<void> {
-  const pages = slide.default ?? [];
+  const pages = frame.default ?? [];
   if (pages.length === 0) return;
 
   const total = pages.length;
-  const canvas = resolveCanvas(slide.meta, slideId);
+  const canvas = resolveCanvas(frame.meta, frameId);
   onProgress?.({ phase: 'processing', current: 0, total, percent: 0 });
 
   try {
-    const images = await capturePagesAsPng(slide, canvas, (captured) => {
+    const images = await capturePagesAsPng(frame, canvas, (captured) => {
       onProgress?.({
         phase: 'processing',
         current: captured,
@@ -33,7 +33,7 @@ export async function exportSlideAsPng(
     });
 
     if (images.length === 1) {
-      downloadBlob(new Blob([images[0] as BlobPart], { type: 'image/png' }), `${slideId}.png`);
+      downloadBlob(new Blob([images[0] as BlobPart], { type: 'image/png' }), `${frameId}.png`);
       return;
     }
 
@@ -42,10 +42,10 @@ export async function exportSlideAsPng(
     const { zipSync } = await import('fflate');
     const files: Record<string, Uint8Array> = {};
     for (let i = 0; i < images.length; i++) {
-      files[`${slideId}-${String(i + 1).padStart(pad, '0')}.png`] = images[i];
+      files[`${frameId}-${String(i + 1).padStart(pad, '0')}.png`] = images[i];
     }
     const zipped = zipSync(files);
-    downloadBlob(new Blob([zipped as BlobPart], { type: 'application/zip' }), `${slideId}.zip`);
+    downloadBlob(new Blob([zipped as BlobPart], { type: 'application/zip' }), `${frameId}.zip`);
   } finally {
     onProgress?.({ phase: 'done', current: total, total, percent: 100 });
   }
