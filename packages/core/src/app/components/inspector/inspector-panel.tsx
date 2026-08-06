@@ -46,6 +46,7 @@ type ElementSnapshot = {
   lineHeight: number | null;
   letterSpacing: number;
   text: string | null;
+  borderRadius: number;
   imageSrc: string | null;
   placeholder: { hint: string; width?: number; height?: number } | null;
 };
@@ -307,7 +308,12 @@ export function InspectorPanel() {
         <>
           <Separator />
           <Section title={t.inspector.imageSection}>
-            <ImageField src={pinSnapshot.imageSrc} anchor={pinSelected.anchor} />
+            <ImageField
+              src={pinSnapshot.imageSrc}
+              anchor={pinSelected.anchor}
+              snapshot={pinSnapshot}
+              apply={apply}
+            />
           </Section>
         </>
       )}
@@ -732,7 +738,17 @@ function ColorField({
   );
 }
 
-function ImageField({ src, anchor }: { src: string; anchor: HTMLElement }) {
+function ImageField({
+  src,
+  anchor,
+  snapshot,
+  apply,
+}: {
+  src: string;
+  anchor: HTMLElement;
+  snapshot: ElementSnapshot;
+  apply: (ops: EditOp[]) => void;
+}) {
   const t = useLocale();
   const { openCrop, openReplace } = useInspector();
   const isImage = anchor.tagName === 'IMG';
@@ -775,7 +791,41 @@ function ImageField({ src, anchor }: { src: string; anchor: HTMLElement }) {
           )}
         </div>
       </div>
+      <BorderRadiusField snapshot={snapshot} apply={apply} />
     </div>
+  );
+}
+
+function BorderRadiusField({
+  snapshot,
+  apply,
+}: {
+  snapshot: ElementSnapshot;
+  apply: (ops: EditOp[]) => void;
+}) {
+  const t = useLocale();
+  const set = (n: number) => {
+    const px = Math.max(0, Math.round(n));
+    apply([{ kind: 'set-style', key: 'borderRadius', value: px === 0 ? null : `${px}px` }]);
+  };
+  return (
+    <Field label={t.inspector.radiusLabel}>
+      <Slider
+        min={0}
+        max={120}
+        step={1}
+        value={[snapshot.borderRadius]}
+        onValueChange={([n]) => set(n ?? snapshot.borderRadius)}
+        className="flex-1"
+      />
+      <NumberField
+        value={Math.round(snapshot.borderRadius)}
+        onChange={set}
+        min={0}
+        max={500}
+        suffix="px"
+      />
+    </Field>
   );
 }
 
@@ -969,6 +1019,7 @@ function readSnapshot(el: HTMLElement): ElementSnapshot {
     lineHeight: parseLineHeight(cs.lineHeight, parseFloat(cs.fontSize) || 16),
     letterSpacing: parseLetterSpacing(cs.letterSpacing),
     text,
+    borderRadius: parseBorderRadius(cs.borderTopLeftRadius),
     imageSrc,
     placeholder,
   };
@@ -1076,6 +1127,14 @@ function parseLineHeight(value: string, fontSize: number): number | null {
   const n = parseFloat(value);
   if (!Number.isFinite(n) || n === 0) return null;
   return round2(n / fontSize);
+}
+
+// Percentage radii (`50%` for a circle) can't round-trip through a px
+// field, so report 0 and let an explicit edit replace them.
+function parseBorderRadius(value: string): number {
+  if (!value.endsWith('px')) return 0;
+  const n = parseFloat(value);
+  return Number.isFinite(n) && n > 0 ? round2(n) : 0;
 }
 
 function parseLetterSpacing(value: string): number {
