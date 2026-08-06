@@ -1,13 +1,11 @@
 import { randomUUID } from 'node:crypto';
 import path from 'node:path';
-import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
+import type { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import type { Connect, Plugin, ViteDevServer } from 'vite';
 import { type HostAllowlistConfig, isAllowedDevHost } from '../http/host-guard.ts';
 import { validateMutationRequest } from '../http/request-guard.ts';
 import { AGENT_PRESENCE_EVENT, agentPresenceFromClientInfo } from '../mcp/presence.ts';
 import type { McpToolContext } from '../mcp/registry.ts';
-import { createMcpServer } from '../mcp/server.ts';
 import { json, readBody } from './routes/context.ts';
 
 export const MCP_ENDPOINT = '/__mcp';
@@ -23,6 +21,29 @@ export type McpPluginOptions = {
 };
 
 export type McpRequestCheck = { ok: true } | { ok: false; status: number; error: string };
+
+type McpRuntime = {
+  StreamableHTTPServerTransport: typeof import('@modelcontextprotocol/sdk/server/streamableHttp.js').StreamableHTTPServerTransport;
+  isInitializeRequest: typeof import('@modelcontextprotocol/sdk/types.js').isInitializeRequest;
+  createMcpServer: typeof import('../mcp/server.ts').createMcpServer;
+};
+
+let mcpRuntime: Promise<McpRuntime> | null = null;
+
+// The sdk pulls in ~90 transitive packages. Loading it on first request keeps it
+// out of the module graph that `open-frame build` and `open-frame preview` walk.
+function loadMcpRuntime(): Promise<McpRuntime> {
+  mcpRuntime ??= Promise.all([
+    import('@modelcontextprotocol/sdk/server/streamableHttp.js'),
+    import('@modelcontextprotocol/sdk/types.js'),
+    import('../mcp/server.ts'),
+  ]).then(([transport, types, server]) => ({
+    StreamableHTTPServerTransport: transport.StreamableHTTPServerTransport,
+    isInitializeRequest: types.isInitializeRequest,
+    createMcpServer: server.createMcpServer,
+  }));
+  return mcpRuntime;
+}
 
 function headerOf(req: Connect.IncomingMessage, name: string): string | null {
   const raw = req.headers[name];
@@ -80,6 +101,7 @@ export function mountMcpEndpoint(server: ViteDevServer, opts: McpPluginOptions):
     host: string,
     origin: string | null,
   ): Promise<StreamableHTTPServerTransport> {
+    const { StreamableHTTPServerTransport, createMcpServer } = await loadMcpRuntime();
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: () => randomUUID(),
       // Pins the session to the exact Host/Origin it was opened from, so the
@@ -130,6 +152,7 @@ export function mountMcpEndpoint(server: ViteDevServer, opts: McpPluginOptions):
       if (req.method !== 'POST') return json(res, 400, { error: 'missing mcp-session-id header' });
 
       const body = await readBody(req);
+      const { isInitializeRequest } = await loadMcpRuntime();
       if (!isInitializeRequest(body)) {
         return json(res, 400, { error: 'missing mcp-session-id header' });
       }
