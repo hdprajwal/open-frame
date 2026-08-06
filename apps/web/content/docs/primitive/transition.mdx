@@ -4,7 +4,7 @@ description: Enter, exit, and shared-element motion between pages.
 ---
 
 `FrameTransition` describes what happens when the active `Page` changes. There
-is no default animation: pages snap unless the deck exports a transition or an
+is no default animation: pages snap unless the frame exports a transition or an
 incoming page defines its own override.
 
 ```tsx title="frames/q2-launch/index.tsx"
@@ -43,7 +43,7 @@ export default [Cover, Agenda] satisfies Page[];
 
 There are two declaration surfaces:
 
-- `export const transition` in the frame module sets the deck default.
+- `export const transition` in the frame module sets the frame default.
 - `Page.transition = …` sets an override for one page.
 
 The incoming page wins. Navigating `Cover → Agenda` uses
@@ -90,7 +90,7 @@ Use it when motion has a literal direction:
 }
 ```
 
-Most decks should keep a single restrained motion family: short duration,
+Most frames should keep a single restrained motion family: short duration,
 subtle distance, opacity included, and no different transition vocabulary on
 every page.
 

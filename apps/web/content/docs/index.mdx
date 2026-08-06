@@ -1,17 +1,20 @@
 ---
 title: Introduction
-description: A frame framework built for agents.
+description: The content studio built for agents.
 ---
 
-![open-frame editor showing a deck with the inspector and assets panel docked alongside the canvas](/assets/screenshots/open-frame-cover.webp)
+![open-frame editor showing a frame with the inspector and assets panel docked alongside the canvas](/assets/screenshots/open-frame-cover.webp)
 
-**open-frame** is a frame framework for the agent era. You describe a deck in
-natural language; your coding agent writes the React. open-frame handles the
-canvas, scaling, navigation, hot reload, present mode, and export so the agent
-can focus on content.
+**open-frame** turns React components into slides, carousels, stories,
+thumbnails, and OG images. You describe what you want in natural language; your
+coding agent writes the React. open-frame handles the canvas, scaling,
+navigation, hot reload, present mode, and export so the agent can focus on
+content.
 
-Every page renders into a fixed **1920 × 1080** canvas. Frames are arbitrary
-React components — not a constrained DSL.
+A **frame** is one piece of content — a talk, a carousel, a single image. It
+lives in `frames/<id>/` as a React module exporting one or more pages, and each
+page renders into a fixed **1920 × 1080** canvas. Frames are arbitrary React
+components — not a constrained DSL.
 
 ```npm
 npx @open-frame/cli init
@@ -19,9 +22,9 @@ npx @open-frame/cli init
 
 ## Why open-frame
 
-Frames are visual code. Agents are great at writing code. open-frame is the
-missing runtime that turns *"make frames about X"* into a polished, presentable
-deck — without you ever leaving the chat.
+Visual content is just code. Agents are great at writing code. open-frame is the
+missing runtime that turns *"make slides about X"* into something polished and
+presentable — without you ever leaving the chat.
 
 - **Agent-native authoring.** Ships with skills (`/create-frame`,
   `/frame-authoring`, `/apply-comments`, `/create-theme`) that any
@@ -41,7 +44,7 @@ A frame is a React component. The runtime renders one component at a time
 onto a fixed 1920×1080 canvas, scales it to fit the viewport, and hands you
 the navigation, hot reload, and present mode.
 
-Each deck lives under `frames/<kebab-case-id>/`. The entry is
+Each frame lives under `frames/<kebab-case-id>/`. The entry is
 `frames/<id>/index.tsx`. Assets sit alongside in `frames/<id>/assets/`.
 
 ```tsx title="frames/getting-started/index.tsx"

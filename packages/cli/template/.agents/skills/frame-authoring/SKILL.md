@@ -1,6 +1,6 @@
 ---
 name: frame-authoring
-description: Technical reference for writing or editing open-frame pages — file contract, 1920×1080 canvas, type scale, layout, palette/visual direction, and assets. Consult this whenever you are about to write or modify any file under `frames/<id>/`, including from inside the `create-frame` or `apply-comments` workflows, or for any ad-hoc frame edit. Triggers on phrases like "edit frame", "tweak this page", "fix the layout", "change the palette", "investigate the frame framework", "how do frames work here".
+description: Technical reference for writing or editing open-frame pages — file contract, 1920×1080 canvas, type scale, layout, palette/visual direction, and assets. Consult this whenever you are about to write or modify any file under `frames/<id>/`, including from inside the `create-frame` or `apply-comments` workflows, or for any ad-hoc frame edit. Triggers on phrases like "edit frame", "tweak this page", "fix the layout", "change the palette", "investigate the open-frame framework", "how do frames work here".
 ---
 
 # Authoring open-frame pages
