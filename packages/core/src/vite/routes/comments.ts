@@ -8,6 +8,7 @@ import {
   offsetToLine,
   parseMarkers,
 } from '../../editing/comments.ts';
+import { writeTrackedFile } from '../../files/self-writes.ts';
 import { validateMutationRequest } from '../../http/request-guard.ts';
 import { type ApiContext, json, readBody, resolveSlideEntryPath } from './context.ts';
 
@@ -78,7 +79,7 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
         const marker = `\n${plan.indent}{/* @slide-comment id="${id}" ts="${ts}" text="${payload}" */}`;
 
         const next = source.slice(0, plan.offset) + marker + source.slice(plan.offset);
-        await fs.writeFile(file, next, 'utf8');
+        await writeTrackedFile(file, next);
         const markerLine = offsetToLine(next, plan.offset + 1);
         return json(res, 200, { id, line: markerLine });
       }
@@ -106,7 +107,7 @@ export function registerCommentRoutes(server: ViteDevServer, ctx: ApiContext): v
         const hit = lines.findIndex((l) => idRe.test(l));
         if (hit === -1) return json(res, 404, { error: 'marker not found' });
         lines.splice(hit, 1);
-        await fs.writeFile(file, lines.join('\n'), 'utf8');
+        await writeTrackedFile(file, lines.join('\n'));
         return json(res, 200, { ok: true });
       }
 

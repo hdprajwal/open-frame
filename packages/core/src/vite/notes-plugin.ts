@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import { parse as babelParse } from '@babel/parser';
 import * as t from '@babel/types';
 import type { Plugin, ViteDevServer } from 'vite';
+import { writeTrackedFile } from '../files/self-writes.ts';
 import { validateMutationRequest } from '../http/request-guard.ts';
 import { json, readBody, resolveSlidePath } from './routes/context.ts';
 
@@ -202,7 +203,7 @@ export function notesPlugin(opts: NotesPluginOptions): Plugin {
           const changed = result.source !== source;
           if (changed) {
             recentWrites.set(file, Date.now());
-            await fs.writeFile(file, result.source, 'utf8');
+            await writeTrackedFile(file, result.source);
           }
           return json(res, 200, { ok: true, changed });
         } catch (err) {
