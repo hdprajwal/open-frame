@@ -1,10 +1,10 @@
 ---
-title: open-slide build
+title: open-frame build
 description: Produce a static, deployable build.
 ---
 
 ```npm
-open-slide build
+open-frame build
 # or
 npm run build
 ```
@@ -31,10 +31,10 @@ dist/
 ## Trimming the public surface
 
 If the build is for a public share rather than internal review, you can hide
-the slide browser and on-canvas UI in `open-slide.config.ts`:
+the slide browser and on-canvas UI in `open-frame.config.ts`:
 
 ```ts
-const config: OpenSlideConfig = {
+const config: OpenFrameConfig = {
   build: {
     showSlideBrowser: false,
     showSlideUi: false,
@@ -49,11 +49,11 @@ See [Export](/docs/core-feature/export) for the full set of build knobs.
 
 If the build won't sit at the domain root (GitHub Pages project sites,
 a reverse-proxy folder, an intranet path), set `base` in
-`open-slide.config.ts` so asset URLs and client-side navigation resolve
+`open-frame.config.ts` so asset URLs and client-side navigation resolve
 against the deployed path:
 
 ```ts
-const config: OpenSlideConfig = {
+const config: OpenFrameConfig = {
   base: '/my-slides/',
 };
 ```
