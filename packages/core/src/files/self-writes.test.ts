@@ -73,13 +73,38 @@ describe('self-write tracker', () => {
     expect(tracker.matches('/slides/outro/index.tsx', 'a')).toBe(false);
   });
 
-  it('keeps only the latest write for a file', () => {
+  it('keeps every write to a file matchable, not just the latest', () => {
     const tracker = createSelfWriteTracker();
     tracker.record('/slides/intro/index.tsx', 'a');
     tracker.record('/slides/intro/index.tsx', 'b');
 
+    expect(tracker.matches('/slides/intro/index.tsx', 'a')).toBe(true);
+    expect(tracker.matches('/slides/intro/index.tsx', 'b')).toBe(true);
+  });
+
+  it('expires each write on its own TTL', () => {
+    const clock = fakeClock();
+    const tracker = createSelfWriteTracker({ now: clock.now });
+    tracker.record('/slides/intro/index.tsx', 'a');
+    clock.advance(SELF_WRITE_TTL_MS - 1);
+    tracker.record('/slides/intro/index.tsx', 'b');
+
+    expect(tracker.matches('/slides/intro/index.tsx', 'a')).toBe(true);
+
+    clock.advance(1);
     expect(tracker.matches('/slides/intro/index.tsx', 'a')).toBe(false);
     expect(tracker.matches('/slides/intro/index.tsx', 'b')).toBe(true);
+  });
+
+  it('refreshes an entry rather than growing when the same contents repeat', () => {
+    const clock = fakeClock();
+    const tracker = createSelfWriteTracker({ now: clock.now });
+    tracker.record('/slides/intro/index.tsx', 'a');
+    clock.advance(SELF_WRITE_TTL_MS - 1);
+    tracker.record('/slides/intro/index.tsx', 'a');
+
+    clock.advance(SELF_WRITE_TTL_MS - 1);
+    expect(tracker.matches('/slides/intro/index.tsx', 'a')).toBe(true);
   });
 
   // Accepted miss, not a bug: an external write of byte-identical content
@@ -111,5 +136,38 @@ describe('writeTrackedFile', () => {
     await expect(fs.readFile(file, 'utf8')).resolves.toBe('export default []\n');
     expect(selfWrites.matches(file, 'export default []\n')).toBe(true);
     expect(selfWrites.matches(file, 'something else')).toBe(false);
+  });
+
+  it('keeps both contents matchable when two writes to one file overlap', async () => {
+    const file = await tempFile();
+    selfWrites.clear();
+
+    await Promise.all([writeTrackedFile(file, 'first\n'), writeTrackedFile(file, 'second\n')]);
+
+    expect(selfWrites.matches(file, 'first\n')).toBe(true);
+    expect(selfWrites.matches(file, 'second\n')).toBe(true);
+  });
+
+  it('lands the last caller contents intact when writes to one file overlap', async () => {
+    const file = await tempFile();
+    selfWrites.clear();
+    const first = 'a'.repeat(512 * 1024);
+    const second = 'b'.repeat(512 * 1024);
+
+    await Promise.all([writeTrackedFile(file, first), writeTrackedFile(file, second)]);
+
+    await expect(fs.readFile(file, 'utf8')).resolves.toBe(second);
+  });
+
+  it('keeps accepting writes to a file after one of them failed', async () => {
+    const file = await tempFile();
+    await fs.mkdir(file);
+
+    await expect(writeTrackedFile(file, 'nope')).rejects.toThrow();
+
+    await fs.rmdir(file);
+    await writeTrackedFile(file, 'ok\n');
+
+    await expect(fs.readFile(file, 'utf8')).resolves.toBe('ok\n');
   });
 });
