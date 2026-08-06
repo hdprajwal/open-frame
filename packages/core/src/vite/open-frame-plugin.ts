@@ -4,6 +4,7 @@ import path from 'node:path';
 import fg from 'fast-glob';
 import { loadConfigFromFile, normalizePath, type Plugin, type ViteDevServer } from 'vite';
 import type { OpenFrameConfig } from '../config.ts';
+import { selfWrites } from '../files/self-writes.ts';
 
 export type { OpenFrameConfig };
 
@@ -45,6 +46,21 @@ async function readFoldersManifest(file: string): Promise<FoldersManifest> {
 
 function resolved(id: string): string {
   return `\0${id}`;
+}
+
+// Unreadable files fail closed: a change we cannot hash is reported as our
+// own, because a false external-edit signal is worse than a missed one.
+async function isExternalEdit(
+  file: string,
+  read: () => string | Promise<string>,
+): Promise<boolean> {
+  let contents: string;
+  try {
+    contents = await read();
+  } catch {
+    return false;
+  }
+  return !selfWrites.matches(file, contents);
 }
 
 async function findSlides(userCwd: string, slidesDir: string): Promise<string[]> {
@@ -247,9 +263,16 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
       }
       return null;
     },
-    handleHotUpdate(ctx) {
+    async handleHotUpdate(ctx) {
       const slideId = slideIdForEntry(ctx.file);
       if (!slideId) return;
+      if (await isExternalEdit(ctx.file, ctx.read)) {
+        ctx.server.ws.send({
+          type: 'custom',
+          event: 'open-frame:external-edit',
+          data: { slideId, file: ctx.file },
+        });
+      }
       queueSlideChanged(ctx.server, slideId);
       return [];
     },

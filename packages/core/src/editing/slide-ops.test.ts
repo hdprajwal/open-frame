@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { selfWrites } from '../files/self-writes.ts';
 import {
   duplicateNotesElementInSource,
   duplicatePageInDefaultExportInSource,
@@ -47,6 +48,18 @@ describe('duplicateSlideDir', () => {
       await expect(
         fs.readFile(path.join(root, 'cover-copy', 'assets', 'hero.txt'), 'utf8'),
       ).resolves.toBe('hero');
+    });
+  });
+
+  it('records the copied entry on the self-write tracker', async () => {
+    await withSlidesRoot(async (root) => {
+      await writeSlide(root, 'cover', 'Cover');
+      selfWrites.clear();
+
+      await duplicateSlideDir(root, 'cover');
+
+      const entry = path.join(root, 'cover-copy', 'index.tsx');
+      expect(selfWrites.matches(entry, await fs.readFile(entry, 'utf8'))).toBe(true);
     });
   });
 

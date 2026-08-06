@@ -15,6 +15,7 @@ import {
   validateSlideName,
 } from '../../editing/slide-ops.ts';
 import { readManifest, writeManifest } from '../../files/folders.ts';
+import { writeTrackedFile } from '../../files/self-writes.ts';
 import { validateMutationRequest } from '../../http/request-guard.ts';
 import { type ApiContext, json, readBody } from './context.ts';
 
@@ -74,7 +75,7 @@ export function registerSlideRoutes(server: ViteDevServer, ctx: ApiContext): voi
           });
         }
         if (withNotes !== source) {
-          await fs.writeFile(entry, withNotes, 'utf8');
+          await writeTrackedFile(entry, withNotes);
         }
         return json(res, 200, { ok: true, slideId, order });
       }
@@ -127,7 +128,7 @@ export function registerSlideRoutes(server: ViteDevServer, ctx: ApiContext): voi
           });
         }
         if (withNotes !== source) {
-          await fs.writeFile(entry, withNotes, 'utf8');
+          await writeTrackedFile(entry, withNotes);
         }
         return json(res, 200, { ok: true, slideId, index: pageIndex });
       }
@@ -189,7 +190,7 @@ export function registerSlideRoutes(server: ViteDevServer, ctx: ApiContext): voi
           });
         }
         if (updated !== source) {
-          await fs.writeFile(entry, updated, 'utf8');
+          await writeTrackedFile(entry, updated);
         }
         // The TSX edit lands through Vite's normal HMR pipeline, but the
         // React state holding `slide.meta` in the editor won't re-fetch on

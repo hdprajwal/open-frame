@@ -3,6 +3,7 @@ import { parse as babelParse } from '@babel/parser';
 import type { Plugin, ViteDevServer } from 'vite';
 import { type DesignSystem, defaultDesign } from '../app/lib/design.ts';
 import type { AstNode } from '../editing/babel-walk.ts';
+import { writeTrackedFile } from '../files/self-writes.ts';
 import { validateMutationRequest } from '../http/request-guard.ts';
 import { json, readBody, resolveSlidePath } from './routes/context.ts';
 
@@ -389,7 +390,7 @@ export function designPlugin(opts: DesignPluginOptions): Plugin {
             const merged = mergeDesign(baseDesign, patch);
             const written = applyDesignWrite(source, merged);
             if (!written.ok) return json(res, written.status, { error: written.error });
-            if (written.source !== source) await fs.writeFile(file, written.source, 'utf8');
+            if (written.source !== source) await writeTrackedFile(file, written.source);
             return json(res, 200, { ok: true, design: merged, created: written.created });
           }
 
@@ -406,7 +407,7 @@ export function designPlugin(opts: DesignPluginOptions): Plugin {
             }
             const written = applyDesignWrite(source, defaultDesign);
             if (!written.ok) return json(res, written.status, { error: written.error });
-            if (written.source !== source) await fs.writeFile(file, written.source, 'utf8');
+            if (written.source !== source) await writeTrackedFile(file, written.source);
             return json(res, 200, { ok: true, design: defaultDesign, created: written.created });
           }
 

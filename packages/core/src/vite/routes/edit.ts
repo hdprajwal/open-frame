@@ -2,6 +2,7 @@ import fs from 'node:fs/promises';
 import type { ViteDevServer } from 'vite';
 import { applyEdit, type EditOp } from '../../editing/edit-ops.ts';
 import { applyRevertAsset } from '../../editing/revert-asset.ts';
+import { writeTrackedFile } from '../../files/self-writes.ts';
 import { validateMutationRequest } from '../../http/request-guard.ts';
 import { type ApiContext, json, readBody, resolveSlideEntryPath } from './context.ts';
 
@@ -48,7 +49,7 @@ export function registerEditRoutes(server: ViteDevServer, ctx: ApiContext): void
         const result = applyEdit(source, body.line, body.column ?? 0, body.ops);
         if (!result.ok) return json(res, result.status, { error: result.error });
         const changed = result.source !== source;
-        if (changed) await fs.writeFile(file, result.source, 'utf8');
+        if (changed) await writeTrackedFile(file, result.source);
         return json(res, 200, { ok: true, changed });
       }
 
@@ -75,7 +76,7 @@ export function registerEditRoutes(server: ViteDevServer, ctx: ApiContext): void
         const result = applyRevertAsset(source, assetPath);
         if (!result.ok) return json(res, result.status, { error: result.error });
         const changed = result.source !== source;
-        if (changed) await fs.writeFile(file, result.source, 'utf8');
+        if (changed) await writeTrackedFile(file, result.source);
         return json(res, 200, { ok: true, changed });
       }
 
@@ -112,7 +113,7 @@ export function registerEditRoutes(server: ViteDevServer, ctx: ApiContext): void
           }
         }
         const changed = source !== original;
-        if (changed) await fs.writeFile(file, source, 'utf8');
+        if (changed) await writeTrackedFile(file, source);
         return json(res, 200, { ok: true, changed, results });
       }
 
