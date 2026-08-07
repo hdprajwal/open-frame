@@ -39,13 +39,15 @@ export function Nav() {
           >
             Docs
           </Link>
-          <Link
-            href="/#demo"
+          <a
+            href="https://demo.open-frame.dev"
+            target="_blank"
+            rel="noopener noreferrer"
             onClick={() => posthog.capture('nav_external_link_clicked', { label: 'demo' })}
             className="hidden md:inline text-body hover:text-ink transition-colors"
           >
             Demo
-          </Link>
+          </a>
           <a
             href="https://github.com/hdprajwal/open-frame"
             target="_blank"
