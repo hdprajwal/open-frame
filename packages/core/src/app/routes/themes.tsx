@@ -1,28 +1,17 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import { useLocale } from '@/lib/use-locale';
-import { FolderIconChip } from '../components/sidebar/folder-item';
+import { format, plural, useLocale } from '@/lib/use-locale';
+import { LibraryPage } from '../components/library-page';
 import { ThemeDetail } from '../components/themes/theme-detail';
 import { ThemesGallery } from '../components/themes/themes-gallery';
 import { themes as themeRegistry } from '../lib/themes';
 
 export function ThemesGalleryPage() {
-  const navigate = useNavigate();
   const t = useLocale();
+  const count = themeRegistry.length;
   return (
-    <>
-      <header className="mb-8 md:mb-12">
-        <div className="flex flex-wrap items-center gap-3">
-          <FolderIconChip icon={{ type: 'lucide', value: 'palette' }} className="size-7 text-2xl" />
-          <h1 className="font-heading text-32 font-semibold leading-1.05 tracking-tight md:text-44">
-            {t.themes.title}
-          </h1>
-          <span className="folio ml-1 self-end pb-2">
-            {themeRegistry.length.toString().padStart(2, '0')}
-          </span>
-        </div>
-      </header>
-      <ThemesGallery onOpen={(id) => navigate(`/themes/${encodeURIComponent(id)}`)} />
-    </>
+    <LibraryPage title={t.themes.title} count={format(plural(count, t.home.themeCount), { count })}>
+      <ThemesGallery />
+    </LibraryPage>
   );
 }
 
@@ -30,5 +19,11 @@ export function ThemeDetailPage() {
   const { themeId } = useParams<{ themeId: string }>();
   const navigate = useNavigate();
   if (!themeId) return null;
-  return <ThemeDetail themeId={themeId} onBack={() => navigate('/themes')} />;
+  return (
+    <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="mx-auto w-full max-w-[1180px] px-5 py-8 md:px-10 md:py-12">
+        <ThemeDetail themeId={themeId} onBack={() => navigate('/themes')} />
+      </div>
+    </div>
+  );
 }

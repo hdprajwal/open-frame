@@ -16,6 +16,7 @@ export function App() {
         {config.build.showFrameBrowser ? (
           <Route element={<HomeShell />}>
             <Route path="/" element={<Home />} />
+            <Route path="/drafts" element={<Home />} />
             <Route path="/themes" element={<ThemesGalleryPage />} />
             <Route path="/themes/:themeId" element={<ThemeDetailPage />} />
             <Route path="/assets" element={<AssetsPage />} />

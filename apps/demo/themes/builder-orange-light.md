@@ -42,7 +42,7 @@ The light-canvas twin of **Builder Orange**, lifted from the Prajwal HD brand sy
 
 ## Layout
 
-- Canvas: **1080 × 1080** (1:1). Set `meta.canvasWidth` / `meta.canvasHeight` to `1080`.
+- Canvas: **1080 × 1080** (1:1). Set `meta.canvas` to `{ width: 1080, height: 1080 }`.
 - Content padding: **88 px** from every edge.
 - Alignment: **left-aligned, single column.** Headline anchored low-left on the cover/closer; content headline + body in the upper two-thirds on content pages. Never center.
 - Background: every page carries a faint **dark dot grid** (radial dots at ~5% black, ~46 px pitch) baked into the page-root `backgroundImage`. It is the only texture — no gradients, no flat re-fills that drop it.

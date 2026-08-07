@@ -38,7 +38,7 @@ A high-contrast carousel identity for square (1:1) LinkedIn posts: pure black ba
 
 ## Layout
 
-- Canvas: **1080 × 1080** (1:1). Set `meta.canvasWidth` / `meta.canvasHeight` to `1080`.
+- Canvas: **1080 × 1080** (1:1). Set `meta.canvas` to `{ width: 1080, height: 1080 }`.
 - Content padding: **88 px** from every edge.
 - Alignment: **left-aligned, single column.** Never center.
 - Vertical rhythm: badge pinned top, content block centered (`margin: auto` top and bottom), footer pinned bottom. Use a flex column with `padding: 88` and let the middle block take `margin-top/bottom: auto`.

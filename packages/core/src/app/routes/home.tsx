@@ -6,13 +6,12 @@ import {
   FolderInput,
   FolderPlus,
   MoreHorizontal,
-  Palette,
   Pencil,
   Search,
   Trash2,
   X,
 } from 'lucide-react';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useOutletContext } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
@@ -30,12 +29,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { relativeTime } from '@/lib/relative-time';
 import { useFrameEditFlash } from '@/lib/use-external-edits';
-import { format, useLocale } from '@/lib/use-locale';
+import { format, plural, useLocale } from '@/lib/use-locale';
 import { cn } from '@/lib/utils';
 import { FrameCanvas } from '../components/frame-canvas';
+import { FactSeparator, FrameCardShell } from '../components/frame-card-shell';
+import { LibraryPage } from '../components/library-page';
 import { FolderIconChip, FRAME_DND_MIME } from '../components/sidebar/folder-item';
-import { DRAFT_ID } from '../components/sidebar/sidebar';
+import { ALL_ID, DRAFT_ID } from '../components/sidebar/sidebar';
 import { resolveCanvas } from '../lib/formats';
 import { frameCreatedAt, loadFrame } from '../lib/frames';
 import { FramePageProvider } from '../lib/page-context';
@@ -75,6 +77,7 @@ export function Home() {
   const {
     manifest,
     loading,
+    allFrames,
     draftFrames,
     framesByFolder,
     selectedId,
@@ -87,16 +90,17 @@ export function Home() {
   } = useOutletContext<HomeOutletContext>();
   const t = useLocale();
 
-  const selectedFolder =
-    selectedId === DRAFT_ID ? null : (manifest.folders.find((f) => f.id === selectedId) ?? null);
-  const visibleFrames = selectedId === DRAFT_ID ? draftFrames : (framesByFolder[selectedId] ?? []);
-
-  const title = selectedFolder?.name ?? t.home.draft;
-  const headerIcon = selectedFolder?.icon ?? {
-    type: 'lucide' as const,
-    value: 'square-pen' as const,
-  };
+  const isAll = selectedId === ALL_ID;
   const isDraft = selectedId === DRAFT_ID;
+  const selectedFolder =
+    isAll || isDraft ? null : (manifest.folders.find((f) => f.id === selectedId) ?? null);
+  const visibleFrames = isAll
+    ? allFrames
+    : isDraft
+      ? draftFrames
+      : (framesByFolder[selectedId] ?? []);
+
+  const title = isAll ? t.home.allFrames : (selectedFolder?.name ?? t.home.draft);
 
   const [query, setQuery] = useState('');
   const [sortKey, setSortKey] = useSortPref();
@@ -130,71 +134,60 @@ export function Home() {
   }, [filteredFrames, sortKey, titleMap]);
   const isSearching = trimmedQuery.length > 0;
 
-  return (
-    <>
-      <header className="mb-8 md:mb-12">
-        <div className="flex flex-wrap items-center gap-3">
-          <FolderIconChip icon={headerIcon} className="size-7 text-2xl" />
-          <h1 className="font-heading text-32 font-semibold leading-1.05 tracking-tight md:text-44">
-            {title}
-          </h1>
-          {!loading && (
-            <span className="folio ml-1 self-end pb-2">
-              {(isSearching ? filteredFrames.length : visibleFrames.length)
-                .toString()
-                .padStart(2, '0')}
-              {isSearching && (
-                <span className="opacity-40">
-                  /{visibleFrames.length.toString().padStart(2, '0')}
-                </span>
-              )}
-            </span>
-          )}
-          <div className="ml-auto flex w-full items-center gap-2 md:w-auto">
-            <SortControl value={sortKey} onChange={setSortKey} />
-            <SearchInput value={query} onChange={setQuery} />
-          </div>
-        </div>
-      </header>
+  const shown = isSearching ? filteredFrames.length : visibleFrames.length;
 
+  // Read through a ref so the handler stays referentially stable — every card
+  // holds it, and a new identity would defeat FrameCard's memo.
+  const titleMapRef = useRef(titleMap);
+  titleMapRef.current = titleMap;
+
+  const handleDuplicate = useCallback(
+    async (id: string) => {
+      const frameName = titleMapRef.current[id] ?? id;
+      try {
+        const newFrameId = await duplicateFrame(id);
+        toast.success(
+          format(t.home.toastFrameDuplicated, { frame: frameName, newFrame: newFrameId }),
+        );
+      } catch {
+        toast.error(t.home.toastFrameDuplicateFailed);
+      }
+    },
+    [duplicateFrame, t],
+  );
+
+  return (
+    <LibraryPage
+      title={title}
+      count={loading ? undefined : format(plural(shown, t.home.frameCount), { count: shown })}
+      actions={<SearchInput value={query} onChange={setQuery} />}
+      toolbar={<SortControl value={sortKey} onChange={setSortKey} />}
+    >
       {loading ? (
         <HomeLoading />
       ) : visibleFrames.length === 0 ? (
-        <EmptyState isDraft={isDraft} folderName={selectedFolder?.name} />
+        <EmptyState folderName={selectedFolder?.name} />
       ) : filteredFrames.length === 0 ? (
         <NoResultsState query={query} onClear={() => setQuery('')} />
       ) : (
-        <ul className="grid grid-cols-[repeat(auto-fill,minmax(240px,1fr))] gap-x-6 gap-y-9 md:grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+        <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(272px,100%),1fr))] items-start gap-5 md:grid-cols-[repeat(auto-fill,minmax(296px,1fr))]">
           {sortedFrames.map((id) => (
             <li key={id}>
               <FrameCard
                 id={id}
                 folders={manifest.folders}
                 currentFolderId={manifest.assignments[id] ?? null}
-                onRename={(name) => renameFrame(id, name)}
-                onDuplicate={async () => {
-                  const frameName = titleMap[id] ?? id;
-                  try {
-                    const newFrameId = await duplicateFrame(id);
-                    toast.success(
-                      format(t.home.toastFrameDuplicated, {
-                        frame: frameName,
-                        newFrame: newFrameId,
-                      }),
-                    );
-                  } catch {
-                    toast.error(t.home.toastFrameDuplicateFailed);
-                  }
-                }}
-                onMove={(folderId) => assign(id, folderId)}
-                onDelete={() => deleteFrame(id)}
+                onRename={renameFrame}
+                onDuplicate={handleDuplicate}
+                onMove={assign}
+                onDelete={deleteFrame}
                 onTitleResolved={reportTitle}
               />
             </li>
           ))}
         </ul>
       )}
-    </>
+    </LibraryPage>
   );
 }
 
@@ -312,19 +305,15 @@ function NoResultsState({ query, onClear }: { query: string; onClear: () => void
   );
 }
 
-function EmptyState({ isDraft, folderName }: { isDraft: boolean; folderName?: string }) {
+function EmptyState({ folderName }: { folderName?: string }) {
   const t = useLocale();
-  const folderEmptyTitle = t.home.folderEmptyTitle.replace(
-    '{name}',
-    folderName ?? t.home.folderEmptyTitle,
-  );
   return (
     <div className="rounded-10 border border-dashed border-border bg-card/60 px-8 py-20">
       <div className="mx-auto flex max-w-md flex-col items-center text-center">
         <div className="flex size-12 items-center justify-center rounded-full border border-hairline bg-card text-muted-foreground">
           <FolderPlus className="size-5" />
         </div>
-        {isDraft ? (
+        {folderName === undefined ? (
           <>
             <p className="mt-4 font-heading text-15 font-semibold tracking-tight">
               {t.home.noFramesYet}
@@ -340,7 +329,7 @@ function EmptyState({ isDraft, folderName }: { isDraft: boolean; folderName?: st
         ) : (
           <>
             <p className="mt-4 font-heading text-15 font-semibold tracking-tight">
-              {folderEmptyTitle}
+              {format(t.home.folderEmptyTitle, { name: folderName })}
             </p>
             <p className="mt-1.5 text-13 leading-relaxed text-muted-foreground">
               {t.home.folderEmptyHint}
@@ -397,7 +386,10 @@ function createDragChip(title: string): HTMLElement | null {
 
 type DialogKind = null | 'rename' | 'move' | 'delete';
 
-function FrameCard({
+// Memoized because every card renders a live page tree: without it, one card
+// reporting its title would reconcile the whole grid. Its callbacks all take
+// the frame id so the parent can pass one stable function to every card.
+const FrameCard = memo(function FrameCard({
   id,
   folders,
   currentFolderId,
@@ -410,10 +402,10 @@ function FrameCard({
   id: string;
   folders: Folder[];
   currentFolderId: string | null;
-  onRename: (name: string) => Promise<void> | void;
-  onDuplicate: () => Promise<void> | void;
-  onMove: (folderId: string | null) => Promise<void> | void;
-  onDelete: () => Promise<void> | void;
+  onRename: (id: string, name: string) => Promise<void> | void;
+  onDuplicate: (id: string) => Promise<void> | void;
+  onMove: (id: string, folderId: string | null) => Promise<void> | void;
+  onDelete: (id: string) => Promise<void> | void;
   onTitleResolved?: (id: string, title: string) => void;
 }) {
   const [frame, setFrame] = useState<FrameModule | null>(null);
@@ -436,6 +428,9 @@ function FrameCard({
 
   const FirstPage = frame?.default[0];
   const displayTitle = frame?.meta?.title ?? id;
+  const pageCount = frame?.default.length ?? 0;
+  const canvas = frame ? resolveCanvas(frame.meta) : null;
+  const createdAt = frameCreatedAt[id];
 
   useEffect(() => {
     if (frame && onTitleResolved) onTitleResolved(id, displayTitle);
@@ -443,8 +438,14 @@ function FrameCard({
 
   return (
     <>
-      {/* biome-ignore lint/a11y/noStaticElementInteractions: drag source wraps an interactive Link */}
-      <div
+      <FrameCardShell
+        to={`/f/${id}`}
+        title={displayTitle}
+        subtitle={`frames/${id}`}
+        canvas={canvas}
+        pageCount={pageCount}
+        overlay={editFlash !== null ? <span key={editFlash} className="edit-flash" /> : undefined}
+        className={cn(dragging && 'opacity-40')}
         draggable
         onDragStart={(e) => {
           e.dataTransfer.setData(FRAME_DND_MIME, id);
@@ -457,71 +458,24 @@ function FrameCard({
           setDragging(true);
         }}
         onDragEnd={() => setDragging(false)}
-        className={cn('group relative motion-safe:transition-opacity', dragging && 'opacity-40')}
-      >
-        <Link to={`/f/${id}`} className="block focus-visible:outline-none">
-          {/* Frame thumb — tight border, grey baseboard, no shadcn rounded-xl */}
-          <div className="relative aspect-video overflow-hidden rounded-6 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
-            {FirstPage ? (
-              <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
-                <FrameCanvas
-                  flat
-                  freezeMotion
-                  design={frame?.design}
-                  canvas={resolveCanvas(frame?.meta)}
-                >
-                  <FramePageProvider index={0} total={frame?.default.length ?? 1}>
-                    <FirstPage />
-                  </FramePageProvider>
-                </FrameCanvas>
-              </div>
-            ) : (
-              <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
-                {tCard.common.loading}
-              </div>
-            )}
-            {editFlash !== null && <span key={editFlash} className="edit-flash" />}
-          </div>
-        </Link>
-        <div className="mt-3 flex items-center gap-2">
-          <Link to={`/f/${id}`} className="min-w-0 flex-1 focus-visible:outline-none">
-            <h3 className="min-w-0 truncate font-heading text-14 font-medium tracking-tight">
-              {displayTitle}
-            </h3>
-          </Link>
-          {frame?.meta?.theme && (
-            <Link
-              to={`/themes/${encodeURIComponent(frame.meta.theme)}`}
-              className="inline-flex shrink-0 items-center gap-1 text-11 text-muted-foreground hover:text-foreground"
-            >
-              <Palette className="size-3" aria-hidden />
-              <span className="max-w-[120px] truncate">{frame.meta.theme}</span>
-            </Link>
-          )}
-        </div>
-
-        {import.meta.env.DEV && (
-          <div className="absolute right-2 top-2">
+        actions={
+          import.meta.env.DEV && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button
                   type="button"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                  }}
-                  className="flex size-7 items-center justify-center rounded-5 bg-card/90 text-foreground shadow-edge ring-1 ring-border opacity-0 backdrop-blur hover:bg-card group-hover:opacity-100 aria-expanded:opacity-100 motion-safe:transition-opacity"
+                  className="-mr-1 flex size-5.5 shrink-0 items-center justify-center rounded-4 text-muted-foreground opacity-0 hover:bg-muted hover:text-foreground focus-visible:opacity-100 group-hover:opacity-100 aria-expanded:opacity-100 motion-safe:transition-opacity"
                   aria-label={tCard.home.frameActions}
                 >
                   <MoreHorizontal className="size-3.5" />
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="min-w-[160px]">
+              <DropdownMenuContent align="end" className="min-w-44">
                 <DropdownMenuItem onSelect={() => setDialog('rename')}>
                   <Pencil />
                   {tCard.common.rename}
                 </DropdownMenuItem>
-                <DropdownMenuItem onSelect={() => onDuplicate()}>
+                <DropdownMenuItem onSelect={() => onDuplicate(id)}>
                   <Copy />
                   {tCard.home.duplicate}
                 </DropdownMenuItem>
@@ -535,16 +489,54 @@ function FrameCard({
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
+          )
+        }
+        facts={
+          <>
+            {pageCount > 0 && (
+              <span className="whitespace-nowrap">
+                {format(plural(pageCount, tCard.home.pageCount), { count: pageCount })}
+              </span>
+            )}
+            {createdAt !== undefined && (
+              <>
+                <FactSeparator />
+                <span className="whitespace-nowrap">{relativeTime(createdAt, tCard.id)}</span>
+              </>
+            )}
+            {frame?.meta?.theme && (
+              <>
+                <FactSeparator />
+                <Link
+                  to={`/themes/${encodeURIComponent(frame.meta.theme)}`}
+                  className="max-w-35 truncate hover:text-foreground"
+                >
+                  {frame.meta.theme}
+                </Link>
+              </>
+            )}
+          </>
+        }
+      >
+        {FirstPage ? (
+          <FrameCanvas flat freezeMotion design={frame?.design} canvas={canvas ?? undefined}>
+            <FramePageProvider index={0} total={pageCount || 1}>
+              <FirstPage />
+            </FramePageProvider>
+          </FrameCanvas>
+        ) : (
+          <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
+            {tCard.common.loading}
           </div>
         )}
-      </div>
+      </FrameCardShell>
 
       <RenameDialog
         open={dialog === 'rename'}
         initialName={displayTitle}
         onOpenChange={(v) => setDialog(v ? 'rename' : null)}
         onSubmit={async (name) => {
-          await onRename(name);
+          await onRename(id, name);
           setDialog(null);
         }}
       />
@@ -555,7 +547,7 @@ function FrameCard({
         currentFolderId={currentFolderId}
         onOpenChange={(v) => setDialog(v ? 'move' : null)}
         onSubmit={async (folderId) => {
-          await onMove(folderId);
+          await onMove(id, folderId);
           setDialog(null);
         }}
       />
@@ -564,13 +556,13 @@ function FrameCard({
         frameName={displayTitle}
         onOpenChange={(v) => setDialog(v ? 'delete' : null)}
         onConfirm={async () => {
-          await onDelete();
+          await onDelete(id);
           setDialog(null);
         }}
       />
     </>
   );
-}
+});
 
 function RenameDialog({
   open,

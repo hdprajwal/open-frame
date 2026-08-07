@@ -47,7 +47,7 @@ A monochrome base plus a semantic signal spectrum. The base carries the layout; 
 
 ## Layout
 
-- Canvas: **1920 × 1080** (16:9) — the open-frame default. Do **not** set `meta.canvasWidth/Height`; this theme is landscape.
+- Canvas: **1920 × 1080** (16:9) — the open-frame default. Leave `meta.canvas` unset; this theme is landscape.
 - Content padding: **120 px** left/right. Content pages use `padding: '120px 120px 0'` and pin the footer to the bottom; the cover centers vertically with `padding: '0 120px'`.
 - Alignment: left-aligned. Eyebrow → heading → optional lede at the top, then the content band (cards / code / diagram) below, footer pinned.
 - Chrome: every content page leads with an **Eyebrow** (`NN — label`) and ends with a **Footer** (hairline top border, mono brand label left, `NN / NN` page counter right). The cover swaps the eyebrow for the **Logo** top-left and a context line top-right, and carries the animated **GradientBar** along the bottom edge.

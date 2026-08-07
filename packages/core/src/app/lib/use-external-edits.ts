@@ -126,18 +126,25 @@ function useFlashTimer(edit: ExternalEdit | undefined): number | null {
   return flashing || null;
 }
 
+// Subscribing to one frame's entry rather than the whole snapshot: entries are
+// replaced per revision, so React bails out for the frames an edit didn't
+// touch. With a grid of cards mounted, the alternative re-renders every live
+// page preview on every edit.
+function useEditFor(frameId: string): ExternalEdit | undefined {
+  const read = () => (frameId ? snapshot.byFrame.get(frameId) : undefined);
+  return useSyncExternalStore(subscribe, read, read);
+}
+
 /**
  * Returns the revision of the edit currently worth flashing, or null. Render
  * the flash element with the revision as its `key` so a second edit restarts
  * the animation instead of riding out the first one.
  */
 export function useFrameEditFlash(frameId: string): number | null {
-  const { byFrame } = useExternalEdits();
-  return useFlashTimer(frameId ? byFrame.get(frameId) : undefined);
+  return useFlashTimer(useEditFor(frameId));
 }
 
 export function usePageEditFlash(frameId: string, pageIndex: number): number | null {
-  const { byFrame } = useExternalEdits();
-  const edit = frameId ? byFrame.get(frameId) : undefined;
+  const edit = useEditFor(frameId);
   return useFlashTimer(edit?.pageIndex === pageIndex ? edit : undefined);
 }

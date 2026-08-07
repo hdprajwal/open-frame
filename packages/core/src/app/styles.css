@@ -1,14 +1,20 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/rubik";
+/* Rubik in exactly the cuts apps/web ships via next/font: latin, 400 and 500,
+   roman and italic. Not the variable file — matching the marketing site means
+   matching which weights exist, so a stray font-bold can't drift off-brand. */
+@import "@fontsource/rubik/latin-400.css";
+@import "@fontsource/rubik/latin-400-italic.css";
+@import "@fontsource/rubik/latin-500.css";
+@import "@fontsource/rubik/latin-500-italic.css";
 @import "@fontsource-variable/jetbrains-mono";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Rubik Variable", -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-heading: "Rubik Variable", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-sans: "Rubik", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: "Rubik", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   --font-serif:
     ui-serif, "New York", "Iowan Old Style", "Apple Garamond", "Big Caslon", "Charter", Georgia,
     serif;
@@ -75,6 +81,7 @@
   --text-14: 14px;
   --text-15: 15px;
   --text-18: 18px;
+  --text-21: 21px;
   --text-32: 32px;
   --text-44: 44px;
 
@@ -93,13 +100,11 @@
 
   --leading-1\.05: 1.05;
 
-  --shadow-edge: 0 0 0 0.5px oklch(0 0 0 / 0.06), 0 1px 0 oklch(0 0 0 / 0.025);
-  --shadow-floating:
-    0 0 0 0.5px oklch(0 0 0 / 0.08), 0 1px 1px oklch(0 0 0 / 0.04),
-    0 4px 16px -2px oklch(0 0 0 / 0.08);
-  --shadow-overlay:
-    0 0 0 0.5px oklch(0 0 0 / 0.1), 0 8px 28px -4px oklch(0 0 0 / 0.18),
-    0 24px 64px -12px oklch(0 0 0 / 0.2);
+  /* Indirected through --elevation-* so the dark theme can deepen them;
+     a literal here would be inlined into the utility and unreachable. */
+  --shadow-edge: var(--elevation-edge);
+  --shadow-floating: var(--elevation-floating);
+  --shadow-overlay: var(--elevation-overlay);
 }
 
 :root {
@@ -152,31 +157,39 @@
   --sidebar-accent-foreground: #090909;
   --sidebar-border: #e5e5e5;
   --sidebar-ring: #0091fd;
+
+  --elevation-edge: 0 0 0 0.5px oklch(0 0 0 / 0.06), 0 1px 0 oklch(0 0 0 / 0.025);
+  --elevation-floating:
+    0 0 0 0.5px oklch(0 0 0 / 0.08), 0 1px 1px oklch(0 0 0 / 0.04),
+    0 4px 16px -2px oklch(0 0 0 / 0.08);
+  --elevation-overlay:
+    0 0 0 0.5px oklch(0 0 0 / 0.1), 0 8px 28px -4px oklch(0 0 0 / 0.18),
+    0 24px 64px -12px oklch(0 0 0 / 0.2);
 }
 
 .dark {
-  --background: oklch(0.155 0.005 70);
-  --foreground: oklch(0.945 0.005 80);
-  --canvas: oklch(0.135 0.005 70);
+  --background: #1b1a19;
+  --foreground: #eeecea;
+  --canvas: #161514;
 
-  --card: oklch(0.195 0.006 70);
-  --card-foreground: oklch(0.945 0.005 80);
-  --popover: oklch(0.21 0.006 70);
-  --popover-foreground: oklch(0.945 0.005 80);
+  --card: #232120;
+  --card-foreground: #eeecea;
+  --popover: #282625;
+  --popover-foreground: #eeecea;
 
   --primary: #0091fd;
   --primary-foreground: #ffffff;
-  --secondary: oklch(0.245 0.006 70);
-  --secondary-foreground: oklch(0.945 0.005 80);
-  --muted: oklch(0.235 0.006 70);
-  --muted-foreground: oklch(0.68 0.008 75);
-  --accent: oklch(0.27 0.008 70);
-  --accent-foreground: oklch(0.945 0.005 80);
-  --destructive: oklch(0.68 0.2 25);
+  --secondary: #2f2d2c;
+  --secondary-foreground: #eeecea;
+  --muted: #2b2928;
+  --muted-foreground: #a6a19c;
+  --accent: #322f2e;
+  --accent-foreground: #eeecea;
+  --destructive: #f87171;
 
-  --border: oklch(1 0 0 / 0.1);
-  --hairline: oklch(1 0 0 / 0.06);
-  --input: oklch(1 0 0 / 0.13);
+  --border: rgb(255 255 255 / 0.09);
+  --hairline: rgb(255 255 255 / 0.09);
+  --input: rgb(255 255 255 / 0.16);
   --ring: #0091fd;
 
   --brand: #0091fd;
@@ -190,14 +203,18 @@
   --chart-4: oklch(0.65 0.12 160);
   --chart-5: oklch(0.6 0.04 60);
 
-  --sidebar: oklch(0.18 0.006 70);
-  --sidebar-foreground: oklch(0.945 0.005 80);
+  --sidebar: #201f1e;
+  --sidebar-foreground: #eeecea;
   --sidebar-primary: #0091fd;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: oklch(0.265 0.008 70);
-  --sidebar-accent-foreground: oklch(0.945 0.005 80);
-  --sidebar-border: oklch(1 0 0 / 0.1);
+  --sidebar-accent: #322f2e;
+  --sidebar-accent-foreground: #eeecea;
+  --sidebar-border: rgb(255 255 255 / 0.09);
   --sidebar-ring: #0091fd;
+
+  --elevation-edge: 0 0 0 0.5px rgb(0 0 0 / 0.4), 0 1px 0 rgb(0 0 0 / 0.2);
+  --elevation-floating: 0 0 0 0.5px rgb(0 0 0 / 0.5), 0 4px 16px -2px rgb(0 0 0 / 0.5);
+  --elevation-overlay: 0 0 0 0.5px rgb(0 0 0 / 0.6), 0 12px 40px -6px rgb(0 0 0 / 0.6);
 }
 
 /* Tabular numerics — pages, counts, hex values, slider readouts.
@@ -210,6 +227,16 @@
 
 @utility bg-checker {
   background-image: repeating-conic-gradient(var(--color-muted) 0 25%, transparent 0 50%);
+}
+
+/* Backdrop behind the fanned page stack on frame cards. */
+@utility bg-dotted {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    color-mix(in srgb, var(--foreground) 9%, transparent) 1px,
+    transparent 0
+  );
+  background-size: 16px 16px;
 }
 
 @layer base {

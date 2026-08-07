@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
@@ -35,6 +36,25 @@ function readCoreVersion(): string {
 }
 
 const CORE_VERSION = readCoreVersion();
+
+/**
+ * The bundled webfonts live wherever the package manager put them — under pnpm
+ * that is a store path outside every other allowed root, so serving them needs
+ * their resolved directories on `fs.allow` or Rubik silently falls back to the
+ * system sans.
+ */
+function fontRoots(): string[] {
+  const require = createRequire(import.meta.url);
+  const roots: string[] = [];
+  for (const pkg of ['@fontsource/rubik', '@fontsource-variable/jetbrains-mono']) {
+    try {
+      roots.push(path.dirname(require.resolve(`${pkg}/package.json`)));
+    } catch {}
+  }
+  return roots;
+}
+
+const FONT_ROOTS = fontRoots();
 
 export type CreateViteConfigOptions = {
   userCwd: string;
@@ -109,7 +129,9 @@ export async function createViteConfig(opts: CreateViteConfigOptions): Promise<I
     },
     server: {
       port: config.port ?? 5173,
-      fs: { allow: [APP_ROOT, userCwd, framesAbs, themesAbs, assetsAbs] },
+      fs: {
+        allow: [APP_ROOT, PKG_ROOT, userCwd, framesAbs, themesAbs, assetsAbs, ...FONT_ROOTS],
+      },
     },
     build: {
       outDir: path.resolve(userCwd, 'dist'),
