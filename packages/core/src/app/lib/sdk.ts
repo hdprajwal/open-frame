@@ -28,7 +28,7 @@ export type FrameModule = {
 export type FolderIcon =
   | { type: 'emoji'; value: string }
   | { type: 'color'; value: string }
-  | { type: 'lucide'; value: 'square-pen' | 'palette' | 'images' };
+  | { type: 'lucide'; value: 'square-pen' | 'palette' | 'images' | 'frame' };
 
 export type Folder = {
   id: string;

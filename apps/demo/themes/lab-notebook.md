@@ -49,7 +49,7 @@ These are wired at runtime as `--nb-fg` / `--nb-muted` / `--nb-edge` / `--nb-acc
 
 ## Layout
 
-- Canvas: **1080 × 1080** (1:1). Set `meta.canvasWidth` / `meta.canvasHeight` to `1080`.
+- Canvas: **1080 × 1080** (1:1). Set `meta.canvas` to `{ width: 1080, height: 1080 }`.
 - Content padding: **88 px** from every edge.
 - Alignment: **left-aligned, single column.** Cover/closer push the scrawl block low with `marginTop: 'auto'`; content pages lead with `Tabs`, then a section scrawl, then items. Never center.
 - Background: the chosen paper texture is baked into the `Sheet` page root — the only texture. Do not drop it or re-fill over it. `ruled` is offset to start below the header so the first lines sit under the content, not the tabs.

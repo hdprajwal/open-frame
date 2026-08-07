@@ -1,6 +1,6 @@
 import { loadThemeDemo as load, themes as raw } from 'virtual:open-frame/themes';
 import type { DesignSystem } from './design';
-import type { Page } from './sdk';
+import type { FrameMeta, Page } from './sdk';
 
 export type Theme = {
   id: string;
@@ -12,6 +12,7 @@ export type Theme = {
 
 export type ThemeDemoModule = {
   default: Page[];
+  meta?: FrameMeta;
   design?: DesignSystem;
 };
 

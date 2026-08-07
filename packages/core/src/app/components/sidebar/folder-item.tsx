@@ -1,4 +1,4 @@
-import { Images, MoreHorizontal, Palette, Pencil, SquarePen, Trash2 } from 'lucide-react';
+import { Frame, Images, MoreHorizontal, Palette, Pencil, SquarePen, Trash2 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import {
   DropdownMenu,
@@ -37,6 +37,7 @@ const LUCIDE_ICONS = {
   'square-pen': SquarePen,
   palette: Palette,
   images: Images,
+  frame: Frame,
 } as const;
 
 export function FolderIconChip({ icon, className }: { icon: FolderIcon; className?: string }) {
@@ -45,11 +46,11 @@ export function FolderIconChip({ icon, className }: { icon: FolderIcon; classNam
     return (
       <span
         className={cn(
-          'inline-flex size-5 items-center justify-center text-15 leading-none',
+          'inline-flex size-4 items-center justify-center text-15 leading-none',
           className,
         )}
       >
-        <Icon className="size-[1.1em]" strokeWidth={1.75} />
+        <Icon className="size-[1em]" strokeWidth={1.6} />
       </span>
     );
   }
@@ -57,7 +58,7 @@ export function FolderIconChip({ icon, className }: { icon: FolderIcon; classNam
     return (
       <span
         className={cn(
-          'inline-flex size-5 items-center justify-center text-15 leading-none',
+          'inline-flex size-4 items-center justify-center text-13 leading-none',
           className,
         )}
       >
@@ -68,7 +69,7 @@ export function FolderIconChip({ icon, className }: { icon: FolderIcon; classNam
   return (
     <span
       className={cn(
-        'inline-block size-3 rounded-3 ring-1 ring-foreground/15 shadow-[inset_0_1px_0_oklch(1_0_0/0.18)]',
+        'inline-block size-2.5 rounded-3 ring-1 ring-foreground/15 shadow-[inset_0_1px_0_oklch(1_0_0/0.18)]',
         className,
       )}
       style={{ background: icon.value }}
@@ -85,6 +86,9 @@ type Row =
       onDelete: () => void;
     }
   | {
+      kind: 'all';
+    }
+  | {
       kind: 'draft';
     }
   | {
@@ -93,6 +97,13 @@ type Row =
   | {
       kind: 'assets';
     };
+
+const NAV_ICONS: Record<Exclude<Row['kind'], 'folder'>, FolderIcon> = {
+  all: { type: 'lucide', value: 'frame' },
+  draft: { type: 'lucide', value: 'square-pen' },
+  themes: { type: 'lucide', value: 'palette' },
+  assets: { type: 'lucide', value: 'images' },
+};
 
 export function FolderItem({
   row,
@@ -114,7 +125,7 @@ export function FolderItem({
   const frameDragActive = useFrameDragActive();
   const t = useLocale();
 
-  const acceptsFrameDrop = row.kind !== 'themes' && row.kind !== 'assets';
+  const acceptsFrameDrop = row.kind === 'folder' || row.kind === 'draft';
   const isFrameDrag = (e: React.DragEvent) =>
     acceptsFrameDrop && e.dataTransfer.types.includes(FRAME_DND_MIME);
   const handleDragEnter = (e: React.DragEvent) => {
@@ -142,22 +153,14 @@ export function FolderItem({
     onDropFrame(frameId);
   };
 
-  const icon: FolderIcon =
-    row.kind === 'draft'
-      ? { type: 'lucide', value: 'square-pen' }
-      : row.kind === 'themes'
-        ? { type: 'lucide', value: 'palette' }
-        : row.kind === 'assets'
-          ? { type: 'lucide', value: 'images' }
-          : row.folder.icon;
-  const label =
-    row.kind === 'draft'
-      ? t.home.draft
-      : row.kind === 'themes'
-        ? t.home.themes
-        : row.kind === 'assets'
-          ? t.home.assets
-          : row.folder.name;
+  const icon: FolderIcon = row.kind === 'folder' ? row.folder.icon : NAV_ICONS[row.kind];
+  const NAV_LABELS: Record<Exclude<Row['kind'], 'folder'>, string> = {
+    all: t.home.allFrames,
+    draft: t.home.draft,
+    themes: t.home.themes,
+    assets: t.home.assets,
+  };
+  const label = row.kind === 'folder' ? row.folder.name : NAV_LABELS[row.kind];
 
   const commitRename = () => {
     if (row.kind !== 'folder') return;
@@ -170,10 +173,10 @@ export function FolderItem({
     // biome-ignore lint/a11y/noStaticElementInteractions: drag-and-drop target wraps interactive children
     <div
       className={cn(
-        'group relative flex items-center gap-2.5 rounded-5 px-2 py-[5px] text-12.5 transition-colors',
+        'group relative flex h-7.5 items-center gap-2.5 rounded-5 px-2 text-14 transition-colors',
         selected
-          ? 'bg-muted text-foreground before:absolute before:inset-y-1.5 before:-left-0.5 before:w-[2px] before:rounded-full before:bg-brand'
-          : 'text-foreground/70 hover:bg-muted/60 hover:text-foreground',
+          ? 'bg-brand-soft text-brand-deep before:absolute before:inset-y-1.5 before:-left-2 before:w-[2px] before:rounded-r-full before:bg-brand'
+          : 'text-foreground/80 hover:bg-muted hover:text-foreground',
         frameDragActive && acceptsFrameDrop && !dragOver && 'ring-1 ring-foreground/10',
         dragOver &&
           'bg-brand/10 text-foreground ring-1 ring-brand ring-offset-1 ring-offset-sidebar motion-safe:scale-[1.01] motion-safe:transition-transform',
@@ -188,7 +191,7 @@ export function FolderItem({
           <PopoverTrigger asChild>
             <button
               type="button"
-              className="flex size-5 shrink-0 items-center justify-center rounded transition-transform hover:scale-110"
+              className="flex size-4 shrink-0 items-center justify-center rounded transition-transform hover:scale-110"
               aria-label={t.home.changeIcon}
               onClick={(e) => e.stopPropagation()}
             >
@@ -204,7 +207,7 @@ export function FolderItem({
           type="button"
           onClick={onSelect}
           aria-label={label}
-          className="flex size-5 shrink-0 items-center justify-center"
+          className="flex size-4 shrink-0 items-center justify-center"
         >
           <FolderIconChip icon={icon} />
         </button>
@@ -234,13 +237,14 @@ export function FolderItem({
 
       <span
         className={cn(
-          'folio ml-auto shrink-0 transition-opacity',
+          'nums ml-auto shrink-0 font-mono text-11 transition-opacity',
+          selected ? 'text-brand-deep/70' : 'text-muted-foreground',
           row.kind === 'folder' &&
             import.meta.env.DEV &&
             'group-hover:opacity-0 group-has-[[aria-expanded=true]]:opacity-0',
         )}
       >
-        {count.toString().padStart(2, '0')}
+        {count}
       </span>
 
       {row.kind === 'folder' && import.meta.env.DEV && (

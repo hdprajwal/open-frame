@@ -2,6 +2,7 @@ import { Plus } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { LanguageToggle } from '@/components/language-toggle';
+import { Logo } from '@/components/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import type { Folder, FolderIcon } from '@/lib/sdk';
@@ -11,6 +12,7 @@ import { FolderIconChip, FolderItem } from './folder-item';
 import { IconPicker, PRESET_COLORS } from './icon-picker';
 import { SidebarFooter } from './sidebar-footer';
 
+export const ALL_ID = '__all__';
 export const DRAFT_ID = 'draft';
 export const THEMES_ID = '__themes__';
 export const ASSETS_ID = '__assets__';
@@ -20,6 +22,7 @@ export const FOLDER_DND_MIME = 'application/x-folder-id';
 export function Sidebar({
   folders,
   countFor,
+  allCount,
   themesCount,
   assetsCount,
   selectedId,
@@ -34,6 +37,7 @@ export function Sidebar({
 }: {
   folders: Folder[];
   countFor: (folderId: string | null) => number;
+  allCount: number;
   themesCount: number;
   assetsCount: number;
   selectedId: string;
@@ -123,16 +127,24 @@ export function Sidebar({
   }, [creating]);
 
   return (
-    <aside className="paper relative flex h-full w-[16.5rem] shrink-0 flex-col border-r border-hairline bg-background text-sidebar-foreground">
-      <div className="flex items-center justify-between px-4 pt-5 pb-4">
-        <h1 className="font-heading text-lg font-bold tracking-tight">{t.home.appTitle}</h1>
-        <div className="-mr-1.5 flex items-center">
+    <aside className="paper relative flex h-full w-59 shrink-0 flex-col border-r border-hairline bg-sidebar text-sidebar-foreground">
+      <div className="flex items-center gap-2.5 px-3.5 pt-4 pb-3.5">
+        <Logo className="size-4.5 shrink-0" />
+        <span className="font-heading text-15 font-medium tracking-tight">{t.home.appTitle}</span>
+        <div className="-mr-1.5 ml-auto flex items-center">
           <LanguageToggle />
           <ThemeToggle />
         </div>
       </div>
 
       <div className="px-2">
+        <FolderItem
+          row={{ kind: 'all' }}
+          count={allCount}
+          selected={selectedId === ALL_ID}
+          onSelect={() => onSelect(ALL_ID)}
+          onDropFrame={() => {}}
+        />
         <FolderItem
           row={{ kind: 'draft' }}
           count={countFor(null)}
@@ -156,10 +168,7 @@ export function Sidebar({
         />
       </div>
 
-      <div className="mt-5 flex items-center gap-2 px-4 pb-1.5">
-        <span className="eyebrow">{t.home.folders}</span>
-        <span className="h-px flex-1 bg-hairline" aria-hidden />
-      </div>
+      <div className="px-4 pt-5.5 pb-2 text-13 text-muted-foreground">{t.home.folders}</div>
 
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         {folders.map((folder) => {
@@ -240,7 +249,7 @@ export function Sidebar({
                 <PopoverTrigger asChild>
                   <button
                     type="button"
-                    className="flex size-5 shrink-0 items-center justify-center rounded transition-transform hover:scale-110"
+                    className="flex size-4 shrink-0 items-center justify-center rounded transition-transform hover:scale-110"
                     aria-label={t.home.pickIcon}
                   >
                     <FolderIconChip icon={newIcon} />
@@ -268,9 +277,11 @@ export function Sidebar({
             <button
               type="button"
               onClick={startCreating}
-              className="mt-1 flex w-full items-center gap-2 rounded-5 px-2 py-1.5 text-12 text-muted-foreground transition-colors hover:bg-muted/60 hover:text-foreground"
+              className="flex h-7.5 w-full items-center gap-2.5 rounded-5 px-2 text-14 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
-              <Plus className="size-3.5" />
+              <span className="flex size-4 shrink-0 items-center justify-center">
+                <Plus className="size-3.5" />
+              </span>
               <span>{t.home.newFolder}</span>
             </button>
           ))}

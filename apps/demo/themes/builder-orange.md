@@ -40,7 +40,7 @@ A high-contrast carousel identity for square (1:1) LinkedIn posts, lifted from t
 
 ## Layout
 
-- Canvas: **1080 × 1080** (1:1). Set `meta.canvasWidth` / `meta.canvasHeight` to `1080`.
+- Canvas: **1080 × 1080** (1:1). Set `meta.canvas` to `{ width: 1080, height: 1080 }`.
 - Content padding: **88 px** from every edge.
 - Alignment: **left-aligned, single column.** Headline anchored low-left on the cover/closer; content headline + body in the upper two-thirds on content pages. Never center.
 - Background: every page carries a faint **dot grid** (radial dots at ~6% white, ~46 px pitch) baked into the page-root `backgroundImage`. It is the only texture — no gradients, no flat re-fills that drop it.

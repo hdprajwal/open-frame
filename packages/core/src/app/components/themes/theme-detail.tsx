@@ -107,7 +107,12 @@ export function ThemeDetail({ themeId, onBack }: { themeId: string; onBack: () =
                   {t.common.loading}
                 </div>
               ) : Current ? (
-                <FrameCanvas flat freezeMotion design={demo.design}>
+                <FrameCanvas
+                  flat
+                  freezeMotion
+                  design={demo.design}
+                  canvas={resolveCanvas(demo.meta)}
+                >
                   <FramePageProvider index={pageIndex} total={totalPages}>
                     <Current />
                   </FramePageProvider>

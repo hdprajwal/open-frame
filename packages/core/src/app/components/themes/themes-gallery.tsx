@@ -1,90 +1,56 @@
 import { Palette } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { format, useLocale } from '@/lib/use-locale';
+import { useLocale } from '@/lib/use-locale';
+import { resolveCanvas } from '../../lib/formats';
 import { FramePageProvider } from '../../lib/page-context';
 import { loadThemeDemo, type Theme, type ThemeDemoModule, themes } from '../../lib/themes';
 import { FrameCanvas } from '../frame-canvas';
+import { ThemeCardShell } from './theme-card';
 
-export function ThemesGallery({ onOpen }: { onOpen: (id: string) => void }) {
-  const t = useLocale();
-
+export function ThemesGallery() {
   if (themes.length === 0) {
     return <ThemesEmptyState />;
   }
 
   return (
-    <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(240px,100%),1fr))] gap-x-6 gap-y-9 md:grid-cols-[repeat(auto-fill,minmax(340px,1fr))]">
+    <ul className="grid grid-cols-[repeat(auto-fill,minmax(min(272px,100%),1fr))] items-start gap-5 md:grid-cols-[repeat(auto-fill,minmax(296px,1fr))]">
       {themes.map((theme) => (
         <li key={theme.id}>
-          <ThemeCard
-            theme={theme}
-            onOpen={() => onOpen(theme.id)}
-            ariaLabel={format(t.themes.openThemeAria, { name: theme.name })}
-          />
+          <ThemeCard theme={theme} />
         </li>
       ))}
     </ul>
   );
 }
 
-function ThemeCard({
-  theme,
-  onOpen,
-  ariaLabel,
-}: {
-  theme: Theme;
-  onOpen: () => void;
-  ariaLabel: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onOpen}
-      aria-label={ariaLabel}
-      className="group block w-full text-left focus-visible:outline-none"
-    >
-      <div className="relative aspect-video overflow-hidden rounded-6 border border-hairline bg-card shadow-edge ring-1 ring-foreground/[0.04] group-hover:shadow-floating group-hover:ring-foreground/20 motion-safe:transition-[box-shadow,--tw-ring-color] motion-safe:duration-200">
-        <ThemePreview theme={theme} />
-      </div>
-      <div className="mt-3">
-        <h3 className="min-w-0 truncate font-heading text-14 font-medium tracking-tight">
-          {theme.name}
-        </h3>
-      </div>
-      {theme.description ? (
-        <p className="mt-1 line-clamp-2 text-12 leading-snug text-muted-foreground">
-          {theme.description}
-        </p>
-      ) : null}
-    </button>
-  );
-}
-
-function ThemePreview({ theme }: { theme: Theme }) {
+function ThemeCard({ theme }: { theme: Theme }) {
   const t = useLocale();
   const demo = useThemeDemo(theme);
-
-  if (!theme.hasDemo) {
-    return <NoDemoState />;
-  }
-  if (!demo) {
-    return (
-      <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
-        {t.common.loading}
-      </div>
-    );
-  }
-  const FirstPage = demo.default[0];
-  if (!FirstPage) return <NoDemoState />;
+  const pageCount = demo?.default.length ?? 0;
+  const FirstPage = demo?.default[0];
+  const canvas = demo ? resolveCanvas(demo.meta) : null;
 
   return (
-    <div className="h-full w-full motion-safe:transition-transform motion-safe:duration-300 motion-safe:group-hover:scale-[1.03]">
-      <FrameCanvas flat freezeMotion design={demo.design}>
-        <FramePageProvider index={0} total={demo.default.length}>
-          <FirstPage />
-        </FramePageProvider>
-      </FrameCanvas>
-    </div>
+    <ThemeCardShell
+      to={`/themes/${encodeURIComponent(theme.id)}`}
+      name={theme.name}
+      description={theme.description}
+      canvas={canvas}
+    >
+      {!theme.hasDemo ? (
+        <NoDemoState />
+      ) : FirstPage ? (
+        <FrameCanvas flat freezeMotion design={demo?.design} canvas={canvas ?? undefined}>
+          <FramePageProvider index={0} total={pageCount}>
+            <FirstPage />
+          </FramePageProvider>
+        </FrameCanvas>
+      ) : (
+        <div className="grid h-full w-full place-items-center text-10 tracking-16 uppercase text-muted-foreground/60">
+          {t.common.loading}
+        </div>
+      )}
+    </ThemeCardShell>
   );
 }
 

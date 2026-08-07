@@ -37,11 +37,18 @@ export type Locale = {
 
   home: {
     appTitle: string;
+    allFrames: string;
     draft: string;
     duplicate: string;
     themes: string;
     assets: string;
     folders: string;
+    /** templates: "{count} frame" / "{count} frames" */
+    frameCount: Plural;
+    /** templates: "{count} page" / "{count} pages" */
+    pageCount: Plural;
+    /** templates: "{count} theme" / "{count} themes" */
+    themeCount: Plural;
     newFolder: string;
     folderName: string;
     updateAvailable: string;
@@ -451,8 +458,6 @@ export type Locale = {
     pageOf: string;
     nextPageAria: string;
     prevPageAria: string;
-    /** template: "Open theme {name}" */
-    openThemeAria: string;
     usedBy: string;
     usedByEmpty: string;
     expandPromptAria: string;

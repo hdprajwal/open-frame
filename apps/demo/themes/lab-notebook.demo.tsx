@@ -382,8 +382,7 @@ const Experiments: Page = () => (
 
 export const meta = {
   title: 'Lab Notebook — theme demo',
-  canvasWidth: 1080,
-  canvasHeight: 1080,
+  canvas: { width: 1080, height: 1080 },
 };
 
 export default [Cover, Notes, Experiments];

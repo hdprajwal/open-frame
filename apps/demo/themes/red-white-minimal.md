@@ -60,7 +60,7 @@ const fill = {
 
 ## Layout
 
-- Canvas: **1080 × 1080** (1:1). Set `meta.canvasWidth` / `meta.canvasHeight` to `1080`.
+- Canvas: **1080 × 1080** (1:1). Set `meta.canvas` to `{ width: 1080, height: 1080 }`.
 - Content padding: **88 px** from every edge.
 - Alignment: **left-aligned, single column.** Headline anchored to the top-left of the content area; body directly under it. Never center.
 - Vertical rhythm: a flex column with `padding: 88`. Cover/closer push the headline block up and the sub-line to the bottom row. Content frames: headline + body in the upper two-thirds, footer pinned bottom.
