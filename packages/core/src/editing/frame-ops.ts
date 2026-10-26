@@ -5,6 +5,19 @@ import { writeTrackedFile } from '../files/self-writes.ts';
 
 export const FRAME_ID_RE = /^[a-z0-9_-]+$/i;
 
+// Compared by listing rather than fs.access: case-sensitive filesystems keep
+// `Cover` and `cover` as two folders, which then collide on macOS/Windows.
+async function frameIdTaken(root: string, frameId: string): Promise<boolean> {
+  let names: string[];
+  try {
+    names = await fs.readdir(root);
+  } catch {
+    return false;
+  }
+  const want = frameId.toLowerCase();
+  return names.some((name) => name.toLowerCase() === want);
+}
+
 type MetaTitleRead =
   | { kind: 'found'; title: string }
   | { kind: 'missing' }
@@ -127,20 +140,15 @@ export async function duplicateFrameDir(
     if (!dstDir.startsWith(root + path.sep)) {
       return { ok: false, status: 400, error: 'invalid newId' };
     }
-    try {
-      await fs.access(dstDir);
+    if (await frameIdTaken(root, newId)) {
       return { ok: false, status: 409, error: 'frame already exists' };
-    } catch {}
+    }
   } else {
     let suffix = 1;
     while (true) {
       newId = suffix === 1 ? `${frameId}-copy` : `${frameId}-copy-${suffix}`;
-      try {
-        await fs.access(path.resolve(root, newId));
-        suffix++;
-      } catch {
-        break;
-      }
+      if (!(await frameIdTaken(root, newId))) break;
+      suffix++;
     }
   }
 

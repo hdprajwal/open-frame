@@ -81,6 +81,33 @@ describe('duplicateFrameDir', () => {
     });
   });
 
+  it('rejects a desired id that differs only by case', async () => {
+    await withFramesRoot(async (root) => {
+      await writeFrame(root, 'cover');
+
+      expect(await duplicateFrameDir(root, 'cover', 'Cover')).toMatchObject({
+        ok: false,
+        status: 409,
+      });
+      expect(await fs.readdir(root)).toEqual(['cover']);
+    });
+  });
+
+  it('skips an automatic copy id that differs only by case', async () => {
+    await withFramesRoot(async (root) => {
+      await writeFrame(root, 'Cover');
+      await writeFrame(root, 'cover-copy');
+
+      expect(await duplicateFrameDir(root, 'Cover')).toEqual({
+        ok: true,
+        frameId: 'Cover-copy-2',
+      });
+      const names = await fs.readdir(root);
+      expect(names.filter((name) => name.toLowerCase() === 'cover-copy')).toEqual(['cover-copy']);
+      expect(names).toContain('Cover-copy-2');
+    });
+  });
+
   it('rejects an existing desired id', async () => {
     await withFramesRoot(async (root) => {
       await writeFrame(root, 'cover');
