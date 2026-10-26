@@ -103,6 +103,55 @@ function runViewer(pages: FakePage[]) {
 }
 
 describe('exported HTML viewer', () => {
+  it('reveals steps one keypress at a time before moving on', () => {
+    const pages = [makePage(0), makePage(2), makePage(0)];
+    const { press, revealed, current } = runViewer(pages);
+
+    press('ArrowRight');
+    expect(current()).toBe(2);
+    expect(revealed(pages[1])).toBe(0);
+    expect(pages[1].steps[0].style.opacity).toBe('0');
+    expect(pages[1].steps[0].style.transition).toBe('opacity 180ms');
+
+    press('ArrowRight');
+    expect(current()).toBe(2);
+    expect(revealed(pages[1])).toBe(1);
+
+    press('ArrowRight');
+    expect(revealed(pages[1])).toBe(2);
+
+    press('ArrowRight');
+    expect(current()).toBe(3);
+  });
+
+  it('arrives fully revealed when stepping backward and retreats one step per press', () => {
+    const pages = [makePage(0), makePage(2), makePage(0)];
+    const { press, revealed, current } = runViewer(pages);
+
+    press('End');
+    expect(current()).toBe(3);
+    press('ArrowLeft');
+    expect(current()).toBe(2);
+    expect(revealed(pages[1])).toBe(2);
+
+    press('ArrowLeft');
+    expect(current()).toBe(2);
+    expect(revealed(pages[1])).toBe(1);
+  });
+
+  it('lands fully revealed on Home and End jumps', () => {
+    const pages = [makePage(3), makePage(2)];
+    const { press, revealed, current } = runViewer(pages);
+
+    press('End');
+    expect(current()).toBe(2);
+    expect(revealed(pages[1])).toBe(2);
+
+    press('Home');
+    expect(current()).toBe(1);
+    expect(revealed(pages[0])).toBe(3);
+  });
+
   it('pauses and rewinds videos on hidden pages and autoplays visible ones', () => {
     const first = makeVideo(true);
     const second = makeVideo(true);
