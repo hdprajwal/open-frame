@@ -274,7 +274,9 @@ export function Frame() {
   );
 
   useEffect(() => {
-    if (playMode) return;
+    // The read-only <Player> owns step-aware navigation; handling keys here too
+    // races it and skips <Steps> reveals.
+    if (playMode || !showFrameUi) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLElement && e.target.matches('input, textarea')) return;
       // Letter shortcuts only fire bare so browser combos (Cmd/Ctrl-P, ⌘F…) stay intact.
@@ -388,6 +390,7 @@ export function Frame() {
       <Player
         pages={pages}
         design={frame.design}
+        transition={frame.transition}
         index={index}
         onIndexChange={goTo}
         onExit={() => {}}
