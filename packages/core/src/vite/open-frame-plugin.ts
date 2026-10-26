@@ -4,6 +4,7 @@ import path from 'node:path';
 import fg from 'fast-glob';
 import { loadConfigFromFile, normalizePath, type Plugin, type ViteDevServer } from 'vite';
 import type { OpenFrameConfig } from '../config.ts';
+import { FRAME_ID_RE } from '../editing/frame-ops.ts';
 import { changedPageIndices } from '../editing/page-diff.ts';
 import { selfWrites } from '../files/self-writes.ts';
 
@@ -131,12 +132,16 @@ function parseCreatedAtMs(iso: string | null): number | null {
   return Number.isFinite(ms) ? ms : null;
 }
 
-async function generateFramesModule(
+// Module-level so dev regenerations of the virtual module don't re-log the
+// same folder on every frame change.
+const warnedInvalidFrameIds = new Set<string>();
+
+export async function generateFramesModule(
   files: string[],
   framesRoot: string,
   isDev: boolean,
-): Promise<string> {
-  const entries = await Promise.all(
+): Promise<{ code: string; ignored: string[] }> {
+  const scanned = await Promise.all(
     files.map(async (abs) => {
       const id = toId(abs, framesRoot);
       const importPath = isDev ? `@fs/${normalizePath(abs).replace(/^\/+/, '')}` : abs;
@@ -144,6 +149,11 @@ async function generateFramesModule(
       return { id, importPath, theme: meta.theme, createdAt: parseCreatedAtMs(meta.createdAt) };
     }),
   );
+
+  // Every editing route rejects ids outside FRAME_ID_RE, so listing such a
+  // folder would surface a frame that can't be moved, renamed, or edited.
+  const entries = scanned.filter((e) => FRAME_ID_RE.test(e.id));
+  const ignored = scanned.filter((e) => !FRAME_ID_RE.test(e.id)).map((e) => e.id);
 
   const ids = JSON.stringify(entries.map((e) => e.id).sort());
   const themesMap: Record<string, string> = {};
@@ -178,7 +188,7 @@ if (import.meta.hot) {
     })
     .join('\n');
 
-  return `// virtual:open-frame/frames — generated
+  const code = `// virtual:open-frame/frames — generated
 export const frameIds = ${ids};
 export const frameThemes = ${themesJson};
 export const frameCreatedAt = ${createdAtJson};
@@ -191,6 +201,7 @@ ${cases}
   }
 }
 `;
+  return { code, ignored };
 }
 
 export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
@@ -256,7 +267,15 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
     async load(id) {
       if (id === resolved(FRAMES_VMOD)) {
         const files = await findFrames(userCwd, framesDir);
-        return await generateFramesModule(files, framesRoot, isDev);
+        const { code, ignored } = await generateFramesModule(files, framesRoot, isDev);
+        for (const frameId of ignored) {
+          if (warnedInvalidFrameIds.has(frameId)) continue;
+          warnedInvalidFrameIds.add(frameId);
+          this.warn(
+            `Ignoring frame folder "${frameId}": frame ids must match ${FRAME_ID_RE} (letters, digits, "-", "_"). Rename the folder under "${framesDir}/" to a kebab-case id so it shows up and can be edited.`,
+          );
+        }
+        return code;
       }
       if (id === resolved(CONFIG_VMOD)) {
         const userBuild = config.build ?? {};

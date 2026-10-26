@@ -1,8 +1,10 @@
+import fs from 'node:fs/promises';
+import os from 'node:os';
 import path from 'node:path';
 import type { HmrContext, ViteDevServer } from 'vite';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { selfWrites } from '../files/self-writes.ts';
-import { openFramePlugin } from './open-frame-plugin.ts';
+import { generateFramesModule, openFramePlugin } from './open-frame-plugin.ts';
 
 type SentMessage = { type: string; event?: string; data?: unknown };
 
@@ -131,5 +133,73 @@ describe('openFramePlugin handleHotUpdate', () => {
     );
 
     expect(sent).toEqual([]);
+  });
+});
+
+async function withFramesRoot<T>(fn: (root: string) => Promise<T>): Promise<T> {
+  const root = await fs.mkdtemp(path.join(os.tmpdir(), 'open-frame-test-'));
+  try {
+    return await fn(root);
+  } finally {
+    await fs.rm(root, { recursive: true, force: true });
+  }
+}
+
+async function writeFrame(root: string, id: string): Promise<string> {
+  await fs.mkdir(path.join(root, id), { recursive: true });
+  const entry = path.join(root, id, 'index.tsx');
+  await fs.writeFile(
+    entry,
+    `export const meta = { title: '${id}' };\nexport default [];\n`,
+    'utf8',
+  );
+  return entry;
+}
+
+describe('generateFramesModule', () => {
+  it('keeps frames whose id is valid and reports none ignored', async () => {
+    await withFramesRoot(async (root) => {
+      const files = [await writeFrame(root, 'cover'), await writeFrame(root, 'intro_2')].sort();
+
+      const { code, ignored } = await generateFramesModule(files, root, false);
+
+      expect(ignored).toEqual([]);
+      expect(code).toContain('export const frameIds = ["cover","intro_2"];');
+    });
+  });
+
+  it('excludes folders whose id is invalid and reports them as ignored', async () => {
+    await withFramesRoot(async (root) => {
+      const files = [
+        await writeFrame(root, 'cover'),
+        await writeFrame(root, '推薦系統'),
+        await writeFrame(root, 'has space'),
+      ].sort();
+
+      const { code, ignored } = await generateFramesModule(files, root, false);
+
+      expect(ignored.sort()).toEqual(['has space', '推薦系統'].sort());
+      expect(code).toContain('export const frameIds = ["cover"];');
+      expect(code).not.toContain('推薦系統');
+      expect(code).not.toContain('has space');
+    });
+  });
+});
+
+describe('openFramePlugin frames module', () => {
+  it('warns once per ignored folder across regenerations', async () => {
+    await withFramesRoot(async (userCwd) => {
+      await writeFrame(path.join(userCwd, 'frames'), 'cover');
+      await writeFrame(path.join(userCwd, 'frames'), 'bad.id');
+      const plugin = openFramePlugin({ userCwd, config: {}, coreVersion: '0.0.0' });
+      const load = plugin.load as (this: { warn: (msg: string) => void }, id: string) => unknown;
+      const warn = vi.fn();
+
+      await load.call({ warn }, '\0virtual:open-frame/frames');
+      await load.call({ warn }, '\0virtual:open-frame/frames');
+
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(warn.mock.calls[0][0]).toContain('"bad.id"');
+    });
   });
 });
