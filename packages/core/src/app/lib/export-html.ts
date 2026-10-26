@@ -97,6 +97,9 @@ async function renderPagesToHtml(pages: NonNullable<FrameModule['default']>): Pr
       );
       await nextPaint();
       await nextPaint();
+      for (const video of host.querySelectorAll('video')) {
+        video.defaultMuted = video.muted;
+      }
       result.push(host.innerHTML);
       root.unmount();
       container.removeChild(host);
@@ -142,9 +145,9 @@ function collectExternalStylesheetLinks(): string {
   return links.join('\n');
 }
 
-function findHtmlAssetUrls(html: string): string[] {
+export function findHtmlAssetUrls(html: string): string[] {
   const out: string[] = [];
-  const attrRe = /\s(?:src|href)="([^"]+)"/g;
+  const attrRe = /\s(?:src|href|poster)="([^"]+)"/g;
   for (const m of html.matchAll(attrRe)) {
     if (looksLikeAsset(m[1])) out.push(m[1]);
   }
@@ -232,7 +235,7 @@ function rewriteUrls(
   return out;
 }
 
-function buildHtml(opts: {
+export function buildHtml(opts: {
   title: string;
   pagesHtml: string[];
   bundledCss: string;
@@ -283,7 +286,17 @@ html, body { margin: 0; height: 100%; background: #000; overflow: hidden; font-f
   }
   function go(i) {
     idx = Math.max(0, Math.min(pages.length - 1, i));
-    pages.forEach(function (p, n) { p.hidden = n !== idx; });
+    pages.forEach(function (p, n) {
+      p.hidden = n !== idx;
+      p.querySelectorAll('video').forEach(function (video) {
+        if (p.hidden) {
+          video.pause();
+          try { video.currentTime = 0; } catch {}
+        } else if (video.autoplay) {
+          video.play().catch(function () {});
+        }
+      });
+    });
     cur.textContent = String(idx + 1);
   }
   window.addEventListener('resize', fit);
