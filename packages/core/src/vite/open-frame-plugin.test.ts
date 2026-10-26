@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import type { HmrContext, ViteDevServer } from 'vite';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { selfWrites } from '../files/self-writes.ts';
 import { generateFramesModule, openFramePlugin } from './open-frame-plugin.ts';
 
@@ -53,6 +53,10 @@ function reads(contents: string): () => Promise<string> {
 
 function externalEdits(sent: SentMessage[]): SentMessage[] {
   return sent.filter((m) => m.event === 'open-frame:external-edit');
+}
+
+function frameChanges(sent: SentMessage[]): SentMessage[] {
+  return sent.filter((m) => m.event === 'open-frame:frame-changed');
 }
 
 describe('openFramePlugin handleHotUpdate', () => {
@@ -133,6 +137,63 @@ describe('openFramePlugin handleHotUpdate', () => {
     );
 
     expect(sent).toEqual([]);
+  });
+});
+
+describe('openFramePlugin frame-changed broadcast', () => {
+  beforeEach(() => {
+    selfWrites.clear();
+    vi.useFakeTimers();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  async function settle(sent: Promise<SentMessage[]>): Promise<SentMessage[]> {
+    const messages = await sent;
+    await vi.advanceTimersByTimeAsync(200);
+    return messages;
+  }
+
+  it('broadcasts frame-changed for an external edit', async () => {
+    const sent = await settle(triggerHotUpdate(FRAME_FILE, reads('export default []\n')));
+
+    expect(frameChanges(sent)).toEqual([
+      { type: 'custom', event: 'open-frame:frame-changed', data: { frameIds: ['intro'] } },
+    ]);
+  });
+
+  it('broadcasts frame-changed for an own write so the canvas picks it up', async () => {
+    selfWrites.record(FRAME_FILE, 'export default []\n');
+    const sent = await settle(triggerHotUpdate(FRAME_FILE, reads('export default []\n')));
+
+    expect(externalEdits(sent)).toEqual([]);
+    expect(frameChanges(sent)).toHaveLength(1);
+  });
+
+  it('skips frame-changed and external-edit for a quiet own write', async () => {
+    selfWrites.record(FRAME_FILE, 'export const notes = ["hi"];\n', { quiet: true });
+    const sent = await settle(
+      triggerHotUpdate(FRAME_FILE, reads('export const notes = ["hi"];\n')),
+    );
+
+    expect(sent).toEqual([]);
+  });
+
+  it('still names the edited page for an external edit after a quiet write', async () => {
+    const hot = makeHotUpdater();
+    const before = frameSource(['Cover', 'Idea'], ['a', 'b']);
+    const withNotes = `${before}export const notes = ["hi"];\n`;
+    const edited = `${frameSource(['Cover', 'Idea'], ['a', 'b changed'])}export const notes = ["hi"];\n`;
+
+    await settle(hot(FRAME_FILE, reads(before)));
+    selfWrites.record(FRAME_FILE, withNotes, { quiet: true });
+    await settle(hot(FRAME_FILE, reads(withNotes)));
+    const sent = await settle(hot(FRAME_FILE, reads(edited)));
+
+    expect(externalEdits(sent)[0]?.data).toMatchObject({ pageIndex: 1 });
+    expect(frameChanges(sent)).toHaveLength(1);
   });
 });
 

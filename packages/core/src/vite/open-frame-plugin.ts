@@ -55,14 +55,18 @@ function resolved(id: string): string {
 async function classifyEdit(
   file: string,
   read: () => string | Promise<string>,
-): Promise<{ external: boolean; contents: string | null }> {
+): Promise<{ external: boolean; quiet: boolean; contents: string | null }> {
   let contents: string;
   try {
     contents = await read();
   } catch {
-    return { external: false, contents: null };
+    return { external: false, quiet: false, contents: null };
   }
-  return { external: !selfWrites.matches(file, contents), contents };
+  return {
+    external: !selfWrites.matches(file, contents),
+    quiet: selfWrites.isQuiet(file, contents),
+    contents,
+  };
 }
 
 async function findFrames(userCwd: string, framesDir: string): Promise<string[]> {
@@ -298,7 +302,7 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
     async handleHotUpdate(ctx) {
       const frameId = frameIdForEntry(ctx.file);
       if (!frameId) return;
-      const { external, contents } = await classifyEdit(ctx.file, ctx.read);
+      const { external, quiet, contents } = await classifyEdit(ctx.file, ctx.read);
       if (external) {
         const previous = lastFrameSource.get(ctx.file);
         const changed =
@@ -312,7 +316,9 @@ export function openFramePlugin(opts: OpenFramePluginOptions): Plugin {
         });
       }
       if (contents !== null) lastFrameSource.set(ctx.file, contents);
-      queueFrameChanged(ctx.server, frameId);
+      // Quiet writes (speaker notes) keep their state client-side; a
+      // frame-changed broadcast would remount the canvas and steal focus.
+      if (!quiet) queueFrameChanged(ctx.server, frameId);
       return [];
     },
     configureServer(server) {
