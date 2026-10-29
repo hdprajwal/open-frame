@@ -124,9 +124,49 @@ describe('self-write tracker', () => {
 
     expect(tracker.matches('/frames/intro/index.tsx', 'a')).toBe(false);
   });
+
+  it('reports a write as quiet only when it was recorded quiet', () => {
+    const tracker = createSelfWriteTracker();
+    tracker.record('/frames/intro/index.tsx', 'a', { quiet: true });
+    tracker.record('/frames/intro/index.tsx', 'b');
+
+    expect(tracker.isQuiet('/frames/intro/index.tsx', 'a')).toBe(true);
+    expect(tracker.matches('/frames/intro/index.tsx', 'a')).toBe(true);
+    expect(tracker.isQuiet('/frames/intro/index.tsx', 'b')).toBe(false);
+    expect(tracker.isQuiet('/frames/intro/index.tsx', 'c')).toBe(false);
+  });
+
+  it('never lets a quiet write mask a normal write of the same contents', () => {
+    const tracker = createSelfWriteTracker();
+    tracker.record('/frames/intro/index.tsx', 'a');
+    tracker.record('/frames/intro/index.tsx', 'a', { quiet: true });
+    tracker.record('/frames/outro/index.tsx', 'a', { quiet: true });
+    tracker.record('/frames/outro/index.tsx', 'a');
+
+    expect(tracker.isQuiet('/frames/intro/index.tsx', 'a')).toBe(false);
+    expect(tracker.isQuiet('/frames/outro/index.tsx', 'a')).toBe(false);
+  });
+
+  it('stops reporting a quiet write once the TTL has passed', () => {
+    const clock = fakeClock();
+    const tracker = createSelfWriteTracker({ now: clock.now });
+    tracker.record('/frames/intro/index.tsx', 'a', { quiet: true });
+
+    clock.advance(SELF_WRITE_TTL_MS);
+    expect(tracker.isQuiet('/frames/intro/index.tsx', 'a')).toBe(false);
+  });
 });
 
 describe('writeTrackedFile', () => {
+  it('records a quiet write as quiet on the shared tracker', async () => {
+    const file = await tempFile();
+    selfWrites.clear();
+
+    await writeTrackedFile(file, 'notes\n', { quiet: true });
+
+    expect(selfWrites.isQuiet(file, 'notes\n')).toBe(true);
+  });
+
   it('writes the file and records it on the shared tracker', async () => {
     const file = await tempFile();
     selfWrites.clear();

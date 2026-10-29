@@ -402,7 +402,6 @@ export function Player({
         controls && 'select-none',
         controls && (hideCursor ? 'cursor-none' : 'cursor-default'),
       )}
-      style={design ? { background: design.palette.bg } : undefined}
     >
       <FrameCanvas flat design={design} canvas={canvas}>
         <FrameTransitionLayer

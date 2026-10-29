@@ -8,9 +8,14 @@ export const SELF_WRITE_TTL_MS = 1500;
 
 export type SelfWriteContents = string | Uint8Array;
 
+export type SelfWriteOptions = {
+  quiet?: boolean;
+};
+
 export type SelfWriteTracker = {
-  record(file: string, contents: SelfWriteContents): void;
+  record(file: string, contents: SelfWriteContents, opts?: SelfWriteOptions): void;
   matches(file: string, contents: SelfWriteContents): boolean;
+  isQuiet(file: string, contents: SelfWriteContents): boolean;
   clear(): void;
 };
 
@@ -32,7 +37,7 @@ function keyFor(file: string): string {
 export function createSelfWriteTracker(opts: SelfWriteTrackerOptions = {}): SelfWriteTracker {
   const ttlMs = opts.ttlMs ?? SELF_WRITE_TTL_MS;
   const now = opts.now ?? Date.now;
-  const entries = new Map<string, { hash: string; at: number }[]>();
+  const entries = new Map<string, { hash: string; at: number; quiet: boolean }[]>();
 
   const sweep = (at: number) => {
     for (const [key, list] of entries) {
@@ -47,15 +52,20 @@ export function createSelfWriteTracker(opts: SelfWriteTrackerOptions = {}): Self
     // a watcher event lags the write that produced it, so a later write can
     // land in the tracker while disk still holds the earlier contents that the
     // event is about.
-    record(file, contents) {
+    // Quiet never downgrades a normal write of the same contents in the
+    // window: that write's client refresh still has to happen.
+    record(file, contents, opts = {}) {
       const at = now();
       sweep(at);
       const key = keyFor(file);
       const hash = hashContents(contents);
+      const quiet = opts.quiet === true;
       const list = entries.get(key) ?? [];
       const seen = list.find((entry) => entry.hash === hash);
-      if (seen) seen.at = at;
-      else list.push({ hash, at });
+      if (seen) {
+        seen.at = at;
+        seen.quiet = seen.quiet && quiet;
+      } else list.push({ hash, at, quiet });
       entries.set(key, list);
     },
     // Deliberately non-destructive: one write can surface as more than one
@@ -67,6 +77,14 @@ export function createSelfWriteTracker(opts: SelfWriteTrackerOptions = {}): Self
       if (!list) return false;
       const hash = hashContents(contents);
       return list.some((entry) => entry.hash === hash);
+    },
+    isQuiet(file, contents) {
+      const at = now();
+      sweep(at);
+      const list = entries.get(keyFor(file));
+      if (!list) return false;
+      const hash = hashContents(contents);
+      return list.some((entry) => entry.hash === hash && entry.quiet);
     },
     clear() {
       entries.clear();
@@ -84,10 +102,14 @@ const writeChains = new Map<string, Promise<void>>();
 // Writes to one file are chained rather than run concurrently, so the last
 // caller's contents are what ends up on disk instead of whichever write's
 // `fs.writeFile` happened to finish last.
-export async function writeTrackedFile(file: string, contents: SelfWriteContents): Promise<void> {
+export async function writeTrackedFile(
+  file: string,
+  contents: SelfWriteContents,
+  opts?: SelfWriteOptions,
+): Promise<void> {
   const key = keyFor(file);
   const run = (writeChains.get(key) ?? Promise.resolve()).then(async () => {
-    selfWrites.record(file, contents);
+    selfWrites.record(file, contents, opts);
     await fs.writeFile(file, contents);
   });
   const tail = run.then(

@@ -34,6 +34,7 @@ import type { DesignSystem } from '../lib/design';
 import { type CanvasSize, FORMAT_PRESETS } from '../lib/formats';
 import { FramePageProvider } from '../lib/page-context';
 import type { Page } from '../lib/sdk';
+import { thumbnailArrowTarget } from '../lib/thumbnail-keys';
 import type { FrameTransition } from '../lib/transition';
 import { FrameCanvas } from './frame-canvas';
 
@@ -88,6 +89,7 @@ export function ThumbnailRail({
   canvas = FORMAT_PRESETS.slide,
 }: Props) {
   const activeRef = useRef<HTMLButtonElement | null>(null);
+  const focusAfterArrowRef = useRef<number | null>(null);
   const t = useLocale();
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: `current` triggers re-scroll on selection change
@@ -100,6 +102,27 @@ export function ThumbnailRail({
       behavior: reduceMotion ? 'auto' : 'smooth',
     });
   }, [current]);
+
+  useLayoutEffect(() => {
+    if (focusAfterArrowRef.current !== current || !activeRef.current) return;
+    activeRef.current.focus({ preventScroll: true });
+    focusAfterArrowRef.current = null;
+  });
+
+  const onThumbnailArrowKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+      const next = thumbnailArrowTarget(event.nativeEvent, index, pages.length);
+      if (next === null) return;
+      // Stopping propagation keeps the route's window-level arrow handler from
+      // advancing a second page on the same keypress.
+      event.preventDefault();
+      event.stopPropagation();
+      if (next === index) return;
+      focusAfterArrowRef.current = next;
+      onSelect(next);
+    },
+    [onSelect, pages.length],
+  );
 
   const thumbWidth =
     width != null
@@ -133,6 +156,7 @@ export function ThumbnailRail({
           active={active}
           activeRef={active ? activeRef : undefined}
           onSelect={() => onSelect(i)}
+          onArrowKeyDown={(event) => onThumbnailArrowKeyDown(event, i)}
           ariaLabel={format(t.thumbnailRail.goToPageAria, { n: i + 1 })}
         >
           {inner}
@@ -142,6 +166,7 @@ export function ThumbnailRail({
           type="button"
           ref={active ? activeRef : undefined}
           onClick={() => onSelect(i)}
+          onKeyDown={(event) => onThumbnailArrowKeyDown(event, i)}
           aria-label={format(t.thumbnailRail.goToPageAria, { n: i + 1 })}
           aria-current={active ? 'true' : undefined}
           className={thumbButtonClass(active)}
@@ -174,6 +199,7 @@ export function ThumbnailRail({
       moduleTransition,
       onReorder,
       onSelect,
+      onThumbnailArrowKeyDown,
       pages.length,
       scale,
       thumbWidth,
@@ -195,6 +221,7 @@ export function ThumbnailRail({
             actions={actions}
             activeRef={activeRef}
             onSelect={onSelect}
+            onArrowKeyDown={onThumbnailArrowKeyDown}
             scale={scale}
             thumbWidth={horizontalWidth}
             canvas={canvas}
@@ -281,6 +308,7 @@ function HorizontalVirtualThumbList({
   actions,
   activeRef,
   onSelect,
+  onArrowKeyDown,
   scale,
   thumbWidth,
   canvas,
@@ -291,6 +319,7 @@ function HorizontalVirtualThumbList({
   actions?: ThumbnailActions;
   activeRef: React.MutableRefObject<HTMLButtonElement | null>;
   onSelect: (index: number) => void;
+  onArrowKeyDown: (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => void;
   scale: number;
   thumbWidth: number;
   canvas: CanvasSize;
@@ -370,6 +399,7 @@ function HorizontalVirtualThumbList({
         type="button"
         ref={active ? activeRef : undefined}
         onClick={() => onSelect(i)}
+        onKeyDown={(event) => onArrowKeyDown(event, i)}
         aria-label={format(t.thumbnailRail.goToPageAria, { n: i + 1 })}
         aria-current={active ? 'true' : undefined}
         className={cn('group/thumb relative flex shrink-0 flex-col items-center gap-1.5')}
@@ -775,6 +805,7 @@ function SortableThumb({
   active,
   activeRef,
   onSelect,
+  onArrowKeyDown,
   ariaLabel,
   children,
   ...rest
@@ -783,6 +814,7 @@ function SortableThumb({
   active: boolean;
   activeRef: React.MutableRefObject<HTMLButtonElement | null> | undefined;
   onSelect: () => void;
+  onArrowKeyDown: React.KeyboardEventHandler<HTMLButtonElement>;
   ariaLabel: string;
   children: React.ReactNode;
 } & Omit<
@@ -806,6 +838,9 @@ function SortableThumb({
       ref={setRef}
       type="button"
       onClick={onSelect}
+      // Capture phase so it runs before dnd-kit's keyboard listener; while dragging,
+      // arrows belong to the sensor.
+      onKeyDownCapture={isDragging ? undefined : onArrowKeyDown}
       aria-label={ariaLabel}
       aria-current={active ? 'true' : undefined}
       style={{
